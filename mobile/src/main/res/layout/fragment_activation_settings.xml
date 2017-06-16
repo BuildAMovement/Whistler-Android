@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wa_white"
+    android:padding="@dimen/activity_horizontal_margin"
+    tools:context="rs.readahead.washington.mobile.views.fragment.ActivationSettingsFragment">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <CheckedTextView
+                android:id="@+id/enable_secret_mode"
+                style="@style/SettingsMainText"
+                android:gravity="center_vertical"
+                android:text="@string/enable_secret_mode" />
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/new_secret"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/create_secret_mode_password"
+                    style="@style/SettingsMainText"
+                    android:text="@string/create_new_secret_password" />
+
+                <View style="@style/SettingsMainLine" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/change_secret"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/change_secret_moder_password"
+                    style="@style/SettingsMainText"
+                    android:text="@string/change_secret_moder_password" />
+
+                <View style="@style/SettingsMainLine" />
+            </LinearLayout>
+
+            <!--<LinearLayout
+                android:id="@+id/panic_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/panic_mode_password"
+                    style="@style/SettingsMainText"
+                    android:text="@string/create_panic_mode_password" />
+
+                <View style="@style/SettingsMainLine" />
+            </LinearLayout>-->
+
+            <LinearLayout
+                android:id="@+id/change_panic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/change_panic_mode_password"
+                style="@style/SettingsMainText"
+                android:text="@string/change_panic_mode_password" />
+
+            <View style="@style/SettingsMainLine" />
+            </LinearLayout>
+            <!--<CheckedTextView
+                android:id="@+id/enable_tor"
+                style="@style/SettingsMainText"
+                android:gravity="center_vertical"
+                android:text="@string/enable_tor" />-->
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

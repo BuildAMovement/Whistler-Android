@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/wa_white"
+                tools:context="rs.readahead.washington.mobile.views.fragment.CircleOfTrustFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/trusted_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:clipToPadding="false"
+        android:paddingBottom="120dp"/>
+
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/add_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:src="@drawable/fab_add"
+        fab:fab_colorNormal="@color/wa_black"
+        fab:fab_colorPressed="@color/wa_button_gray"
+        fab:fab_colorRipple="@color/wa_button_gray"
+        fab:fab_label="@string/new_list"/>
+
+</RelativeLayout>

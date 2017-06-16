@@ -1,0 +1,160 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wa_dialog_gray"
+    android:orientation="vertical"
+    tools:context=".views.fragment.ReportFragmentStep0">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/evidence_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/wa_black"
+                android:clickable="false">
+
+                <ImageView
+                    android:id="@+id/header_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/choose_evidence"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mob_header0" />
+
+                <TextView
+                    android:id="@+id/header_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/header_background"
+                    android:layout_centerHorizontal="true"
+                    android:paddingBottom="15dp"
+                    android:text="@string/choose_evidence"
+                    android:textColor="@color/wa_white"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/header_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_above="@id/header_text"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/choose_evidence"
+                    app:srcCompat="@drawable/new_report_icon" />
+            </RelativeLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/take_photo"
+                style="@style/OppressionLinearLayout"
+                android:layout_height="80dp"
+                android:background="@drawable/button_pressed_yellow">
+
+                <ImageView
+                    style="@style/OppressionImageView"
+                    app:srcCompat="@drawable/use_camera_icon_black"
+                    android:contentDescription="@null"/>
+
+                <TextView
+                    style="@style/OppressionTextViewBlack"
+                    android:text="@string/take_photo" />
+
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/record_video"
+
+                style="@style/OppressionLinearLayout"
+                android:layout_height="80dp"
+                android:background="@drawable/button_pressed_black">
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    style="@style/OppressionImageView"
+                    android:padding="22dp"
+                    app:srcCompat="@drawable/ic_mob_video"
+                    android:contentDescription="@null"/>
+
+                <TextView
+                    style="@style/OppressionTextView"
+                    android:text="@string/record_video" />
+
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/record_audio"
+
+                style="@style/OppressionLinearLayout"
+                android:layout_height="80dp"
+                android:background="@drawable/button_pressed_black">
+
+                <ImageView
+                    android:id="@+id/record_audio_image"
+                    style="@style/OppressionImageView"
+                    app:srcCompat="@drawable/use_mic_icon"
+                    android:contentDescription="@null"/>
+
+                <TextView
+                    style="@style/OppressionTextView"
+                    android:text="@string/record_audio" />
+
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/upload"
+                style="@style/OppressionLinearLayout"
+                android:layout_height="80dp"
+                android:background="@drawable/button_pressed_black">
+
+                <ImageView
+                    android:id="@+id/upload_image"
+                    style="@style/OppressionImageView"
+                    app:srcCompat="@drawable/upload_from_phone"
+                    android:contentDescription="@null"/>
+
+                <TextView
+                    style="@style/OppressionTextView"
+                    android:text="@string/upload_from_phone" />
+
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/wa_black"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp"
+                android:text="@string/evidence_list"
+                android:textColor="@color/wa_white" />
+
+            <LinearLayout
+                android:id="@+id/evidence_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/wa_dialog_gray"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

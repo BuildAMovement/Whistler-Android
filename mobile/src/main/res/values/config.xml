@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_base_url">https://www.whistlerapp.org/rest/v1/</string>
+    <string name="upload_url">https://www.whistlerapp.org/files/</string> <!-- todo: make this version enabled -->
+    <string name="evidence_queue_file">evidence_queue.db</string>
+
+    <string name="config_help_url">https://whistlerapp.org/faq</string>
+    <string name="config_faq_url">https://whistlerapp.org/faq</string>
+    <string name="config_contact_url">https://whistlerapp.org/contact</string>
+    <string name="config_privacy_url">https://www.iubenda.com/privacy-policy/8140751</string>
+    <string name="config_licence_url">https://whistlerapp.org/</string>
+    <string name="config_source_code_url">https://github.com/BuildAMovement/Whistler-Android</string>
+</resources>

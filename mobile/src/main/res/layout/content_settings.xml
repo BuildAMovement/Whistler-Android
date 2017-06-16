@@ -1,0 +1,155 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/wa_white"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:context=".views.activity.SettingsActivity"
+                tools:showIn="@layout/activity_settings">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/make_oppression_backfire_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/TextViewBlack"
+                    android:text="@string/reporting"/>
+
+                <TextView
+                    style="@style/SettingsDescriptionTextView"
+                    android:text="@string/make_oppression_info"/>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine"/>
+
+            <LinearLayout
+                android:id="@+id/panic_mode_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/TextViewBlack"
+                    android:text="@string/settings_panic_mode"/>
+
+                <TextView
+                    style="@style/SettingsDescriptionTextView"
+                    android:text="@string/settings_panic_mode_info"/>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine"/>
+
+            <LinearLayout
+                android:id="@+id/activation_settings_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/TextViewBlack"
+                    android:text="@string/activation_settings"/>
+
+                <TextView
+                    style="@style/SettingsDescriptionTextView"
+                    android:text="@string/activation_settings_info"/>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine"/>
+
+            <!--<LinearLayout
+                android:id="@+id/sound_and_notifications_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/TextViewBlackBold"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/settings_notifications"/>
+
+                <TextView
+                    style="@style/TextViewGray"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/settings_notifications_info"/>
+
+                <View style="@style/SettingsMainLine"/>
+            </LinearLayout>-->
+
+            <!--<LinearLayout
+                android:id="@+id/settings_language_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    android:id="@+id/textView"
+                    style="@style/TextViewBlackBold"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/settings_language"/>
+
+                <TextView
+                    style="@style/TextViewGray"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/settings_language_info"/>
+
+                <View style="@style/SettingsMainLine"/>
+            </LinearLayout>-->
+
+
+            <!--<LinearLayout
+                android:id="@+id/account_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/TextViewBlackBold"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/account"/>
+
+                <TextView
+                    style="@style/TextViewGray"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/account_info"/>
+
+                <View style="@style/SettingsMainLine"/>
+            </LinearLayout>-->
+
+            <!--<LinearLayout
+                android:id="@+id/help_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/TextViewBlackBold"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/help"/>
+
+                <TextView
+                    style="@style/TextViewGray"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/help_info"/>
+
+                <View style="@style/SettingsMainLine"/>
+            </LinearLayout>-->
+
+            <LinearLayout
+                android:id="@+id/about_n_help_layout"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/TextViewBlack"
+                    android:text="@string/about_n_help"/>
+
+                <TextView
+                    style="@style/SettingsDescriptionTextView"
+                    android:text="@string/about_n_help_info"/>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine"/>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>
+

@@ -1,0 +1,75 @@
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wa_white"
+    android:clipToPadding="false"
+    android:paddingBottom="60dp"
+    tools:context="rs.readahead.washington.mobile.views.fragment.EraseSensitiveDataFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/erase_instruction"
+            android:textColor="@color/wa_black"
+            android:textSize="14sp"/>
+
+        <CheckedTextView
+            android:id="@+id/erase_database"
+            style="@style/EraseDataCheckedText"
+            android:text="@string/erase_database"/>
+
+        <View style="@style/SettingsMainLine"/>
+
+        <CheckedTextView
+            android:id="@+id/erase_contacts"
+            style="@style/EraseDataCheckedText"
+            android:text="@string/erase_contacts"/>
+
+
+        <View style="@style/SettingsMainLine"/>
+
+        <CheckedTextView
+            android:id="@+id/erase_media_recipients"
+            style="@style/EraseDataCheckedText"
+            android:text="@string/erase_media"/>
+
+        <View style="@style/SettingsMainLine"/>
+
+        <CheckedTextView
+            android:id="@+id/erase_materials"
+            style="@style/EraseDataCheckedText"
+            android:text="@string/erase_materials"/>
+
+        <View style="@style/SettingsMainLine"/>
+
+        <CheckedTextView
+            android:id="@+id/erase_evidence_videos"
+            style="@style/EraseDataCheckedText"
+            android:text="@string/erase_videos"/>
+
+        <View style="@style/SettingsMainLine"/>
+
+        <CheckedTextView
+            android:id="@+id/erase_evidence_audio"
+            style="@style/EraseDataCheckedText"
+            android:text="@string/erase_audio"/>
+
+        <View style="@style/SettingsMainLine"/>
+
+        <CheckedTextView
+            android:id="@+id/erase_evidence_image"
+            style="@style/EraseDataCheckedText"
+            android:text="@string/erase_photos"/>
+
+        <View style="@style/SettingsMainLine"/>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+

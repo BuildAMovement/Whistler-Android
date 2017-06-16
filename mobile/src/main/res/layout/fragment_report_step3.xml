@@ -1,0 +1,134 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/wa_white"
+    tools:context=".views.fragment.ReportFragmentStep3">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/wa_black">
+
+            <ImageView
+                android:id="@+id/header_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/send"
+                android:scaleType="fitCenter"
+                android:src="@drawable/mob_header0" />
+
+            <TextView
+                android:id="@+id/header_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/header_background"
+                android:layout_centerHorizontal="true"
+                android:paddingBottom="15dp"
+                android:text="@string/send_preview"
+                android:textColor="@color/wa_white"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/header_icon"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_above="@id/header_text"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/send"
+                app:srcCompat="@drawable/new_report_icon" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/header"
+            android:orientation="vertical">
+
+            <TextView
+                android:gravity="center"
+                android:background="@color/wa_yellow"
+                android:id="@+id/ready_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="@string/ready_to_send"
+                android:textColor="@color/wa_black"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp"
+                android:text="@string/keep_in_archives"
+                android:textAllCaps="true"
+                android:textColor="@color/wa_black"
+                android:textStyle="bold" />
+
+            <CheckedTextView
+                android:id="@+id/keep_record"
+                style="@style/MyCheckTextViewNormal"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="@string/keep_in_archives_desc" />
+
+            <View
+                style="@style/SettingsMainLine"
+                android:padding="15dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp"
+                android:text="@string/make_report_public"
+                android:textAllCaps="true"
+                android:textColor="@color/wa_black"
+                android:textStyle="bold" />
+
+            <CheckedTextView
+                android:id="@+id/report_public"
+                style="@style/MyCheckTextViewNormal"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="@string/make_report_public_desc" />
+
+            <!--<View
+                style="@style/SettingsMainLine"
+                android:padding="15dp" />-->
+
+            <Button
+                android:id="@+id/send"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/button_pressed_yellow"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
+                android:text="@string/send"
+                android:textAllCaps="true"
+                android:textSize="20dp"
+                android:textColor="@color/wa_black"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

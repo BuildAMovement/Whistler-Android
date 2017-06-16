@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/drawer_main_group"
+        android:checkableBehavior="none">
+        <!--<item
+            android:id="@+id/nav_secure_messaging"
+            android:icon="@drawable/nv_secure_messaging"
+            android:title="@string/secure_messaging" />-->
+        <item
+            android:id="@+id/nav_make_oppression_backfire"
+            android:icon="@drawable/nv_make_opression"
+            android:title="@string/reporting" />
+        <item
+            android:id="@+id/nav_training_room"
+            android:icon="@drawable/nv_training"
+            android:title="@string/training_room" />
+    </group>
+    <group
+        android:id="@+id/drawer_settings_group"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/nv_settings"
+            android:title="@string/settings" />
+        <!--<item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/nv_help"
+            android:title="@string/help" />-->
+    </group>
+    <group
+        android:id="@+id/drawer_about_group"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_about_n_help"
+            android:icon="@drawable/nv_about"
+            android:title="@string/about_n_help" />
+        <item
+            android:id="@+id/nav_log_out"
+            android:icon="@drawable/nv_log_out"
+            android:title="@string/log_out" />
+    </group>
+</menu>

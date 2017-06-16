@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".views.activity.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_main" />
+
+    <RelativeLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/wa_red"
+        android:clickable="true"
+        android:elevation="@dimen/design_appbar_elevation"
+        app:behavior_peekHeight="100dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+        <RelativeLayout
+            android:visibility="visible"
+            android:id="@+id/collapsed_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="1">
+
+            <TextView
+                android:id="@+id/panic_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/panic_button"
+                android:textAllCaps="true"
+                android:textColor="@color/wa_white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/panic_button_text"
+                android:layout_centerHorizontal="true"
+                android:text="@string/swipe_up_to_trigger"
+                android:textColor="@color/wa_white"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/panic_button_text"
+                android:layout_toStartOf="@id/panic_button_text"
+                app:srcCompat="@drawable/swipe_up" />
+
+            <ImageView
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/panic_button_text"
+                android:layout_toRightOf="@id/panic_button_text"
+                app:srcCompat="@drawable/swipe_up" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/panic_mode_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0">
+
+            <rs.readahead.washington.mobile.views.custom.CountdownImageView
+                android:id="@+id/countdown_timer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/countdown_5" />
+
+            <TextView
+                android:id="@+id/activation_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/countdown_timer"
+                android:layout_centerInParent="true"
+                android:text="@string/panic_mode_activation"
+                android:textAllCaps="true"
+                android:textColor="@color/wa_white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cancel_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/countdown_timer"
+                android:layout_centerInParent="true"
+                android:text="@string/tap_anywhere_to_cancel"
+                android:textAllCaps="true"
+                android:textColor="@color/wa_white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
