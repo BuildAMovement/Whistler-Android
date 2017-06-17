@@ -67,15 +67,15 @@ public class ReportFragmentStep2 extends Fragment implements View.OnTouchListene
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         addTextWatchers();
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
         removeTextWatchers();
-        super.onStop();
+        super.onPause();
     }
 
     @Override
@@ -141,9 +141,9 @@ public class ReportFragmentStep2 extends Fragment implements View.OnTouchListene
     }
 
     private void addTextWatchers() {
-        mTitle.addTextChangedListener(mTitleTextWatcher = new TitleTextWatcher());
-        mAdditionalInformation.addTextChangedListener(mContentTextWatcher = new ContentTextWatcher());
-        mLocation.addTextChangedListener(mLocationTextWatcher = new LocationTextWatcher());
+        mTitle.addTextChangedListener(mTitleTextWatcher = new TitleTextWatcher(mReport));
+        mAdditionalInformation.addTextChangedListener(mContentTextWatcher = new ContentTextWatcher(mReport));
+        mLocation.addTextChangedListener(mLocationTextWatcher = new LocationTextWatcher(mReport));
     }
 
     private void removeTextWatchers() {
@@ -156,24 +156,14 @@ public class ReportFragmentStep2 extends Fragment implements View.OnTouchListene
         mLocationTextWatcher = null;
     }
 
-    private class TitleTextWatcher extends OnTextChangedWatcher {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mReport.setTitle(s.toString());
+    private static class TitleTextWatcher extends OnTextChangedWatcher {
+        TitleTextWatcher(Report report) {
+            super(report);
         }
-    }
 
-    private class ContentTextWatcher extends OnTextChangedWatcher {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mReport.setContent(s.toString());
-        }
-    }
-
-    private class LocationTextWatcher extends OnTextChangedWatcher {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mReport.setLocation(s.toString());
+            report.setTitle(s.toString());
         }
     }
 
@@ -225,7 +215,35 @@ public class ReportFragmentStep2 extends Fragment implements View.OnTouchListene
         }
     }
 
+    private static class ContentTextWatcher extends OnTextChangedWatcher {
+        ContentTextWatcher(Report report) {
+            super(report);
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            report.setContent(s.toString());
+        }
+    }
+
+    private static class LocationTextWatcher extends OnTextChangedWatcher {
+        LocationTextWatcher(Report report) {
+            super(report);
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            report.setLocation(s.toString());
+        }
+    }
+
     private abstract static class OnTextChangedWatcher implements TextWatcher {
+        protected final Report report;
+
+        OnTextChangedWatcher(Report report) {
+            this.report = report;
+        }
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }

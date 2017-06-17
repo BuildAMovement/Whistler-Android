@@ -30,7 +30,6 @@ import rs.readahead.washington.mobile.models.MediaRecipient;
 import rs.readahead.washington.mobile.models.MediaRecipientList;
 import rs.readahead.washington.mobile.models.Report;
 import rs.readahead.washington.mobile.models.TrustedPerson;
-import rs.readahead.washington.mobile.util.C;
 import rs.readahead.washington.mobile.util.StringUtils;
 import timber.log.Timber;
 
@@ -60,64 +59,67 @@ public class DataSource {
     }
 
     private String[] allColumnsReports = {
-            C.COLUMN_ID,
-            C.COLUMN_REPORTS_TITLE,
-            C.COLUMN_REPORTS_CONTENT,
-            C.COLUMN_REPORTS_LOCATION,
-            C.COLUMN_REPORTS_DATE,
-            C.COLUMN_REPORTS_METADATA,
-            C.COLUMN_REPORTS_ARCHIVED,
-            C.COLUMN_REPORTS_DRAFTS,
-            C.COLUMN_REPORTS_PUBLIC
-
+            D.C_ID,
+            D.C_TITLE,
+            D.C_CONTENT,
+            D.C_LOCATION,
+            D.C_DATE,
+            D.C_METADATA,
+            D.C_ARCHIVED,
+            D.C_DRAFT,
+            D.C_PUBLIC
     };
 
     /*private String[] allColumnsRecipients = {
-            C.COLUMN_ID,
-            C.COLUMN_RECIPIENT_TITLE,
-            C.COLUMN_RECIPIENT_MAIL
+            D.C_ID,
+            D.C_TITLE,
+            D.C_MAIL
     };*/
 
+    private void deleteTable(String table) {
+        database.execSQL("DELETE FROM " + table);
+    }
+
     public void deleteDatabase() {
-        database.execSQL("DELETE FROM " + C.TABLE_RECIPIENTS);
-        database.execSQL("DELETE FROM " + C.TABLE_TRUSTED_PERSONS);
-        database.execSQL("DELETE FROM " + C.TABLE_REPORTS);
-        database.execSQL("DELETE FROM " + C.TABLE_EVIDENCES);
-        database.execSQL("DELETE FROM " + C.TABLE_LISTS);
-        database.execSQL("DELETE FROM " + C.TABLE_REPORT_RECIPIENTS);
+        deleteTable(D.T_RECIPIENT);
+        deleteTable(D.T_TRUSTED_PERSON);
+        deleteTable(D.T_REPORT);
+        deleteTable(D.T_EVIDENCE);
+        deleteTable(D.T_RECIPIENT_LIST);
+        deleteTable(D.T_REPORT_RECIPIENT);
     }
 
     public void deleteContacts() {
-        database.execSQL("DELETE FROM " + C.TABLE_TRUSTED_PERSONS);
+        deleteTable(D.T_TRUSTED_PERSON);
     }
 
     public void deleteMedia() {
-        database.execSQL("DELETE FROM " + C.TABLE_RECIPIENTS);
-        database.execSQL("DELETE FROM " + C.TABLE_LISTS);
-        database.execSQL("DELETE FROM " + C.TABLE_REPORT_RECIPIENTS);
+        deleteTable(D.T_RECIPIENT);
+        deleteTable(D.T_RECIPIENT_LIST);
+        deleteTable(D.T_REPORT_RECIPIENT);
     }
 
     public void insertRecipient(final MediaRecipient mediaRecipient) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_RECIPIENT_MAIL, mediaRecipient.getMail());
-        contentValues.put(C.COLUMN_RECIPIENT_TITLE, mediaRecipient.getTitle());
+        contentValues.put(D.C_MAIL, mediaRecipient.getMail());
+        contentValues.put(D.C_TITLE, mediaRecipient.getTitle());
 
-        long id = database.insert(C.TABLE_RECIPIENTS, null, contentValues);
+        long id = database.insert(D.T_RECIPIENT, null, contentValues);
 
         mediaRecipient.setId(id);
     }
 
     public void updateRecipient(MediaRecipient mediaRecipient) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_RECIPIENT_MAIL, mediaRecipient.getMail());
-        contentValues.put(C.COLUMN_RECIPIENT_TITLE, mediaRecipient.getTitle());
+        contentValues.put(D.C_MAIL, mediaRecipient.getMail());
+        contentValues.put(D.C_TITLE, mediaRecipient.getTitle());
 
-        database.update(C.TABLE_RECIPIENTS, contentValues, C.COLUMN_ID + " = ? ", new String[]{String.valueOf(mediaRecipient.getId())});
-        database.delete(C.TABLE_REPORT_RECIPIENTS, C.COLUMN_RECIPIENT_ID + " = ? ", new String[]{String.valueOf(mediaRecipient.getId())});
+        database.update(D.T_RECIPIENT, contentValues, D.C_ID + " = ? ", new String[]{String.valueOf(mediaRecipient.getId())});
+        database.delete(D.T_REPORT_RECIPIENT, D.C_RECIPIENT_ID + " = ? ", new String[]{String.valueOf(mediaRecipient.getId())});
     }
 
     public void deleteRecipient(long columnId) {
-        database.delete(C.TABLE_RECIPIENTS, C.COLUMN_ID + " = ?", new String[]{String.valueOf(columnId)});
+        database.delete(D.T_RECIPIENT, D.C_ID + " = ?", new String[]{String.valueOf(columnId)});
     }
 
     @NonNull
@@ -126,7 +128,7 @@ public class DataSource {
         Cursor cursor = null;
 
         try {
-            cursor = database.query(C.TABLE_RECIPIENTS, null, null, null, null, null, null);
+            cursor = database.query(D.T_RECIPIENT, null, null, null, null, null, null);
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 MediaRecipient recipient = cursorToRecipient(cursor);
@@ -158,19 +160,19 @@ public class DataSource {
         List<String> wheres = new ArrayList<>();
 
         if (! selectedRecipients.isEmpty()) {
-            wheres.add(C.COLUMN_ID + " IN (" + TextUtils.join(",", selectedRecipients) + ")");
+            wheres.add(D.C_ID + " IN (" + TextUtils.join(",", selectedRecipients) + ")");
         }
 
         if (! selectedRecipientLists.isEmpty()) {
-            wheres.add(C.COLUMN_ID + " IN (SELECT " + C.COLUMN_RECIPIENT_ID +
-                    " FROM " + C.TABLE_RECIPIENT_LISTS +
-                    " WHERE " + C.COLUMN_LIST_ID +
+            wheres.add(D.C_ID + " IN (SELECT " + D.C_RECIPIENT_ID +
+                    " FROM " + D.T_RECIPIENT_RECIPIENT_LIST +
+                    " WHERE " + D.C_RECIPIENT_LIST_ID +
                     " IN (" + TextUtils.join(",", selectedRecipientLists) + "))");
         }
 
         try {
             cursor = database.query(
-                    C.TABLE_RECIPIENTS, null,
+                    D.T_RECIPIENT, null,
                     TextUtils.join(" OR ", wheres),
                     null, null, null, null);
 
@@ -192,9 +194,9 @@ public class DataSource {
     private MediaRecipient cursorToRecipient(Cursor cursor) {
         MediaRecipient mediaRecipient = new MediaRecipient();
 
-        mediaRecipient.setId(cursor.getInt(cursor.getColumnIndexOrThrow(C.COLUMN_ID)));
-        mediaRecipient.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_RECIPIENT_TITLE)));
-        mediaRecipient.setMail(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_RECIPIENT_MAIL)));
+        mediaRecipient.setId(cursor.getInt(cursor.getColumnIndexOrThrow(D.C_ID)));
+        mediaRecipient.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(D.C_TITLE)));
+        mediaRecipient.setMail(cursor.getString(cursor.getColumnIndexOrThrow(D.C_MAIL)));
 
         return mediaRecipient;
     }
@@ -202,38 +204,38 @@ public class DataSource {
     private MediaRecipientList cursorToMediaRecipientList(Cursor cursor) {
         MediaRecipientList mediaRecipientList = new MediaRecipientList();
 
-        mediaRecipientList.setId(cursor.getInt(cursor.getColumnIndexOrThrow(C.COLUMN_ID)));
-        mediaRecipientList.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_LIST_TITLE)));
+        mediaRecipientList.setId(cursor.getInt(cursor.getColumnIndexOrThrow(D.C_ID)));
+        mediaRecipientList.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(D.C_TITLE)));
 
         return mediaRecipientList;
     }
 
     public void insertMediaRecipientList(MediaRecipientList mediaRecipientList) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_LIST_TITLE, mediaRecipientList.getTitle());
+        contentValues.put(D.C_TITLE, mediaRecipientList.getTitle());
 
-        long id = database.insert(C.TABLE_LISTS, null, contentValues);
+        long id = database.insert(D.T_RECIPIENT_LIST, null, contentValues);
 
         mediaRecipientList.setId((int) id);
     }
 
     private void updateList(String name, int listId) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_LIST_TITLE, name);
+        contentValues.put(D.C_TITLE, name);
 
-        database.update(C.TABLE_LISTS, contentValues, C.COLUMN_ID + " = ? ", new String[] {Integer.toString(listId)});
+        database.update(D.T_RECIPIENT_LIST, contentValues, D.C_ID + " = ? ", new String[] {Integer.toString(listId)});
     }
 
     private void deleteMediaRecipientListRecipients(int id) {
-        database.delete(C.TABLE_RECIPIENT_LISTS, C.COLUMN_LIST_ID + " = ?", new String[] {Integer.toString(id)});
+        database.delete(D.T_RECIPIENT_RECIPIENT_LIST, D.C_RECIPIENT_LIST_ID + " = ?", new String[] {Integer.toString(id)});
     }
 
-    private void insertMediaRecipientListRecipient(long recipientId, int listId) { // todo: rotate args
+    private void insertMediaRecipientListRecipient(long recipientId, int listId) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_LIST_ID, listId);
-        contentValues.put(C.COLUMN_RECIPIENT_ID, recipientId);
+        contentValues.put(D.C_RECIPIENT_LIST_ID, listId);
+        contentValues.put(D.C_RECIPIENT_ID, recipientId);
 
-        database.insert(C.TABLE_RECIPIENT_LISTS, null, contentValues);
+        database.insert(D.T_RECIPIENT_RECIPIENT_LIST, null, contentValues);
     }
 
     public void updateMediaRecipientList(MediaRecipientList mediaRecipientList, List<Integer> recipientIds) {
@@ -258,17 +260,17 @@ public class DataSource {
     }
 
     public void deleteList(int listId) {
-        database.delete(C.TABLE_LISTS, C.COLUMN_ID + " = ?", new String[]{String.valueOf(listId)});
+        database.delete(D.T_RECIPIENT_LIST, D.C_ID + " = ?", new String[]{String.valueOf(listId)});
     }
 
     private void deleteReportRecipients(Report report) {
-        database.delete(C.TABLE_REPORT_RECIPIENTS, C.COLUMN_REPORT_ID + " = ?", new String[]{String.valueOf(report.getId())});
+        database.delete(D.T_REPORT_RECIPIENT, D.C_REPORT_ID + " = ?", new String[]{String.valueOf(report.getId())});
     }
 
     private void insertReportRecipients(Report report) {
-        final String sql = createSQLInsert(C.TABLE_REPORT_RECIPIENTS, new String[]{
-                C.COLUMN_RECIPIENT_ID,
-                C.COLUMN_REPORT_ID
+        final String sql = createSQLInsert(D.T_REPORT_RECIPIENT, new String[]{
+                D.C_RECIPIENT_ID,
+                D.C_REPORT_ID
         });
 
         net.sqlcipher.database.SQLiteStatement stmt = database.compileStatement(sql);
@@ -286,7 +288,7 @@ public class DataSource {
         Cursor cursor = null;
 
         try {
-            cursor = database.query(C.TABLE_LISTS, null, null, null, null, null, null);
+            cursor = database.query(D.T_RECIPIENT_LIST, null, null, null, null, null, null);
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 mediaRecipientLists.add(cursorToMediaRecipientList(cursor));
@@ -308,8 +310,8 @@ public class DataSource {
         Cursor cursor = null;
 
         try {
-            cursor = database.query(C.TABLE_LISTS, null,
-                    C.COLUMN_ID + " IN (SELECT DISTINCT " + C.COLUMN_LIST_ID + " FROM " + C.TABLE_RECIPIENT_LISTS + ")",
+            cursor = database.query(D.T_RECIPIENT_LIST, null,
+                    D.C_ID + " IN (SELECT DISTINCT " + D.C_RECIPIENT_LIST_ID + " FROM " + D.T_RECIPIENT_RECIPIENT_LIST + ")",
                     null, null, null, null);
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -333,13 +335,13 @@ public class DataSource {
 
         try {
             cursor = database.query(
-                    C.TABLE_RECIPIENT_LISTS,
-                    new String[] {C.COLUMN_RECIPIENT_ID},
-                    C.COLUMN_LIST_ID + " = ?", new String[] {Long.toString(listId)},
+                    D.T_RECIPIENT_RECIPIENT_LIST,
+                    new String[] {D.C_RECIPIENT_ID},
+                    D.C_RECIPIENT_LIST_ID + " = ?", new String[] {Long.toString(listId)},
                     null, null, null);
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                ids.add(cursor.getInt(cursor.getColumnIndexOrThrow(C.COLUMN_RECIPIENT_ID)));
+                ids.add(cursor.getInt(cursor.getColumnIndexOrThrow(D.C_RECIPIENT_ID)));
             }
         } catch (Exception e) {
             Timber.d(e, getClass().getName());
@@ -354,30 +356,30 @@ public class DataSource {
 
     public void insertTrusted(TrustedPerson trustedPerson) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_TRUSTED_MAIL, trustedPerson.getMail());
-        contentValues.put(C.COLUMN_TRUSTED_NAME, trustedPerson.getName());
-        contentValues.put(C.COLUMN_TRUSTED_PHONE, trustedPerson.getPhoneNumber());
+        contentValues.put(D.C_MAIL, trustedPerson.getMail());
+        contentValues.put(D.C_NAME, trustedPerson.getName());
+        contentValues.put(D.C_PHONE, trustedPerson.getPhoneNumber());
 
-        database.insert(C.TABLE_TRUSTED_PERSONS, null, contentValues);
+        database.insert(D.T_TRUSTED_PERSON, null, contentValues);
     }
 
     public void updateTrusted(TrustedPerson trustedPerson) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_TRUSTED_MAIL, trustedPerson.getMail());
-        contentValues.put(C.COLUMN_TRUSTED_NAME, trustedPerson.getName());
-        contentValues.put(C.COLUMN_TRUSTED_PHONE, trustedPerson.getPhoneNumber());
+        contentValues.put(D.C_MAIL, trustedPerson.getMail());
+        contentValues.put(D.C_NAME, trustedPerson.getName());
+        contentValues.put(D.C_PHONE, trustedPerson.getPhoneNumber());
 
-        database.update(C.TABLE_TRUSTED_PERSONS, contentValues, C.COLUMN_ID + " = ? ", new String[]{String.valueOf(trustedPerson.getColumnId())});
+        database.update(D.T_TRUSTED_PERSON, contentValues, D.C_ID + " = ? ", new String[]{String.valueOf(trustedPerson.getColumnId())});
     }
 
     public void deleteTrusted(int columnId) {
-        database.delete(C.TABLE_TRUSTED_PERSONS, C.COLUMN_ID + " = ?", new String[]{String.valueOf(columnId)});
+        database.delete(D.T_TRUSTED_PERSON, D.C_ID + " = ?", new String[]{String.valueOf(columnId)});
     }
 
     public List<TrustedPerson> getAllTrusted() {
         List<TrustedPerson> trustedPersons = new ArrayList<>();
 
-        Cursor cursor = database.query(C.TABLE_TRUSTED_PERSONS, null, null, null, null, null, null);
+        Cursor cursor = database.query(D.T_TRUSTED_PERSON, null, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             trustedPersons.add(cursorToTrusted(cursor));
@@ -391,11 +393,11 @@ public class DataSource {
     public List<String> getTrustedPhones() {
         List<String> trustedPersonsPhones = new ArrayList<>();
 
-        Cursor cursor = database.query(C.TABLE_TRUSTED_PERSONS, new String[]{C.COLUMN_TRUSTED_PHONE},
-                C.COLUMN_TRUSTED_PHONE + " IS NOT NULL OR " + C.COLUMN_TRUSTED_PHONE + " != ''", null, null, null, null);
+        Cursor cursor = database.query(D.T_TRUSTED_PERSON, new String[]{D.C_PHONE},
+                D.C_PHONE + " IS NOT NULL OR " + D.C_PHONE + " != ''", null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            trustedPersonsPhones.add(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_TRUSTED_PHONE)));
+            trustedPersonsPhones.add(cursor.getString(cursor.getColumnIndexOrThrow(D.C_PHONE)));
             cursor.moveToNext();
         }
         cursor.close();
@@ -406,10 +408,10 @@ public class DataSource {
     private TrustedPerson cursorToTrusted(Cursor cursor) {
         TrustedPerson trustedPerson = new TrustedPerson();
 
-        trustedPerson.setColumnId(cursor.getInt(cursor.getColumnIndexOrThrow(C.COLUMN_ID)));
-        trustedPerson.setName(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_TRUSTED_NAME)));
-        trustedPerson.setMail(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_TRUSTED_MAIL)));
-        trustedPerson.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_TRUSTED_PHONE)));
+        trustedPerson.setColumnId(cursor.getInt(cursor.getColumnIndexOrThrow(D.C_ID)));
+        trustedPerson.setName(cursor.getString(cursor.getColumnIndexOrThrow(D.C_NAME)));
+        trustedPerson.setMail(cursor.getString(cursor.getColumnIndexOrThrow(D.C_MAIL)));
+        trustedPerson.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow(D.C_PHONE)));
 
         return trustedPerson;
     }
@@ -417,19 +419,19 @@ public class DataSource {
     public void insertReport(Report report) {
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(C.COLUMN_REPORTS_TITLE, StringUtils.orDefault(report.getTitle(), ""));
-        contentValues.put(C.COLUMN_REPORTS_CONTENT, StringUtils.orDefault(report.getContent(), ""));
-        contentValues.put(C.COLUMN_REPORTS_LOCATION, StringUtils.orDefault(report.getLocation(), ""));
-        contentValues.put(C.COLUMN_REPORTS_DATE, report.getDate().getTime());
-        contentValues.put(C.COLUMN_REPORTS_METADATA, report.isMetadataSelected() ? 1 : 0);
-        contentValues.put(C.COLUMN_REPORTS_ARCHIVED, report.isKeptInArchive() ? 1 : 0);
-        contentValues.put(C.COLUMN_REPORTS_DRAFTS, report.isKeptInDrafts() ? 1 : 0);
-        contentValues.put(C.COLUMN_REPORTS_PUBLIC, report.isReportPublic() ? 1 : 0);
+        contentValues.put(D.C_TITLE, StringUtils.orDefault(report.getTitle(), ""));
+        contentValues.put(D.C_CONTENT, StringUtils.orDefault(report.getContent(), ""));
+        contentValues.put(D.C_LOCATION, StringUtils.orDefault(report.getLocation(), ""));
+        contentValues.put(D.C_DATE, report.getDate().getTime());
+        contentValues.put(D.C_METADATA, report.isMetadataSelected() ? 1 : 0);
+        contentValues.put(D.C_ARCHIVED, report.isKeptInArchive() ? 1 : 0);
+        contentValues.put(D.C_DRAFT, report.isKeptInDrafts() ? 1 : 0);
+        contentValues.put(D.C_PUBLIC, report.isReportPublic() ? 1 : 0);
 
         try {
             database.beginTransaction();
 
-            long reportId = database.insert(C.TABLE_REPORTS, null, contentValues);
+            long reportId = database.insert(D.T_REPORT, null, contentValues);
 
             report.setId(reportId);
 
@@ -450,11 +452,11 @@ public class DataSource {
     }
 
     private void insertReportEvidences(Report report) {
-        final String sql = createSQLInsert(C.TABLE_EVIDENCES, new String[]{
-                C.COLUMN_EVIDENCES_REPORT_ID,
-                C.COLUMN_EVIDENCES_NAME,
-                C.COLUMN_EVIDENCES_PATH,
-                C.COLUMN_EVIDENCE_METADATA
+        final String sql = createSQLInsert(D.T_EVIDENCE, new String[]{
+                D.C_REPORT_ID,
+                D.C_NAME,
+                D.C_PATH,
+                D.C_METADATA
         });
 
         net.sqlcipher.database.SQLiteStatement stmt = database.compileStatement(sql);
@@ -473,7 +475,7 @@ public class DataSource {
     }
 
     public void deleteReport(Report report) {
-        database.delete(C.TABLE_REPORTS, C.COLUMN_ID + " = ? ", new String[]{String.valueOf(report.getId())});
+        database.delete(D.T_REPORT, D.C_ID + " = ? ", new String[]{String.valueOf(report.getId())});
 
         if (report.getEvidences().size() > 0) {
             deleteReportEvidences(report.getId());
@@ -482,19 +484,19 @@ public class DataSource {
 
     public void updateReport(Report report) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(C.COLUMN_REPORTS_TITLE, StringUtils.orDefault(report.getTitle(), ""));
-        contentValues.put(C.COLUMN_REPORTS_CONTENT, StringUtils.orDefault(report.getContent(), ""));
-        contentValues.put(C.COLUMN_REPORTS_LOCATION, StringUtils.orDefault(report.getLocation(), ""));
-        contentValues.put(C.COLUMN_REPORTS_DATE, report.getDate().getTime());
-        contentValues.put(C.COLUMN_REPORTS_METADATA, report.isMetadataSelected() ? 1 : 0);
-        contentValues.put(C.COLUMN_REPORTS_ARCHIVED, report.isKeptInArchive() ? 1 : 0);
-        contentValues.put(C.COLUMN_REPORTS_DRAFTS, report.isKeptInDrafts() ? 1 : 0);
-        contentValues.put(C.COLUMN_REPORTS_PUBLIC, report.isReportPublic() ? 1 : 0);
+        contentValues.put(D.C_TITLE, StringUtils.orDefault(report.getTitle(), ""));
+        contentValues.put(D.C_CONTENT, StringUtils.orDefault(report.getContent(), ""));
+        contentValues.put(D.C_LOCATION, StringUtils.orDefault(report.getLocation(), ""));
+        contentValues.put(D.C_DATE, report.getDate().getTime());
+        contentValues.put(D.C_METADATA, report.isMetadataSelected() ? 1 : 0);
+        contentValues.put(D.C_ARCHIVED, report.isKeptInArchive() ? 1 : 0);
+        contentValues.put(D.C_DRAFT, report.isKeptInDrafts() ? 1 : 0);
+        contentValues.put(D.C_PUBLIC, report.isReportPublic() ? 1 : 0);
 
         try {
             database.beginTransaction();
 
-            database.update(C.TABLE_REPORTS, contentValues, C.COLUMN_ID + " = ? ", new String[]{String.valueOf(report.getId())});
+            database.update(D.T_REPORT, contentValues, D.C_ID + " = ? ", new String[]{String.valueOf(report.getId())});
 
             deleteReportEvidences(report.getId());
             if (report.getEvidences().size() > 0) {
@@ -517,7 +519,7 @@ public class DataSource {
     public List<Report> getDraftReports() {
         List<Report> reports = new ArrayList<>();
 
-        Cursor cursor = database.query(C.TABLE_REPORTS, allColumnsReports, C.COLUMN_REPORTS_DRAFTS + " = 1", null, null, null, null);
+        Cursor cursor = database.query(D.T_REPORT, allColumnsReports, D.C_DRAFT + " = 1", null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Report report;
@@ -535,7 +537,7 @@ public class DataSource {
     public List<Report> getArchivedReports() {
         List<Report> reports = new ArrayList<>();
 
-        Cursor cursor = database.query(C.TABLE_REPORTS, allColumnsReports, C.COLUMN_REPORTS_ARCHIVED + " = 1", null, null, null, null);
+        Cursor cursor = database.query(D.T_REPORT, allColumnsReports, D.C_ARCHIVED + " = 1", null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Report report;
@@ -554,17 +556,17 @@ public class DataSource {
         List<Evidence> evidences = new ArrayList<>();
 
         Cursor cursor = database.query(
-                C.TABLE_EVIDENCES,
+                D.T_EVIDENCE,
                 null,
-                C.COLUMN_EVIDENCES_REPORT_ID + " = " + reportId,
+                D.C_REPORT_ID + " = " + reportId,
                 null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Evidence evidence = new Evidence();
-            evidence.setPath(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_EVIDENCES_PATH)));
-            evidence.setUid(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_EVIDENCES_NAME)));
-            evidence.setMetadata( new Gson().fromJson(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_EVIDENCE_METADATA)), Metadata.class));
+            evidence.setPath(cursor.getString(cursor.getColumnIndexOrThrow(D.C_PATH)));
+            evidence.setUid(cursor.getString(cursor.getColumnIndexOrThrow(D.C_NAME)));
+            evidence.setMetadata( new Gson().fromJson(cursor.getString(cursor.getColumnIndexOrThrow(D.C_METADATA)), Metadata.class));
             evidences.add(evidence);
             cursor.moveToNext();
         }
@@ -580,10 +582,10 @@ public class DataSource {
 
         final String query = SQLiteQueryBuilder.buildQueryString(
                 false,
-                C.TABLE_RECIPIENTS + " JOIN " + C.TABLE_REPORT_RECIPIENTS + " AS RR ON " +
-                        C.TABLE_RECIPIENTS + "." + C.COLUMN_ID + " = RR." + C.COLUMN_RECIPIENT_ID,
-                new String[] {C.COLUMN_ID, C.COLUMN_RECIPIENT_TITLE, C.COLUMN_RECIPIENT_MAIL},
-                "RR." + C.COLUMN_REPORT_ID + " = " + String.valueOf(reportId),
+                D.T_RECIPIENT + " JOIN " + D.T_REPORT_RECIPIENT + " AS RR ON " +
+                        D.T_RECIPIENT + "." + D.C_ID + " = RR." + D.C_RECIPIENT_ID,
+                new String[] {D.C_ID, D.C_TITLE, D.C_MAIL},
+                "RR." + D.C_REPORT_ID + " = " + String.valueOf(reportId),
                 null, null, null, null
         );
 
@@ -611,9 +613,9 @@ public class DataSource {
 
         try {
             cursor = database.query(
-                    C.TABLE_LISTS,
-                    new String[] {C.COLUMN_ID, C.COLUMN_LIST_TITLE},
-                    C.COLUMN_ID + "= ?", new String[] {Long.toString(id)},
+                    D.T_RECIPIENT_LIST,
+                    new String[] {D.C_ID, D.C_TITLE},
+                    D.C_ID + "= ?", new String[] {Long.toString(id)},
                     null, null, null);
 
             if (cursor.getCount() == 1) {
@@ -633,26 +635,26 @@ public class DataSource {
 
     private Report cursorToReport(Cursor cursor) {
         Report report = new Report();
-        report.setId(cursor.getInt(cursor.getColumnIndexOrThrow(C.COLUMN_ID)));
-        report.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_TITLE)));
-        report.setContent(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_CONTENT)));
-        report.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_LOCATION)));
-        report.setDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_DATE))));
-        report.setMetadataSelected(cursor.getLong(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_METADATA)) == 1);
-        report.setKeptInArchive(cursor.getLong(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_ARCHIVED)) == 1);
-        report.setKeptInDrafts(cursor.getLong(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_DRAFTS)) == 1);
-        report.setReportPublic(cursor.getLong(cursor.getColumnIndexOrThrow(C.COLUMN_REPORTS_PUBLIC)) == 1);
+        report.setId(cursor.getInt(cursor.getColumnIndexOrThrow(D.C_ID)));
+        report.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(D.C_TITLE)));
+        report.setContent(cursor.getString(cursor.getColumnIndexOrThrow(D.C_CONTENT)));
+        report.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(D.C_LOCATION)));
+        report.setDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(D.C_DATE))));
+        report.setMetadataSelected(cursor.getLong(cursor.getColumnIndexOrThrow(D.C_METADATA)) == 1);
+        report.setKeptInArchive(cursor.getLong(cursor.getColumnIndexOrThrow(D.C_ARCHIVED)) == 1);
+        report.setKeptInDrafts(cursor.getLong(cursor.getColumnIndexOrThrow(D.C_DRAFT)) == 1);
+        report.setReportPublic(cursor.getLong(cursor.getColumnIndexOrThrow(D.C_PUBLIC)) == 1);
 
         return report;
     }
 
     private void deleteReportEvidences(long reportId) {
-        database.delete(C.TABLE_EVIDENCES, C.COLUMN_EVIDENCES_REPORT_ID + " = ? ", new String[]{String.valueOf(reportId)});
+        database.delete(D.T_EVIDENCE, D.C_REPORT_ID + " = ? ", new String[]{String.valueOf(reportId)});
     }
 
     public void deleteEvidenceByPath(long reportId, String filePath) {
-        database.delete(C.TABLE_EVIDENCES,
-                C.COLUMN_EVIDENCES_REPORT_ID + " = ? AND " + C.COLUMN_EVIDENCES_PATH + " LIKE '%" + filePath + "%'",
+        database.delete(D.T_EVIDENCE,
+                D.C_REPORT_ID + " = ? AND " + D.C_PATH + " LIKE '%" + filePath + "%'",
                 new String[]{String.valueOf(reportId)});
     }
 

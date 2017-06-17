@@ -14,8 +14,4 @@ public class EvidenceAcquiredEvent implements IEvent {
     public Evidence getEvidence() {
         return evidence;
     }
-
-    public void setEvidence(Evidence evidence) {
-        this.evidence = evidence;
-    }
 }

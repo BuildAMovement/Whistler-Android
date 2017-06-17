@@ -29,7 +29,7 @@ public class Report implements Serializable {
     private boolean metadataSelected = true;
     private boolean keptInArchive = false;
     private boolean keptInDrafts = false;
-    private boolean reportPublic = true;
+    private boolean reportPublic = false;
 
     @SuppressLint("UseSparseArrays")
     private Map<Long, MediaRecipient> recipients = new HashMap<>();

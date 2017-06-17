@@ -5,14 +5,14 @@ import android.content.Context;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import info.guardianproject.cacheword.CacheWordHandler;
-import rs.readahead.washington.mobile.util.C;
-import rs.readahead.washington.mobile.util.SqlHelper;
 
 
 class WashingtonSQLiteOpenHelper extends CipherOpenHelper {
+    private static final String OBJ_QUOTE = "`";
+
 
     WashingtonSQLiteOpenHelper(CacheWordHandler cacheWord, Context context) {
-        super(cacheWord, context, C.DATABASE_NAME, null, C.DATABASE_VERSION);
+        super(cacheWord, context, D.DATABASE_NAME, null, D.DATABASE_VERSION);
     }
 
     @Override
@@ -25,87 +25,94 @@ class WashingtonSQLiteOpenHelper extends CipherOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(createTableRecipients());
-        db.execSQL(createTableTrustedPersons());
-        db.execSQL(createTableReports());
-        db.execSQL(createTableEvidences());
-        db.execSQL(createTableRecipientLists());
-        db.execSQL(createTableLists());
-        db.execSQL(createTableReportRecipients());
+        db.execSQL(createTableRecipient());
+        db.execSQL(createTableTrustedPerson());
+        db.execSQL(createTableReport());
+        db.execSQL(createTableEvidence());
+        db.execSQL(createTableRecipientRecipientList());
+        db.execSQL(createTableRecipientList());
+        db.execSQL(createTableReportRecipient());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    private String createTableRecipients() {
-        return "CREATE TABLE " + SqlHelper.objQuote(C.TABLE_RECIPIENTS) + " (" +
-                SqlHelper.columnDdl(C.COLUMN_ID, C.integerType) + " PRIMARY KEY AUTOINCREMENT, " +
-                SqlHelper.columnDdl(C.COLUMN_RECIPIENT_TITLE, C.textType) + " , " +
-                SqlHelper.columnDdl(C.COLUMN_RECIPIENT_MAIL, C.textType) + ");";
+    private String createTableRecipient() {
+        return "CREATE TABLE " + sq(D.T_RECIPIENT) + " (" +
+                cddl(D.C_ID, D.INTEGER) + " PRIMARY KEY AUTOINCREMENT, " +
+                cddl(D.C_TITLE, D.TEXT) + " , " +
+                cddl(D.C_MAIL, D.TEXT) + ");";
     }
 
-    private String createTableTrustedPersons() {
-        return "CREATE TABLE " + sq(C.TABLE_TRUSTED_PERSONS) + "(" +
-                sq(C.COLUMN_ID) + C.integerType + " PRIMARY KEY AUTOINCREMENT, " +
-                sq(C.COLUMN_TRUSTED_MAIL) + C.textType + " , " +
-                sq(C.COLUMN_TRUSTED_PHONE) + C.textType + " , " +
-                sq(C.COLUMN_TRUSTED_NAME) + C.textType + ");";
+    private String createTableTrustedPerson() {
+        return "CREATE TABLE " + sq(D.T_TRUSTED_PERSON) + "(" +
+                sq(D.C_ID) + D.INTEGER + " PRIMARY KEY AUTOINCREMENT, " +
+                sq(D.C_MAIL) + D.TEXT + " , " +
+                sq(D.C_PHONE) + D.TEXT + " , " +
+                sq(D.C_NAME) + D.TEXT + ");";
     }
 
-    private String createTableReports() {
-        return "CREATE TABLE " + sq(C.TABLE_REPORTS) + "(" +
-                sq(C.COLUMN_ID) + C.integerType + " PRIMARY KEY AUTOINCREMENT, " +
-                SqlHelper.columnDdl(C.COLUMN_REPORTS_UID, C.textType) + ", " +
-                sq(C.COLUMN_REPORTS_TITLE) + C.textType + " , " +
-                sq(C.COLUMN_REPORTS_CONTENT) + C.textType + " , " +
-                sq(C.COLUMN_REPORTS_LOCATION) + C.textType + " , " +
-                sq(C.COLUMN_REPORTS_DATE) + C.integerType + " , " +
-                sq(C.COLUMN_REPORTS_METADATA) + C.integerType + " , " +
-                sq(C.COLUMN_REPORTS_ARCHIVED) + C.integerType + " , " +
-                sq(C.COLUMN_REPORTS_PUBLIC) + C.integerType + " , " +
-                sq(C.COLUMN_REPORTS_DRAFTS) + C.integerType + ");";
+    private String createTableReport() {
+        return "CREATE TABLE " + sq(D.T_REPORT) + "(" +
+                sq(D.C_ID) + D.INTEGER + " PRIMARY KEY AUTOINCREMENT, " +
+                cddl(D.C_UID, D.TEXT) + ", " +
+                sq(D.C_TITLE) + D.TEXT + " , " +
+                sq(D.C_CONTENT) + D.TEXT + " , " +
+                sq(D.C_LOCATION) + D.TEXT + " , " +
+                sq(D.C_DATE) + D.INTEGER + " , " +
+                sq(D.C_METADATA) + D.INTEGER + " , " +
+                sq(D.C_ARCHIVED) + D.INTEGER + " , " +
+                sq(D.C_PUBLIC) + D.INTEGER + " , " +
+                sq(D.C_DRAFT) + D.INTEGER + ");";
     }
 
-    private String createTableEvidences() {
-        return "CREATE TABLE " + sq(C.TABLE_EVIDENCES) + " (" +
-                sq(C.COLUMN_ID) + C.integerType + " PRIMARY KEY AUTOINCREMENT, " +
-                sq(C.COLUMN_EVIDENCES_REPORT_ID) + C.integerType + " , " +
-                sq(C.COLUMN_EVIDENCES_NAME) + C.textType + " , " +
-                sq(C.COLUMN_EVIDENCE_METADATA) + C.textType + " , " +
-                sq(C.COLUMN_EVIDENCES_PATH) + C.textType + ");";
-
+    private String createTableEvidence() {
+        return "CREATE TABLE " + sq(D.T_EVIDENCE) + " (" +
+                sq(D.C_ID) + D.INTEGER + " PRIMARY KEY AUTOINCREMENT, " +
+                sq(D.C_REPORT_ID) + D.INTEGER + " , " +
+                sq(D.C_NAME) + D.TEXT + " , " +
+                sq(D.C_METADATA) + D.TEXT + " , " +
+                sq(D.C_PATH) + D.TEXT + ");";
     }
 
-    private String createTableLists() {
-        return "CREATE TABLE " + sq(C.TABLE_LISTS) + "(" +
-                sq(C.COLUMN_ID) + C.integerType + " PRIMARY KEY AUTOINCREMENT, " +
-                sq(C.COLUMN_LIST_TITLE) + C.textType + ");";
+    private String createTableRecipientList() {
+        return "CREATE TABLE " + sq(D.T_RECIPIENT_LIST) + "(" +
+                sq(D.C_ID) + D.INTEGER + " PRIMARY KEY AUTOINCREMENT, " +
+                sq(D.C_TITLE) + D.TEXT + ");";
     }
 
-    private String createTableRecipientLists() {
-        return "CREATE TABLE " + sq(C.TABLE_RECIPIENT_LISTS) + "(" +
-                    sq(C.COLUMN_LIST_ID) + C.integerType + " , " +
-                    sq(C.COLUMN_RECIPIENT_ID) + C.integerType + " , " +
-                "PRIMARY KEY(" + sq(C.COLUMN_LIST_ID) + " , " + sq(C.COLUMN_RECIPIENT_ID) + ") , " +
-                "FOREIGN KEY(" + sq(C.COLUMN_LIST_ID) + ") REFERENCES " +
-                    sq(C.TABLE_LISTS) + "(" + sq(C.COLUMN_ID) + ") ON DELETE CASCADE , " +
-                "FOREIGN KEY(" + sq(C.COLUMN_RECIPIENT_ID) + ") REFERENCES " +
-                    sq(C.TABLE_RECIPIENTS) + "(" + sq(C.COLUMN_ID) + ") ON DELETE CASCADE );";
+    private String createTableRecipientRecipientList() {
+        return "CREATE TABLE " + sq(D.T_RECIPIENT_RECIPIENT_LIST) + "(" +
+                    sq(D.C_RECIPIENT_ID) + D.INTEGER + " , " +
+                    sq(D.C_RECIPIENT_LIST_ID) + D.INTEGER + " , " +
+                "PRIMARY KEY(" + sq(D.C_RECIPIENT_ID) + " , " + sq(D.C_RECIPIENT_LIST_ID) + ") , " +
+                "FOREIGN KEY(" + sq(D.C_RECIPIENT_LIST_ID) + ") REFERENCES " +
+                    sq(D.T_RECIPIENT_LIST) + "(" + sq(D.C_ID) + ") ON DELETE CASCADE , " +
+                "FOREIGN KEY(" + sq(D.C_RECIPIENT_ID) + ") REFERENCES " +
+                    sq(D.T_RECIPIENT) + "(" + sq(D.C_ID) + ") ON DELETE CASCADE);";
     }
 
-    private String createTableReportRecipients() {
-        return "CREATE TABLE " + sq(C.TABLE_REPORT_RECIPIENTS) + "(" +
-                    sq(C.COLUMN_REPORT_ID) + C.integerType + " , " +
-                    sq(C.COLUMN_RECIPIENT_ID) + C.integerType + " , " +
-                "PRIMARY KEY(" + sq(C.COLUMN_REPORT_ID) + " , " + sq(C.COLUMN_RECIPIENT_ID) + "), " +
-                "FOREIGN KEY(" + sq(C.COLUMN_REPORT_ID) + ") REFERENCES " +
-                    sq(C.TABLE_REPORTS) + "(" + sq(C.COLUMN_ID) + ") ON DELETE CASCADE , " +
-                "FOREIGN KEY(" + sq(C.COLUMN_RECIPIENT_ID) + ") REFERENCES " +
-                    sq(C.TABLE_RECIPIENTS) + "(" + sq(C.COLUMN_ID) + ") ON DELETE CASCADE );";
+    private String createTableReportRecipient() {
+        return "CREATE TABLE " + sq(D.T_REPORT_RECIPIENT) + "(" +
+                    sq(D.C_REPORT_ID) + D.INTEGER + " , " +
+                    sq(D.C_RECIPIENT_ID) + D.INTEGER + " , " +
+                "PRIMARY KEY(" + sq(D.C_REPORT_ID) + " , " + sq(D.C_RECIPIENT_ID) + "), " +
+                "FOREIGN KEY(" + sq(D.C_REPORT_ID) + ") REFERENCES " +
+                    sq(D.T_REPORT) + "(" + sq(D.C_ID) + ") ON DELETE CASCADE , " +
+                "FOREIGN KEY(" + sq(D.C_RECIPIENT_ID) + ") REFERENCES " +
+                    sq(D.T_RECIPIENT) + "(" + sq(D.C_ID) + ") ON DELETE CASCADE );";
+    }
+
+    private static String objQuote(String str) {
+        return OBJ_QUOTE + str + OBJ_QUOTE;
     }
 
     private static String sq(String unQuotedText) {
-        return " `" + unQuotedText + "` ";
+        return " " +objQuote(unQuotedText) + " ";
+    }
+
+    private static String cddl(String columnName, String columnType) {
+        return objQuote(columnName) + " " + columnType;
     }
 }
