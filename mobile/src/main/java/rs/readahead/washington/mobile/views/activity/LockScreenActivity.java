@@ -20,7 +20,6 @@ public class LockScreenActivity extends AppCompatActivity implements ICacheWordS
     Button mBtnCreate;
 
     private CacheWordHandler mCacheWord;
-    private Context context = LockScreenActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class LockScreenActivity extends AppCompatActivity implements ICacheWordS
         mBtnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, NewPatternActivity.class));
+                startActivity(new Intent(LockScreenActivity.this, NewPatternActivity.class));
                 finish();
             }
         });

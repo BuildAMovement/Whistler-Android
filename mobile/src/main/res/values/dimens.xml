@@ -6,7 +6,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="item_padding">15dp</dimen>
+    <dimen name="small_text_margin">8dp</dimen>
+    <dimen name="fab_clear_padding">88dp</dimen> <!-- bottom padding for lists with fab -->
+    <dimen name="z_bottom_sheet">4dp</dimen>
+    <dimen name="gallery_checkbox_margin">8dp</dimen>
+    <dimen name="gallery_strip_height">18dp</dimen>
+    <dimen name="gallery_checkbox_extender">30dp</dimen>
 </resources>

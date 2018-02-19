@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:foreground="?selectableItemBackgroundBorderless"
+    android:clickable="true"
+    android:focusable="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="locale"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.activity.MainActivity"
+    tools:showIn="@layout/app_bar_main2"
+    android:weightSum="5">
+
+    <RelativeLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <View
+            style="@style/MainDividerLine"/>
+
+        <rs.readahead.washington.mobile.views.custom.CameraPreviewAnonymousButton
+            android:id="@+id/gps"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginStart="-10dp"
+            android:padding="24dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@null"/>
+
+        <ImageView
+            android:id="@+id/microphone"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginEnd="-6dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_mic_white"
+            android:background="@drawable/shape_main_mic_box"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@null"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="100dp">
+
+        <LinearLayout
+            android:id="@+id/camera_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:background="@android:color/transparent"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_photo_camera_white" />
+
+            <rs.readahead.washington.mobile.views.custom.CameraPreviewTextView
+                android:id="@+id/camera_overlay_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/wa_white"/>
+        </LinearLayout>
+
+        <View
+            style="@style/MainDividerLine"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/wa_gray"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <FrameLayout
+                android:id="@+id/collect"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_pressed_black"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginEnd="0.2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables,UselessParent">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/main_collect"
+                        android:layout_marginEnd="16dp"/>
+
+                    <TextView
+                        style="@style/MainTextView2"
+                        android:layout_width="wrap_content"
+                        android:text="@string/ra_collect" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/gallery"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_pressed_black"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables,UselessParent">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/gallery_white"
+                        android:layout_marginEnd="16dp"/>
+
+                    <TextView
+                        style="@style/MainTextView2"
+                        android:layout_width="wrap_content"
+                        android:text="@string/ra_gallery" />
+                </LinearLayout>
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

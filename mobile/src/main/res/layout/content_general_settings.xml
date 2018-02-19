@@ -1,0 +1,98 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/wa_white"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.activity.GeneralSettingsActivity"
+    tools:showIn="@layout/activity_general_settings">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/SettingsClickableHorizontalLinerLayout">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewSize"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_no_metadata_black_24px" />
+
+                <LinearLayout style="@style/VerticalLinearLayout">
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/anonymous_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="@string/ra_anonymous_mode"
+                        android:theme="@style/SettingsTextViewBlack" />
+
+                    <TextView
+                        style="@style/SettingsTextViewGray"
+                        android:text="@string/ra_anonymous_mode_desc" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout style="@style/SettingsClickableHorizontalLinerLayout">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewSize"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_wifi_black_24px" />
+
+                <LinearLayout style="@style/VerticalLinearLayout">
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/only_wifi_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:gravity="center_vertical"
+                        android:text="@string/ra_send_attachments_over_wifi"
+                        android:theme="@style/SettingsTextViewBlack" />
+
+                    <TextView
+                        style="@style/SettingsTextViewGray"
+                        android:text="@string/ra_send_attachments_over_wifi_desc" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout style="@style/SettingsClickableHorizontalLinerLayout">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewSize"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_languages" />
+
+                <LinearLayout
+                    android:id="@+id/language_settings"
+                    style="@style/ClickableVerticalLinerLayout">
+
+                    <TextView
+                        style="@style/SettingsTextViewBlack"
+                        android:text="@string/ra_language" />
+
+                    <TextView
+                        style="@style/SettingsTextViewGray"
+                        android:text="@string/ra_language_settings_info" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>
+

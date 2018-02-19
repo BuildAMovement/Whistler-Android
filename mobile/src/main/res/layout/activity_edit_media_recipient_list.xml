@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:textDirection="locale"
     tools:context="rs.readahead.washington.mobile.views.activity.EditMediaRecipientListActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -17,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:subtitle="@string/subtitle_activity_edit_media_recipient_list"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>

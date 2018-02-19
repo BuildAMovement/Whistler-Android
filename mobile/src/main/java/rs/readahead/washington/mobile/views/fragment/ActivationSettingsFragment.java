@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -23,11 +24,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import info.guardianproject.netcipher.proxy.OrbotHelper;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.sharedpref.SharedPrefs;
+import rs.readahead.washington.mobile.data.sharedpref.SharedPrefs;
 import rs.readahead.washington.mobile.util.DialogsUtil;
-import rs.readahead.washington.mobile.util.PermissionHandler;
+import rs.readahead.washington.mobile.util.PermissionUtil;
 import rs.readahead.washington.mobile.views.activity.SplashActivity;
 
 public class ActivationSettingsFragment extends Fragment {
@@ -53,7 +53,7 @@ public class ActivationSettingsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_activation_settings, container, false);
         context = getContext();
@@ -92,14 +92,14 @@ public class ActivationSettingsFragment extends Fragment {
 
     }
 
-    private void checkNetworkSecurity() {
+    /*private void checkNetworkSecurity() {
         if (OrbotHelper.isOrbotInstalled(context)) {
             OrbotHelper.requestStartTor(context);
             //mEnabledTor.setChecked(true);
             SharedPrefs.getInstance().setToreModeActive(true);
         } else
             DialogsUtil.showOrbotDialog(context);
-    }
+    }*/
 
     private void setButtons() {
         mEnableSecretMode.setChecked(SharedPrefs.getInstance().isSecretModeActive());
@@ -133,7 +133,7 @@ public class ActivationSettingsFragment extends Fragment {
     }
 
     private void handleSecretMode() {
-        if (PermissionHandler.checkPermission(getContext(), Manifest.permission.PROCESS_OUTGOING_CALLS, getString(R.string.permission_call))) {
+        if (PermissionUtil.checkPermission(getContext(), Manifest.permission.PROCESS_OUTGOING_CALLS, getString(R.string.permission_call))) {
             if (mEnableSecretMode.isChecked()) {
                 mEnableSecretMode.setChecked(false);
                 SharedPrefs.getInstance().setSecretModeActive(false);

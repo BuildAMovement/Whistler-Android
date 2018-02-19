@@ -1,6 +1,5 @@
 package rs.readahead.washington.mobile.views.activity;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,17 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,19 +37,19 @@ import rs.readahead.washington.mobile.bus.event.MediaRecipientListsReadyEvent;
 import rs.readahead.washington.mobile.bus.event.MediaRecipientRemovedEvent;
 import rs.readahead.washington.mobile.bus.event.MediaRecipientUpdatedEvent;
 import rs.readahead.washington.mobile.bus.event.MediaRecipientsReadyEvent;
-import rs.readahead.washington.mobile.database.DataSource;
-import rs.readahead.washington.mobile.models.MediaRecipient;
-import rs.readahead.washington.mobile.models.MediaRecipientList;
+import rs.readahead.washington.mobile.data.database.DataSource;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipient;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipientList;
 import rs.readahead.washington.mobile.util.DialogsUtil;
-import rs.readahead.washington.mobile.util.StringUtils;
 import rs.readahead.washington.mobile.views.adapters.MediaRecipientListAdapter;
 import rs.readahead.washington.mobile.views.adapters.MediaRecipientListListAdapter;
 import rs.readahead.washington.mobile.views.adapters.ViewPagerAdapter;
+import rs.readahead.washington.mobile.views.dialog.Dialogs;
 import rs.readahead.washington.mobile.views.interfaces.IRecipientListsHandler;
 import rs.readahead.washington.mobile.views.interfaces.IRecipientsHandler;
 
 
-public class MediaRecipients2Activity extends AppCompatActivity implements
+public class MediaRecipients2Activity extends BaseActivity implements
         ICacheWordSubscriber, IRecipientsHandler, IRecipientListsHandler {
     private ViewPager mViewPager;
 
@@ -93,7 +89,7 @@ public class MediaRecipients2Activity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 if (mViewPager.getCurrentItem() == 0) { // fixed..
-                    showUpdateRecipientUI(null);
+                    showRecipientDialog(null);
                 } else if (mViewPager.getCurrentItem() == 1) {
                     showAddRecipientListUI();
                 }
@@ -133,7 +129,7 @@ public class MediaRecipients2Activity extends AppCompatActivity implements
 
     @Override
     public void onCacheWordOpened() {
-        dataSource = DataSource.getInstance(cacheWord, getApplicationContext());
+        dataSource = DataSource.getInstance(this, cacheWord.getEncryptionKey());
         initializeFragments();
     }
 
@@ -144,7 +140,7 @@ public class MediaRecipients2Activity extends AppCompatActivity implements
 
     @Override
     public void updateMediaRecipient(@NonNull final MediaRecipient recipient) {
-        showUpdateRecipientUI(recipient);
+        showRecipientDialog(recipient);
     }
 
     @Override
@@ -211,118 +207,24 @@ public class MediaRecipients2Activity extends AppCompatActivity implements
                 }, null);
     }
 
-    private void showUpdateRecipientUI(final MediaRecipient mediaRecipient) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        @SuppressLint("InflateParams")
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_media_recipient, null);
-
-        final TextInputLayout titleLayout = (TextInputLayout) dialogView.findViewById(R.id.recipient_title_layout);
-        final EditText title = (EditText) dialogView.findViewById(R.id.recipient_title);
-        final TextInputLayout emailLayout = (TextInputLayout) dialogView.findViewById(R.id.recipient_email_layout);
-        final EditText email = (EditText) dialogView.findViewById(R.id.recipient_email);
-
-        assert titleLayout != null;
-        assert emailLayout != null;
-
-        if (mediaRecipient != null) {
-            title.setText(mediaRecipient.getTitle());
-            email.setText(mediaRecipient.getMail());
-        }
-
-        titleLayout.setError(null);
-        emailLayout.setError(null);
-
-        builder.setView(dialogView);
-        builder.setTitle(mediaRecipient != null ? R.string.update_recipient : R.string.add_new_recipient);
-        builder.setCancelable(true);
-        builder.setPositiveButton(getString(mediaRecipient != null ? R.string.action_update : R.string.action_add), null);
-        builder.setNegativeButton(getString(R.string.cancel), null);
-
-        dialog = builder.show();
-
-        // implement this right after show to remove dismiss dialog on click
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+    private void showRecipientDialog(final MediaRecipient mediaRecipient) {
+        dialog = Dialogs.showRecipientDialog(this, mediaRecipient, new Dialogs.IRecipientDialogListener() {
             @Override
-            public void onClick(View v) {
-                String titleText = title.getText().toString();
-                String emailText = email.getText().toString();
-
-                if (validateValues(titleText, emailText)) {
-                    return;
-                }
-
+            public void call(MediaRecipient recipient) {
                 if (mediaRecipient == null) {
-                    insertMediaRecipient(titleText, emailText);
+                    insertMediaRecipient(recipient);
                 } else {
-                    mediaRecipient.setTitle(titleText);
-                    mediaRecipient.setMail(emailText);
-                    changeMediaRecipient(mediaRecipient);
+                    changeMediaRecipient(recipient);
                 }
-
-                dialog.dismiss();
-            }
-
-            private boolean validateValues(String titleText, String emailText) {
-                boolean errors = false;
-
-                if (titleText.length() == 0) {
-                    titleLayout.setError(getString(R.string.empty_field_error));
-                    errors = true;
-                } else {
-                    titleLayout.setError(null);
-                }
-
-                if (emailText.length() == 0) {
-                    emailLayout.setError(getString(R.string.empty_field_error));
-                    errors = true;
-                } else if (! StringUtils.isEmailValid(emailText)) {
-                    emailLayout.setError(getString(R.string.email_field_error));
-                    errors = true;
-                } else {
-                    emailLayout.setError(null);
-                }
-
-                return errors;
             }
         });
     }
 
     void showAddRecipientListUI() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        @SuppressLint("InflateParams")
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_media_recipient_list, null);
-
-        final TextInputLayout titleLayout = (TextInputLayout) dialogView.findViewById(R.id.recipient_title_layout);
-        final EditText title = (EditText) dialogView.findViewById(R.id.recipient_title);
-
-        assert titleLayout != null;
-
-        titleLayout.setError(null);
-
-        builder.setView(dialogView);
-        builder.setTitle(R.string.add_new_recipient_list);
-        builder.setCancelable(true);
-        builder.setPositiveButton(getString(R.string.action_add), null);
-        builder.setNegativeButton(getString(R.string.cancel), null);
-
-        dialog = builder.show();
-
-        // implemented this right after show to remove dismiss dialog on click
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+        dialog = Dialogs.showAddRecipientListDialog(this, new Dialogs.IRecipientListDialogListener() {
             @Override
-            public void onClick(View v) {
-                String titleText = title.getText().toString();
-
-                if (titleText.length() == 0) {
-                    titleLayout.setError(getString(R.string.empty_field_error));
-                    return;
-                }
-
-                insertMediaRecipientList(titleText);
-
-                dialog.dismiss();
+            public void call(MediaRecipientList recipientList) {
+                insertMediaRecipientList(recipientList);
             }
         });
     }
@@ -338,8 +240,7 @@ public class MediaRecipients2Activity extends AppCompatActivity implements
         MyApplication.bus().post(new MediaRecipientRemovedEvent(recipient));
     }
 
-    void insertMediaRecipient(@NonNull String title, @NonNull String email) {
-        MediaRecipient recipient = new MediaRecipient(title, email);
+    void insertMediaRecipient(@NonNull final MediaRecipient recipient) {
         dataSource.insertRecipient(recipient);
         MyApplication.bus().post(new MediaRecipientAddedEvent(recipient));
     }
@@ -354,8 +255,7 @@ public class MediaRecipients2Activity extends AppCompatActivity implements
         MyApplication.bus().post(new MediaRecipientListRemovedEvent(mediaRecipientList));
     }
 
-    void insertMediaRecipientList(@NonNull String title) {
-        MediaRecipientList mediaRecipientList = new MediaRecipientList(title);
+    void insertMediaRecipientList(@NonNull MediaRecipientList mediaRecipientList) {
         dataSource.insertMediaRecipientList(mediaRecipientList);
         MyApplication.bus().post(new MediaRecipientListAddedEvent(mediaRecipientList));
     }
@@ -507,6 +407,9 @@ public class MediaRecipients2Activity extends AppCompatActivity implements
                 @Override
                 public void onNext(MediaRecipientListAddedEvent event) {
                     addMediaRecipientList(event.getMediaRecipientList());
+                    if (recipientListsHandler != null) {
+                        recipientListsHandler.updateMediaRecipientList(event.getMediaRecipientList());
+                    }
                 }
             })
             .wire(MediaRecipientListRemovedEvent.class, new EventObserver<MediaRecipientListRemovedEvent>() {

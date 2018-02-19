@@ -2,27 +2,42 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 ext {
-    supportLibVersion = "23.4.0"
-    retrofitVersion = "2.2.0"
-    permissionDispatcherVersion = "2.3.2"
+    supportLibVersion = "27.0.2"
+    retrofitVersion = "2.3.0"
+    permissionDispatcherVersion = "2.4.0"
+    googlePlayServicesVersion = "11.8.0"
+    leakCanaryVersion = "1.5.1"
+    butterknifeVersion = "8.7.0"
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "org.buildamovement.whistler"
-        minSdkVersion 16
-        targetSdkVersion 23
-        versionCode 4
-        versionName "0.4.0-alpha"
-        vectorDrawables.useSupportLibrary = true
-
+        minSdkVersion 17
+        targetSdkVersion 27
+        versionCode 111
+        versionName "1.0.8"
+        //vectorDrawables.useSupportLibrary = true // don't care about apk size, care about crashes
     }
+
+    configurations.all {
+        //resolutionStrategy.force "com.android.support:exifinterface:${supportLibVersion}"
+        //resolutionStrategy.force "com.android.support:animated-vector-drawble:${supportLibVersion}"
+        //resolutionStrategy.force "com.android.support:support-v13:${supportLibVersion}"
+    }
+
     buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,7 +46,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
+        transitive = true
     }
     //compile project(':libnetcipher')
 
@@ -40,31 +55,64 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support:exifinterface:${supportLibVersion}" // excluded from cameraview lib
+    compile "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
+    //compile "com.google.android.gms:play-services-gcm:${googlePlayServicesVersion}" // android-job, optional
+
     compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
-    compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     compile "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}"
-    compile "com.github.hotchemi:permissionsdispatcher:${permissionDispatcherVersion}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    compile("com.squareup.retrofit2:converter-simplexml:${retrofitVersion}") {
+        exclude group: 'xpp3', module: 'xpp3'
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'stax', module: 'stax'
+    }
+
+    compile("com.github.hotchemi:permissionsdispatcher:${permissionDispatcherVersion}") {
+        exclude module: "support-v13"
+    }
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:${permissionDispatcherVersion}"
+
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
     compile 'com.squareup:tape:1.2.3' // todo: follow this, v2 should be soon
-    compile 'com.jakewharton.timber:timber:4.1.2'
+    compile 'com.jakewharton.timber:timber:4.6.0'
     compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
-    compile 'info.guardianproject.netcipher:netcipher:2.0.0-alpha1'
-    compile 'info.guardianproject.iocipher:IOCipher:0.3' // not used
+    //compile 'info.guardianproject.netcipher:netcipher:2.0.0-alpha1' // not used
+    //compile 'info.guardianproject.iocipher:IOCipher:0.4' // not used
     compile 'info.guardianproject.cacheword:cachewordlib:0.1.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.clans:fab:1.6.4'
-    compile 'me.zhanghai.android.patternlock:library:2.0.4'
+    compile 'me.zhanghai.android.patternlock:library:2.1.2'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.4'
     compile 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
-    compile 'com.evernote:android-job:1.1.9'
+    compile 'com.evernote:android-job:1.1.12'
 
-    compile 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile "com.jakewharton:butterknife:${butterknifeVersion}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    // digest auth
+    compile 'com.burgstaller:okhttp-digest:1.15'
+
+    // collect
+    compile "org.opendatakit:opendatakit-javarosa:2.4.0"
+    compile 'net.sf.kxml:kxml2:2.3.0'
+    compile "commons-io:commons-io:2.4"
+
+    // exo
+    compile 'com.google.android.exoplayer:exoplayer:r2.4.4'
+
+    // camera
+    //compile 'com.wonderkiln:camerakit:0.12.0'
+    compile('com.otaliastudios:cameraview:1.4.1') {
+        exclude module: "exifinterface"
+        exclude module: "animated-vector-drawble"
+    }
+
+    debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
 
     testCompile 'junit:junit:4.12'
 }

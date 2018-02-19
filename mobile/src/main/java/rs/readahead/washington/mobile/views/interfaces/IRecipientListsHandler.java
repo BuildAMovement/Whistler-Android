@@ -1,6 +1,6 @@
 package rs.readahead.washington.mobile.views.interfaces;
 
-import rs.readahead.washington.mobile.models.MediaRecipientList;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipientList;
 
 
 public interface IRecipientListsHandler {

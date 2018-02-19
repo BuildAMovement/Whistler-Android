@@ -3,8 +3,8 @@ package rs.readahead.washington.mobile.views.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -23,18 +23,21 @@ import info.guardianproject.cacheword.ICacheWordSubscriber;
 import rs.readahead.washington.mobile.MyApplication;
 import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.bus.event.MediaRecipientListUpdatedEvent;
-import rs.readahead.washington.mobile.database.DataSource;
-import rs.readahead.washington.mobile.models.MediaRecipient;
-import rs.readahead.washington.mobile.models.MediaRecipientList;
+import rs.readahead.washington.mobile.data.database.DataSource;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipient;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipientList;
 import rs.readahead.washington.mobile.presentation.entity.MediaRecipientSelection;
 import rs.readahead.washington.mobile.presentation.entity.mapper.MediaRecipientMapper;
+import rs.readahead.washington.mobile.util.CommonUtils;
 import rs.readahead.washington.mobile.views.adapters.MediaRecipientSelectorListAdapter;
 
 
-public class EditMediaRecipientListActivity extends AppCompatActivity implements
+public class EditMediaRecipientListActivity extends BaseActivity implements
         ICacheWordSubscriber {
     public static String RECIPIENT_LIST_ID = "recipient_list_id";
 
+    @BindView(R.id.root)
+    View rootView;
     @BindView(R.id.recipients)
     ListView recipientsListView;
     @BindView(R.id.edit_recipient_list)
@@ -53,7 +56,8 @@ public class EditMediaRecipientListActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -62,14 +66,28 @@ public class EditMediaRecipientListActivity extends AppCompatActivity implements
         }
 
         cacheWord = new CacheWordHandler(this);
+
+        CommonUtils.hideKeyboard(this, rootView);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.recipient_list_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                navigateBack();
-                return true;
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            navigateBack();
+            return true;
+        }
+
+        if (id == R.id.action_select) {
+            saveMediaRecipientList();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -101,32 +119,16 @@ public class EditMediaRecipientListActivity extends AppCompatActivity implements
 
     @Override
     public void onCacheWordOpened() {
-        dataSource = DataSource.getInstance(cacheWord, getApplicationContext());
+        dataSource = DataSource.getInstance(this, cacheWord.getEncryptionKey());
         initViews();
-    }
-
-    @OnClick({R.id.edit_cancel, R.id.edit_save, R.id.edit_enable_image})
-    public void handleClick(View view) {
-        switch (view.getId()) {
-            case R.id.edit_cancel:
-                navigateBack();
-                break;
-
-            case R.id.edit_save:
-                saveMediaRecipientList();
-                break;
-
-            case R.id.edit_enable_image:
-                activateEditText();
-                break;
-        }
     }
 
     private void navigateBack() {
         onBackPressed();
     }
 
-    private void activateEditText() {
+    @OnClick(R.id.edit_enable_image)
+    public void activateEditText() {
         editEnableImage.setVisibility(View.GONE);
 
         editListView.setEnabled(true);
@@ -182,7 +184,7 @@ public class EditMediaRecipientListActivity extends AppCompatActivity implements
         List<Integer> recipientIds = dataSource.getRecipientIdsByListId(listId);
         List<MediaRecipientSelection> selections = new MediaRecipientMapper().transform(recipients);
 
-        for (MediaRecipientSelection selection: selections) {
+        for (MediaRecipientSelection selection : selections) {
             if (recipientIds.contains(selection.getId())) {
                 selection.setChecked(true);
             }

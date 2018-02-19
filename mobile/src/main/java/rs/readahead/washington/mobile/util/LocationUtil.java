@@ -1,6 +1,7 @@
 package rs.readahead.washington.mobile.util;
 
 import android.location.Location;
+import android.support.annotation.NonNull;
 
 
 public class LocationUtil {
@@ -13,7 +14,7 @@ public class LocationUtil {
     }
 
     // Taking android example of android "location strategy" as good enough starting point..
-    public static boolean isBetterLocation(Location location, Location currentBestLocation) {
+    public static boolean isBetterLocation(@NonNull Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             return true;
         }

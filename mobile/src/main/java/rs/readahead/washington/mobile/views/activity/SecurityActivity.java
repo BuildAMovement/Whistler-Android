@@ -1,7 +1,6 @@
 package rs.readahead.washington.mobile.views.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,44 +20,38 @@ import timber.log.Timber;
 
 
 public class SecurityActivity extends ConfirmPatternActivity implements ICacheWordSubscriber {
-
     private CacheWordHandler mCacheWord;
-    private Context context = SecurityActivity.this;
     private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCacheWord = new CacheWordHandler(this);
-        Button button = (Button) findViewById(R.id.pl_right_button);
-        button.setVisibility(View.INVISIBLE);
 
+        Button button = findViewById(R.id.pl_right_button);
+        button.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected boolean isPatternCorrect(List<PatternView.Cell> pattern) {
-        dialog = DialogsUtil.showProgressDialog(context);
+        dialog = DialogsUtil.showProgressDialog(this, getString(R.string.setting_data));
 
         try {
             mCacheWord.setPassphrase(PatternUtils.patternToSha1String(pattern).toCharArray());
             return true;
         } catch (final GeneralSecurityException e) {
-            Timber.d(e, getClass().getName()); // todo: exc once got here on app start..
+            Timber.d(e, getClass().getName());
             dismissDialog();
             return false;
         }
     }
 
-
-
     @Override
     public void onCacheWordUninitialized() {
-
     }
 
     @Override
     public void onCacheWordLocked() {
-
     }
 
     @Override
@@ -84,7 +77,7 @@ public class SecurityActivity extends ConfirmPatternActivity implements ICacheWo
         mCacheWord.disconnectFromService();
     }
 
-    private void dismissDialog(){
+    private void dismissDialog() {
         if (dialog != null) {
             dialog.dismiss();
         }

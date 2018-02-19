@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="rs.readahead.washington.mobile.views.activity.ActivationSettingsActivity">
+    android:textDirection="locale"
+    tools:context="rs.readahead.washington.mobile.views.activity.SecuritySettingsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

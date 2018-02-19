@@ -1,0 +1,513 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <!--A-->
+    <string name="app_name">Whistler</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_add">Agregar</string>
+    <string name="action_update">Actualizar</string>
+    <string name="about_n_help">Sobre Whistler &amp; Ayuda</string>
+    <string name="about_n_help_info">FAQ, Contacto, Política de Privacidad y Licencia</string>
+    <string name="attention">Atención</string>
+    <string name="add_new_recipient">Agregar nuevo destinatario</string>
+    <string name="add_new_recipient_list">Agregar nueva lista de destinatarios</string>
+    <string name="ra_add_collect_server">Agregar Servidor</string>
+
+
+    <!--B-->
+    <string name="ra_blank">Blank</string>
+
+
+    <!--C-->
+    <string name="close">Cerrar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="circle_of_trust">Círculo de confianza</string>
+    <string name="circle_of_trust_info">Administra tus contactos de más confianza, a quienes les llegará la alerta cuando actives el botón de pánico</string>
+    <string name="change_secret_moder_password">Cambiar contraseña del modo secreto</string>
+    <string name="change_panic_mode_password">Cambiar contraseña del modo pánico</string>
+    <string name="create_new_secret_password">Crear contraseña de modo secreto</string>
+    <string name="create_new_panic_password">Crear contraseña del modo pánico</string>
+    <string name="change_secret_password">Cambiar contraseña secreta</string>
+    <string name="change_panic_password">Cambiar contraseña de pánico</string>
+    <string name="create_pass_info"> Para asegurar el máximo de seguridad, por favor cree un patrón para desbloquear su aplicación. Este patrón será usado para desbloquear Whistler, de modo que nadie pueda acceder a tu infrmación. El patrón debe incluir al menos 6 puntos.
+</string>
+    <string name="contact_us">Contáctenos</string>
+    <string name="copyright">Copyright © 2017 Build A Movement</string>
+    <string name="ra_collect">Recopilar</string>
+
+
+    <!--D-->
+    <string name="download_in_progress">Descarga en proceso…</string>
+    <string name="download_completed">Descarga completa </string>
+    <string name="download_starting">Iniciando descarga…</string>
+    <string name="draft_reports">Reportes en borrador</string>
+    <string name="delete_draft">¿Eliminar borradores?</string>
+    <string name="delete">Eliminar</string>
+    <string name="ra_draft">Borrador</string>
+    <string name="ra_download">Descarga</string>
+
+
+    <!--E-->
+    <string name="evidence">Evidencia</string>
+    <string name="error">Error</string>
+    <string name="empty_field_error">Este campo no puede estas vacío.</string>
+    <string name="edit_recipient">Editar información de contacto</string>
+    <string name="enable_secret_mode">Modo secreto</string>
+    <string name="empty_list_archived">Tu archivo está vacío.</string>
+    <string name="empty_list_drafts">Tu borrador está vacío.</string>
+    <string name="erase_contacts">Círculo de confianza</string>
+    <string name="erase_database">Base de datos de Whistler</string>
+    <string name="erase_materials">Documentos</string>
+    <string name="erase_instruction">Cuando el Modo Pánico está activo, Whistler puede borrar los datos sensibles que escojas, para evitar que terceros puedan tener acceso. Selecciona aquí cuáles datos deben ser eliminados: </string>
+    <string name="erasing_data">Borrando datos sensibles</string>
+    <string name="exit">Presione el botón atrás otra vez para salir</string>
+    <string name="email_field_error">No es una dirección de correo válida.</string>
+    <string name="ra_collect_server_load_error">Error al tratar de obtener la lista de servidores. Por favor intenta nuvamente.</string>
+    <string name="ra_collect_server_create_error">Error creando los ajustes del servidor. Por favor intenta nuevamente. </string>
+    <string name="ra_collect_server_update_error">Error actualizando el servidor. Por favor intenta nuevamente. </string>
+    <string name="ra_collect_server_remove_error">Error eliminando los ajustes del servidor. Por favor intenta nuevamente.</string>
+
+
+    <!--F-->
+    <string name="faq">faq</string>
+
+
+    <!--G-->
+    <string name="ra_gallery">Galería</string>
+
+
+    <!--H-->
+
+
+    <!--I-->
+    <string name="internet_error">Por favor revisa tu conexión a internet.</string>
+    <string name="incorrect_password">Contraseña incorrecta.</string>
+    <string name="include_geolocation">Incluir geolocalización en mensaje de texto </string>
+
+
+    <!--J-->
+
+
+    <!--K-->
+
+
+    <!--L-->
+    <string name="lists">Listas</string>
+    <string name="log_out">Cerrar sesión</string>
+    <string name="lock_screen_open">Abrir</string>
+    <string name="lock_screen_create_pattern">Crear patrón</string>
+    <string name="lock_screen_passphrase_hint">Crear una frase de seguridad</string>
+    <string name="location_info">Información de localizacion</string>
+    <string name="licence">Licencia</string>
+
+
+    <!--M-->
+    <string name="make_oppression_info">Administrar listas y contactos</string>
+    <string name="metadata_waiting_progress"> Obteniendo localización actual y metadatos. Puedes omitir y continuar con la Creando un reporte. </string>
+    <string name="make_report_public">Hacer público un reporte</string>
+    <string name="make_report_public_desc">Tu reporte estará disponible para cualquiera que visite el sitio web de Whistler. Si lo conservas privado, solo tus contactos podrán verlo.</string>
+    <string name="ra_manage_servers">Administar servidores</string>
+
+
+    <!--N-->
+    <string name="navigation_drawer_open">Abrir el menú de navegación</string>
+    <string name="navigation_drawer_close">Cerrar el menú de navegación</string>
+    <string name="new_recipient">Agregar nuevo contacto a tu círculo de confianza</string>
+    <string name="name_of_recipient">Nombre del contacto</string>
+    <string name="name_of_recipient_list">Nombre de la lista de contactos</string>
+    <string name="new_list">Crear nueva lista</string>
+    <string name="name">Nombre</string>
+    <string name="new_report">Nuevo reporte</string>
+    <string name="not_included">No incluído</string>
+    <string name="no_recipient_available">Contacto no válido</string>
+    <string name="no_recipient_list_available">No hay listas disponibles</string>
+    <string name="new_recipient_short">Nuevo contacto</string>
+    <string name="new_list_short">Nueva lista</string>
+
+
+    <!--O-->
+    <string name="ok">OK</string>
+    <string name="ra_open">Abrir</string>
+    <string name="ra_odk_invalid_answer_error">Respuesta inválida </string>
+    <string name="ra_odk_required_answer_error">Respuesta requerida</string>
+
+
+    <!--P-->
+    <string name="panic_mode_activation">Modo Pánico activado</string>
+    <string name="panic_button">Botón de pánico</string>
+    <string name="permission_call">Para acceder a Whistler desde el modo secreto, es necesario el permiso de hacer llamadas.</string>
+    <string name="permission_sms">Para notificar a tus amigos que el Modo Pánico ha sido activado, necesita permitir a Whistler enviar SMS.</string>
+    <string name="permission_audio">Para grabar archivos de audio, necesita permitir el acceso al micrófono.</string>
+    <string name="permission_location">Para compartir su localización, necesita permitir el acceso al GPS.</string>
+    <string name="panic_message">Mensaje de Pánico</string>
+    <string name="panic_message_info">Escriba un borrador del mensaje su cículo de confianza recibirá cuando active el Modo Pánico</string>
+    <string name="panic_message_saved">Mensaje de Pánico guardado satisfactoriamente.</string>
+    <string name="phone_number">Número de teléfono</string>
+    <string name="password">Contraseña</string>
+    <string name="password_old">Contraseña anterior</string>
+    <string name="password_new">Contraseña nueva</string>
+    <string name="password_confirm">Confirme la contraseña</string>
+    <string name="password_match_error">La contraseña ingresada no coincide con la contraseña confirmada</string>
+    <string name="password_changed">Contraseña cambiada satisfactoriamente.</string>
+    <string name="panic_secret_password_error">Los botonoes de Pánico y Secreto deben ser diferentes Panic and Secret passwords can\'t be the same.</string>
+    <string name="panic_message_title">Tu mensaje de pánico será enviado por SMS a tu círculo de confianza cuando actives el Modo Pánico. Asegúrate de escribir algo concreto y directo al punto. Si es necesario utiliza palabras en clave, por si el mensaje fuera interceptado.</string>
+    <string name="panic_message_geolocation">Incluir tu geolocalización le permitirá a tu círculo de confianza saber dónde exactamente activaste el Modo Pánico. Sin embargo, el GPS debe estar activado.</string>
+    <string name="panic_sent">Mensaje de pánico enviado satisfactoriamente.</string>
+    <string name="panic_sent_error_generic">El envío del mensaje de pánico falló por un error.</string>
+    <string name="panic_sent_error_service"> El envío del mensaje de pánico falló por un error en el servidor..</string>
+    <string name="privacy_policy">Política de privacidad</string>
+
+
+    <!--Q-->
+
+
+    <!--R-->
+    <string name="recipients">Destinatarios</string>
+    <string name="record_audio">Grabar audio</string>
+    <string name="removed_recipient">Destinatarios correctamente borrados.</string>
+    <string name="removed_recipient_list">Lista de destinatarios correctamente borrada.</string>
+    <string name="recipient_added">Destinatarios correctamente añadidos.</string>
+    <string name="recipient_list_added">Lista de destinatarios correctamente añadida.</string>
+    <string name="recipient_remove_all_text">  Estás por borrar el destinatario %1$s. ¿Quieres continuar?</string>
+    <string name="recipient_list_remove_all_text"> Estás por borrar la lista de destinatarios %1$s. La eliminación de la lista no borra los destinatarios asociados. ¿Quieres continuar? </string>
+    <string name="recipient_mail">Correo electrónico</string>
+    <string name="recorded_unsuccessfully">Audio no grabado, por favor intenta de nuevo.</string>
+    <string name="recoding_instruction">Si quieres grabar audio, por favor presiona el botón GRABAR al final de la pantalla.</string>
+    <string name="recoding_play_instruction">Ahora puedes usar este audio como evidencia, o puedes escucharlo presionando el botón PLAY al final de la pantalla.</string>
+    <string name="recording">GRABANDO AUDIO....</string>
+    <string name="recording_play">REPRODUCIENDO AUDIO....</string>
+    <string name="report_preview">Revisión del reporte</string>
+    <string name="recipient_updated">Destinatario actualizado satisfactoriamente.</string>
+    <string name="recipient_list_updated">Lisya de destinatarios actualizada.</string>
+    <string name="ra_remove">Borrar</string>
+    <string name="ra_report">Reporte</string>
+
+
+    <!--S-->
+    <string name="swipe_up_to_trigger">Desliza para activar</string>
+    <string name="settings">Configuración</string>
+    <string name="settings_panic_mode">Modo pánico</string>
+    <string name="settings_panic_mode_info">Edita el mensaje de pánico, el círculo de confianza y los datos serán borrados. </string>
+    <string name="send">Enviar</string>
+    <string name="save">Guardar</string>
+    <string name="secret_mode_text">El modo secreto oculta Whistler en tu pantalla de inicio. Para abrir Whistler necestarás ingresar el password de modo secreto en tu aplicación de llamadas y marcar. Recuerda que el modo secreto te protege de búsquedas en tu teléfono. Whistler permanecerá visible en Configuración> Apps</string>
+    <string name="secret_mode_on">Aceptado. En un momento la aplicación no será visible en tu pantalla de inicio.</string>
+    <string name="secret_mode_off"> Aceptado. La aplicación se mostrará en tu pantalla de inicio dentro de un momento.</string>
+    <string name="start_time">00 : 00</string>
+    <string name="save_drafts">Guardar en borradores</string>
+    <string name="saved_to_drafts">Reporte guardado en boradores.</string>
+    <string name="setting_data">Configuración de datos…</string>
+    <string name="sensitive_data">Datos sensibles</string>
+    <string name="sensitive_data_info">Selecciona los datos de Whistler que quieras borrar cuando actives el Modo Pánico. </string>
+    <string name="secret_mode_info">El modo secreto oculta Whistler en tu pantalla de inicio. Para abrir Whistler necestarás ingresar el password de modo secreto en tu aplicación de llamadas y marcar. Recuerda que el modo secreto te protege de búsquedas en tu teléfono. Whistler permanecerá visible en Configuración > Apps</string>
+    <string name="sending_report_progress">Enviando reporte.</string>
+    <string name="sending_report_error">Error enviando reporte. Por favor intenta de nuevo, o guarda el reporte en borradores para enviarlo más tarde.</string>
+    <string name="sending_report_success">Reporte enviado correctamente.</string>
+    <string name="sending_report_evidences_msg">La evidencia multimedia será enviada en segundo plano.</string>
+    <string name="skip">Omitir</string>
+    <string name="subtitle_activity_edit_media_recipient_list">Cambiar el nombre de la lista y administrar destinatarios </string>
+    <string name="source_code">Código fuente</string>
+    <string name="ra_send_attachments_over_wifi">Enviar adjuntos solamente con WiFi</string>
+    <string name="ra_send_attachments_over_wifi_desc">Los adjuntos multimedia pueden ser muy pesados. Selecciona esta opción si quieres que los archivos multimedia se envíen separados de tu formulario, solo cuando tengas acceso a WiFi (una vez sean subido los archivos aparecerán como adjuntos al formulario.</string>
+    <string name="ra_server_removed">Servidor eliminado.</string>
+    <string name="ra_server_created">Servidor creado satisfactoriamente.</string>
+    <string name="ra_server_updated">Servidor actualizado satisfactoriamente.</string>
+    <string name="ra_server_settings">Configuración del servidor</string>
+    <string name="ra_server_name">Nombre del servidor</string>
+    <string name="ra_server_url"> URL del servidos</string>
+    <string name="ra_submitted">Enviado</string>
+
+
+    <!--T-->
+    <string name="tap_anywhere_to_cancel">Toca en cualquier lugar para cancelar</string>
+    <string name="title_of_report">Título del reporte</string>
+    <string name="title_activity_training_room_activity">Sala de entrenamiento</string>
+    <string name="trusted_person_remove_text"> ¿Estás seguro de que quieres borrar a %1$s del círculo de confianza? </string>
+    <string name="removed_trusted">Contacto borrado. </string>
+    <string name="title_activity_panic_mode">Modo pánico</string>
+    <string name="title_activity_lock_screen">Seguridad Whistler </string>
+    <string name="title_activity_audio_record">Grabar audio</string>
+    <string name="today">Hoy</string>
+    <string name="title_not_included">Título no incluido</string>
+    <string name="title_activity_security">Bloquear bantalla</string>
+    <string name="title_activity_about_help">A cerca de; Ayuda</string>
+    <string name="title_activity_media_recipients2">Reporet</string>
+    <string name="title_activity_edit_media_recipient_list">Editar lista</string>
+    <string name="title_activity_collect_main">Recopilar</string>
+    <string name="ra_title_activity_collect_settings">Opciones de recopilación</string>
+    <string name="ra_train">Entrenamiento</string>
+
+
+    <!--U-->
+    <string name="unzipping_file">Descomprimiendo archivos…</string>
+    <string name="unzipping_finished">Descompresión finalizada </string>
+    <string name="use_evidence">Usar como evidencia</string>
+    <string name="unknown">Desconocido</string>
+    <string name="update_recipient">Actualizar destinatario</string>
+    <string name="ra_username">Nombre de usuario</string>
+    <string name="ra_updated_with_param">Actualizado: %1$s</string>
+
+
+    <!--V-->
+    <string name="version">Versión</string>
+
+
+    <!--X-->
+
+
+    <!--W-->
+
+
+    <!--X-->
+
+
+    <!--Y-->
+    <string name="yesterday">Ayer</string>
+    <string name="your_panic_message">Tu mensaje de pánico</string>
+
+
+    <!--Z-->
+
+
+    <!-- ODK Collect -->
+
+
+    <string name="ra_attachments">Adjuntos</string>
+    <string name="ra_media_attached_to_form">Archivos adjuntos al formulario</string>
+    <string name="ra_draft_saved">Borrador guardado satisfactoriamente</string>
+    <string name="ra_submitting_form">Enviando formulario &#8230;</string>
+    <string name="ra_error_submitting_form">Error enviando formulario</string>
+    <string name="ra_error_submitting_form_tmp"> Error enviando formulario: %s</string>
+    <string name="ra_form_received_reply">Formulario recibido. Servidor responde: </string>
+    <string name="ra_form_received_no_reply">Formulario recibido.</string>
+    <string name="ra_form_accepted_reply">Formulario aceptado, por favor no reenviar. Servidor responde: </string>
+    <string name="ra_form_accepted_no_reply"> Formulario aceptado, por favor no reenviar. </string>
+    <string name="ra_form_unused_reply">Received response is not from OpenRosa compliant server (%d). Check your server URL settings and make sure proxy servers are not involved.</string>
+    <string name="ra_answers_validation_errors">Hay errores de validación en las respuestas </string>
+    <string name="ra_media_location_permissions"> Para incluir tu localización en los metadatos, necesitas permitir el acceso a los permisos de localización. </string>
+    <string name="ra_select_time">Selecciona la hora</string>
+    <string name="ra_select_date">Selecciona la fecha</string>
+    <string name="ra_no_date_selected">Fecha no seleccionada</string>
+    <string name="ra_getting_blank_forms">Espacios en blanco detectados por el servidor &#8230;</string>
+    <string name="ra_error_getting_forms">Error obteniendo el formulario </string>
+    <string name="ra_form_parse_error">Hubo un error al completar el formulario</string>
+    <string name="ra_attach_media">Adjuntar medios</string>
+    <string name="ra_no_multimedia_attached_to_this_form">No hay archivos multimedia adjuntos a este forumlario.\n Tap + to add.</string>
+    <string name="ra_save_form">Guardar formulario</string>
+
+
+    <!-- pattern lock library -->
+    <string name="pl_draw_pattern_to_unlock">Dibuje el patrón para desbloquear</string>
+    <string name="pl_wrong_pattern">Patrón incorrecto, intenta nuevamente</string>
+    <string name="pl_cancel">Cancelar</string>
+    <string name="pl_confirm">Confirmar</string>
+    <string name="pl_confirm_pattern">Dibuje el patrón nuevamente para confirmar</string>
+    <string name="pl_continue">Continuar</string>
+    <string name="pl_draw_pattern">Dibuje el patrón de desbloqueo</string>
+    <string name="pl_pattern_confirmed">Tu nuevo patrón de desbloqueo</string>
+    <string name="pl_pattern_recorded">Patrón grabado</string>
+    <string name="pl_pattern_too_short">Conecta al menos %d puntos, por favor dibuja de nuevo</string>
+    <string name="pl_recording_pattern">Retira tu dedo cuando termines</string>
+    <string name="pl_redraw">Redibujar</string>
+    <string name="tap_submit_form_to_send">Presiona Enviar formulario para enviar </string>
+    <string name="form_sent_when_online">Si no estás conectado a internet, tu formulario será enviado tan pronto como estés en línea.</string>
+    <string name="once_submitted_resubmit">Una vez enviado, seguirá siendo posible editar el formulario y reenviarlo. </string>
+    <string name="form_send_attachments_will_be_sent_over_wifi">Para guardar datos del celular, los adjuntos deben ser enviados usando WiFi, y has seleccionado esta opción en tu configuración. </string>
+    <string name="submit_form">Enviar formulario</string>
+    <string name="previous_section">Sección anterior</string>
+    <string name="next_section">Sección siguiente</string>
+    <string name="ra_stop">Parar</string>
+    <string name="ra_play">Reproducir</string>
+    <string name="ra_record">Grabar</string>
+    <string name="ra_title_activity_audio_play">Reproducir Audio</string>
+    <string name="ra_delete_cloned_form">Esto solo eleiminará el formulario de tu dispositivo. Como ya fue enviado, los datos permanecerán en el servidor.</string>
+    <string name="ra_delete_draft_form">El borrador del formulario será borrado.</string>
+    <string name="ra_form_deleted">Formulario borrado</string>
+    <string name="ra_language">Idioma</string>
+    <string name="ra_language_settings_info">Selecciona el idioma</string>
+    <string name="ra_default_info">Mantener Whistler en el mismo idioma que mi dispositivo</string>
+    <string name="ra_default">Por defecto</string>
+    <string name="title_activity_language_settings">Selección de idioma</string>
+    <string name="ra_share">Compartir</string>
+    <string name="ra_unauthorized">No autorizado</string>
+    <string name="ra_select_from_gallery">Seleccionar desde la galería de Whistler</string>
+    <string name="ra_select_photo_from_device">Importar foto desde el dispositivo</string>
+    <string name="ra_import_media_error"> Hubo un error al importar multimedia</string>
+    <string name="ra_import_video_from_device">Importar video desde el dispositivo</string>
+    <string name="ra_go_back_and_edit">Regresar\ Editar</string>
+    <string name="ra_reached_the_end">Has llegado al final\ndel formulario</string>
+    <string name="ra_multimedia_attached_to_form">Estos archivos multimedia ya están como adjuntos al formulario. Puede borrarlos desde el formulario o agreagr más archivos escribiendo +</string>
+    <string name="ra_remove_gallery_att_dialog_title">¿Borrar archivos?</string>
+    <string name="ra_remove_gallery_att_dialog_message">Una copia de los archivos permanecerá en la galería de Whistler.</string>
+    <string name="ra_form_send_submission_pending">El formulario no se ha enviado porque no estás conectado. Una vez estés en línea, el formulario se enviará.</string>
+    <string name="ra_cancel_pending_form_msg">Forumulario pendiente de envío será descartado.</string>
+    <string name="discard">Descartar</string>
+    <string name="ra_submit">Enviar</string>
+    <string name="ra_delete_form">El formulario será eliminado.</string>
+    <string name="ra_form_saved">Formulario guardado satisfactoriamente</string>
+    <string name="ra_media_added_to_gallery">Multimedia añadido a la galería</string>
+    <string name="ra_export">Exportar</string>
+    <string name="ra_media_exported">Multimedia exportado</string>
+    <string name="ra_media_export_error"> Hubo un error al exportar multimedia</string>
+    <string name="ra_media_export_rationale">Para exportar multimedia, la aplicación necesita permiso de guardar externamente</string>
+    <string name="ra_media_deleted_msg">%d Multimedia borrado.</string>
+    <string name="ra_media_deleted_error">Error al eliminar archivo. Algunos archivos no fueron borrados.</string>
+    <string name="ra_media_export_msg">%d Multimedia exportado</string>
+    <string name="ra_delete_media">¿Borrar multimedia?</string>
+    <string name="ra_media_will_be_deleted">El archivo seleccionado será borrado de manera permanente de tu galería.</string>
+    <string name="ra_save_to_device_storage">¿Guardar en el dispositivo?</string>
+    <string name="ra_saving_outside_whistler_message">Guardara este archivo en tu dispositivo, lo hará accesible desde fuera de Whistler, por otras aplicaciones que puedan acceder a tu galería.</string>
+    <string name="ra_import_media_progress">Encriptando…</string>
+    <string name="ra_export_media_progress">Desencriptando…</string>
+    <string name="ra_import_from_device">Importar desde el dispositivo</string>
+    <string name="ra_error_opening_phone_gallery">Error abriendo la galería del teléfono para obtener archivo</string>
+    <string name="ra_camera_rationale">Para obtener multimedia, la aplicación necesita acceso a tu cámara y micrófono. </string>
+    <string name="ra_retry">Reintentar</string>
+    <string name="ra_capture_error">Hubo un error al intentar capturar multimedia </string>
+    <string name="ra_media_form_attach_error">Hubo un error al adjuntar multimedia.</string>
+    <string name="ra_camera_capture">Capturar con la cámara</string>
+    <string name="ra_error_get_form_def">Error obteniendo formulario</string>
+    <string name="ra_error_get_form_def_tmp">Error obteniendo formulario: %s</string>
+    <string name="ra_not_found">No encontrado</string>
+    <string name="ra_whistler_gallery">Galería de Whistler</string>
+    <string name="ra_camera_preview">Para mostrar una vista previa de tu cámara, la aplicación necesita acceso a tu cámara.</string>
+    <string name="ra_enable_camera_preview">Permitir vista previa de la cámara</string>
+    <string name="ra_capture_verifiable_photo_video">Capturar foto y video verificable</string>
+    <string name="ra_anonymous_mode">Sin metadatos</string>
+    <string name="ra_anonymous_mode_desc">Whistler no recopila metadatos que puedan servir para identificar, pero incrusta datos anóminos para ayudar a verificar tu evidencia (geolocalización, altitud, etc.) Si esto te pone en peligro, activa la opción “Sin metadatos”. </string>
+    <string name="ra_out_of_disk">No hay suficiente espacio en el disco</string>
+    <string name="ra_zip_corrupted">Zip file corrupted</string>
+    <string name="ra_train_dwownload_error">Error descargando el módulo de entrenamiento.</string>
+    <string name="ra_train_module_downloading">Descarga del módulo en progreso.</string>
+    <string name="ra_module_dl_size">El peso del módulo es de %s.</string>
+    <string name="ra_train_module_will_dl">El módulo seleccionado será borrado.</string>
+    <string name="ra_getting_train_modules">Obteniendo módulos de entrenamiento del servidor…</string>
+    <string name="ra_train_module_removed">Módulo de entrenamiento borrado</string>
+    <string name="ra_train_modeule_remove_error">La eliminación del módulo falló</string>
+    <string name="ra_train_modle_dl_started">La descarga del módulo empezó en segundo plano</string>
+    <string name="ra_train_modele_dl_start_error">Error al iniciar la descarga del módulo.</string>
+    <string name="ra_search_train_module">Buscar por nombre o número de identificación</string>
+    <string name="ra_train_module_dl_paused_title">Descarga del módulo detenida</string>
+    <string name="ra_train_module_dl_paused_content">Esperando conexión a la red para retomar.</string>
+    <string name="ra_general">General</string>
+    <string name="ra_general_settings_info">Administrar el idioma y método de envío de archivos multimedia</string>
+    <string name="ra_security_settings">Seguridad</string>
+    <string name="ra_security_settings_info">Administrar el modo secreto y el botón de pánico</string>
+    <string name="ra_contact_settings">Contacto</string>
+    <string name="ra_contact_settings_info">Decide cómo los destinatarios pueden comunicarse contigo.</string>
+    <string name="ra_report_settings_info">Administra la información de contacto, destinatarios y listas.</string>
+    <string name="ra_prevent_blocking">Evitar bloqueo</string>
+    <string name="ra_prevent_blocking_desc">Solo permite esta función si sabes que hay intentos de bloquear Whistler en tu país</string>
+    <string name="title_activity_report">Reporte</string>
+    <string name="title_activity_recipients">Destinatarios</string>
+    <string name="create_new_report">Crear un reporte nuevo</string>
+    <string name="drafts">Borradores</string>
+    <string name="sent">Enviar</string>
+    <string name="drafts_info">Editar y enviar reportes que ya has iniciado</string>
+    <string name="sent_info">Revisa y reenvía reportes que ya enviaste</string>
+    <string name="required">Requerido</string>
+    <string name="recommended">Recomendado</string>
+    <string name="date">Fecha</string>
+    <string name="description">Descripción</string>
+    <string name="include_contact_information">Incluye información de contacto</string>
+    <string name="contact_info">Para destinatarios que quieran hacerte preguntas antes de usar o publicar tu evidencia. </string>
+    <string name="description_info">Incluye aquí cualquier información que pueda ayudar a los destinatarios a entender mejor tu reporte (quién está en el video, qué fue lo que pasó, cuál es el contexto, etc.).</string>
+    <string name="decide_recipient_info">Decide quién recibirá tus reportes.</string>
+    <string name="ra_evidences">Evidencias</string>
+    <string name="ra_multimedia_attached_to_evidence">Estos archivos multimedia se adjuntarán a tu reporte al escribir v. Puedes eliminarlos o adjuntar más archivos al escribir +</string>
+    <string name="ra_no_multimedia_attached_to_this_report">No hay archivos multimedia adjuntos a este reporte escribe + para añadir.</string>
+    <string name="ra_remove_evidence_att_dialog_title">¿Quieres borrar la evidencia? </string>
+    <string name="ra_remove_evidence_att_dialog_message">Una copia del archivo permanecerá en la galería de Whistler.</string>
+    <string name="ra_media_attached_to_report">Archivo adjunto al reporte</string>
+    <string name="ra_report_send_validation_msg">Campos obligatorios faltantes</string>
+    <string name="sent_reports">Enviar reportes</string>
+    <string name="delete_sent_report">¿Borrar reporte enviado?</string>
+    <string name="sent_reports_empty">No has enviado reportes que están guardados.</string>
+    <string name="edit_report">Editar reporte</string>
+    <string name="ra_multimedia_attached_to_evidence_preview">Estos archivos multimedia se encuentran adjuntos al reporte. Puedes eliminarlos o añadir más archivos ingresando al modo editar reporte.</string>
+    <string name="ra_no_multimedia_attached_to_this_report_preview">No hay archivos multimedia adjuntos al reporte. Puede añadir archivos multimedia ingresando al modo editar reporte.</string>
+    <string name="recipients_preview_mode">Puedes cambiar quien recibirá tus reportes ingresando al modo editar reporte.</string>
+
+    <plurals name="recipients_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s destinatario</item>
+        <item quantity="other">%1$s destinatarios</item>
+    </plurals>
+
+    <plurals name="photo_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s foto</item>
+        <item quantity="other">%1$s fotos</item>
+    </plurals>
+
+    <plurals name="video_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s video</item>
+        <item quantity="other">%1$s videos</item>
+    </plurals>
+
+    <plurals name="audio_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s audio</item>
+        <item quantity="other">%1$s audios</item>
+    </plurals>
+    <string name="title_activity_archive">Archivo</string>
+    <string name="ra_contact_info">Destinatarios de tus reportes pueden querer hacer preguntas antes de usar o publicar tu evidencia. Ingresa aquí tú método preferido para ser contactado. Antes de enviar un reporte, podrás decidir si incluir esta información. Para protegerte, considera incluir una forma segura de comunicarse o un incluye un email que solo uses para esto.</string>
+    <string name="ra_preferred_method">Método preferido</string>
+    <string name="ra_recommended">Recomendado</string>
+    <string name="ra_other">Otro</string>
+    <string name="ra_select_preferred_method_of_contact">Selecciona el método que prefieres para ser contactado</string>
+
+
+    <!-- Contact methods -->
+    <string name="ra_contact_signal">Signal</string>
+    <string name="ra_contact_wickr">Wickr</string>
+    <string name="ra_contact_wire">Wire</string>
+    <string name="ra_contact_email">Email</string>
+    <string name="ra_contact_whatsapp">Whatsapp</string>
+    <string name="ra_contact_telegram">Telegram</string>
+    <string name="ra_contact_facebook">Facebook</string>
+    <string name="ra_contact_twitter">Twitter</string>
+    <string name="ra_contact_other">Otro</string>
+    <string name="ra_contact_signal_hint">Número Signal </string>
+    <string name="ra_contact_wickr_hint">Nombre de usuario de Wickr </string>
+    <string name="ra_contact_wire_hint">Nombre de usuario de Wire </string>
+    <string name="ra_contact_email_hint">Correo electrónico</string>
+    <string name="ra_contact_whatsapp_hint">Número de Whatsapp </string>
+    <string name="ra_contact_telegram_hint">Nombre de usuario de Telegram o número de teléfono</string>
+    <string name="ra_contact_facebook_hint">URL de Facebook</string>
+    <string name="ra_contact_twitter_hint">Nombre de Twitter </string>
+    <string name="ra_contact_other_hint">Información de contacto</string>
+    <string name="ra_train_module_downloaded">Modulo de entrenamiento descargado</string>
+    <string name="report_sent_when_online">Si no estás conectado a Internet, tus reportes serán enviados tan pronto estés conectado.</string>
+    <string name="ra_server_remove_confirmation_text">Si eliminas este servidor, todos los borradores y formularios enviados serán borrados de tu dispositivo, ¿quieres borrarlos de todos modos?</string>
+    <string name="edit">Editar</string>
+    <string name="make_report_public_disabled_desc">Tu reporte no puede ser público cuando incluyes tu información de contacto.</string>
+    <string name="contact_info_disabled"><![CDATA[Para destinatarios que quieran pedirte información adicional antes de usar o publicar tu evidencia. Debes primero especificar tu información de contacto <a href="whistler_scheme://open.contact_settings.activity">aquí</a>.]]></string>
+    <string name="include_geolocation_automatically"><![CDATA[Whistler automáticamente incluye metadatos de geolocalización a tus reportes para hacerlos verificables. Si eso te pone en peligro, activa «Sin metadatos» en <a href="whistler_scheme://open.general.settings.activity">ajustes</a>, para omitir todos los metadatos.]]></string>
+    <string name="save_data"><![CDATA[Para guardar datos del celular, la evidencia multimedia puede ser enviada por separado usando WiFi (ver <a href="whistler_scheme://open.general.settings.activity">ajustes</a>).]]></string>
+    <string name="collect_explanatory_text"><![CDATA[Recopilar te permite llenar formularios y enviar datos de forma segura. Para recibir y enviar formularios, debes conectar con un servidor compatible. Para administrar servidores, ve a <a href="whistler_scheme://open.collect.manage.servers.activity">ajustes</a>.]]></string>
+
+    <!-- new -->
+    <string name="erase_recipients_and_lists">Destinatarios y listas</string>
+    <string name="tell_us">Cuéntanos lo que piensas</string>
+    <string name="feedback">Opiniones</string>
+    <string name="feedback_explanatory_text">Usa este espacio para contarnos qué piensas de Whistler y compartir cualquier problema que hayas experimentado, así como ideas sobre cómo mejorar las funciones existentes, sugerencias de nuevas funciones, ¡o cualquier otro comentario que nos ayude a mejorar Whistler! </string>
+    <string name="send_feedback">Enviar opiniones</string>
+    <string name="feedback_name_hint">Name (opcional)</string>
+    <string name="feedback_email_hint">Correo electrónico (opcional)</string>
+    <string name="feedback_hint">Escribe tus opinones aquí</string>
+    <string name="feedback_sent">Tus opiniones se han enviado satisfactoriamente</string>
+    <string name="feedback_sending_error">Un error ocurrió durante el envío de tus opinones. </string>
+    <string name="ra_sending_feedback">Por favor espera mientras Whistler envía tus opiniones.</string>
+    <string name="your_draft_will_be_lost">Tu borrador se perderá.</string>
+    <string name="save_and_exit">GUARDAR Y SALIR</string>
+    <string name="exit_anyway">SALIR DE TODAS MANERAS</string>
+    <string name="no_metadata_description"><![CDATA[“Sin metadatos” está activado. Esto significa que tu reporte no será verificable para tus contactos. <a href="whistler_scheme://open.general.settings.activity">Desactiva esta opción aquí</a> para hacerlo verificable.]]></string>
+    <string name="date_not_included">Fecha no incliuida</string>
+    <string name="share_in_report">Compartir en un reporte</string>
+    <string name="share_in_collect">Compartir en un formulario de recopilación</string>
+    <string name="ra_single_media_deleted_msg">Multimedia borrado</string>
+    <string name="select">Select</string>
+    <string name="ra_record_video">Record video</string>
+    <string name="ra_video_record_rationale">In order to record video, application needs permission to access external storage</string>
+    <string name="ra_unspecified">Unspecified</string>
+    <string name="ra_no_connection_available">No connection available</string>
+    <string name="not_web_url_field_error">Field is not valid web URL</string>
+</resources>

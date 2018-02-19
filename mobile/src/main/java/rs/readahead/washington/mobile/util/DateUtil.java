@@ -1,36 +1,26 @@
 package rs.readahead.washington.mobile.util;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
+import android.support.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
-import rs.readahead.washington.mobile.R;
 
 public class DateUtil {
-    public static SimpleDateFormat dateFormatter = new SimpleDateFormat("d MMM yyyy");
-    public static Calendar mCurrentCalendar;
+    private static SimpleDateFormat dateFormatter = new SimpleDateFormat("d MMM yyyy", Locale.ROOT);
+    private static Calendar mCurrentCalendar;
 
-    public static String getStringFromDate(Date date){
+    public static String getStringFromDate(@NonNull Date date) {
         return dateFormatter.format(date);
-
     }
 
     public static Date getCurrentDate(){
         return Calendar.getInstance().getTime();
     }
 
-    public static Date getYesterdaysDate(){
+    public static Date getYesterdaysDate() {
         mCurrentCalendar = Calendar.getInstance();
         mCurrentCalendar.add(Calendar.DATE, -1);
         return mCurrentCalendar.getTime();

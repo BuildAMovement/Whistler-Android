@@ -2,31 +2,35 @@ package rs.readahead.washington.mobile.views.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.sharedpref.SharedPrefs;
+import rs.readahead.washington.mobile.data.sharedpref.SharedPrefs;
 
 
-public class EraseSensitiveDataFragment extends Fragment {
-
-    @BindView(R.id.erase_database) CheckedTextView mEraseDatabase;
-    @BindView(R.id.erase_contacts) CheckedTextView mEraseContacts;
-    @BindView(R.id.erase_media_recipients) CheckedTextView mEraseMediaRecipients;
-    @BindView(R.id.erase_materials) CheckedTextView mEraseTrainingMaterials;
-    @BindView(R.id.erase_evidence_videos) CheckedTextView mEraseVideos;
-    @BindView(R.id.erase_evidence_audio) CheckedTextView mEraseAudios;
-    @BindView(R.id.erase_evidence_image) CheckedTextView mEraseImages;
+public class EraseSensitiveDataFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+    @BindView(R.id.erase_database)
+    SwitchCompat mEraseDatabase;
+    @BindView(R.id.erase_gallery)
+    SwitchCompat mEraseGallery;
+    @BindView(R.id.erase_contacts)
+    SwitchCompat mEraseContacts;
+    @BindView(R.id.erase_media_recipients)
+    SwitchCompat mEraseMediaRecipients;
+    @BindView(R.id.erase_materials)
+    SwitchCompat mEraseTrainingMaterials;
 
     private Unbinder unbinder;
+
 
     public EraseSensitiveDataFragment() {
     }
@@ -37,62 +41,57 @@ public class EraseSensitiveDataFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_erase_sensitiv_data, container, false);
         unbinder = ButterKnife.bind(this, view);
+
         setViews();
+
+        mEraseDatabase.setOnCheckedChangeListener(this);
+        mEraseGallery.setOnCheckedChangeListener(this);
+        mEraseContacts.setOnCheckedChangeListener(this);
+        mEraseMediaRecipients.setOnCheckedChangeListener(this);
+        mEraseTrainingMaterials.setOnCheckedChangeListener(this);
+
         return view;
     }
 
     private void setViews() {
-        mEraseDatabase.setChecked(SharedPrefs.getInstance().isEraseDatabaseActive());
-        mEraseContacts.setChecked(SharedPrefs.getInstance().isEraseContactsActive());
-        mEraseMediaRecipients.setChecked(SharedPrefs.getInstance().isEraseMediaActive());
-        mEraseTrainingMaterials.setChecked(SharedPrefs.getInstance().isEraseMaterialsActive());
-        mEraseVideos.setChecked(SharedPrefs.getInstance().isEraseVideosActive());
-        mEraseAudios.setChecked(SharedPrefs.getInstance().isEraseAudiosActive());
-        mEraseImages.setChecked(SharedPrefs.getInstance().isErasePhotosActive());
+        SharedPrefs sp = SharedPrefs.getInstance();
+
+        mEraseDatabase.setChecked(sp.isEraseDatabaseActive());
+        mEraseGallery.setChecked(sp.isEraseGalleryActive());
+        mEraseContacts.setChecked(sp.isEraseContactsActive());
+        mEraseMediaRecipients.setChecked(sp.isEraseMediaRecipientsActive());
+        mEraseTrainingMaterials.setChecked(sp.isEraseMaterialsActive());
     }
 
-    @OnClick({R.id.erase_database, R.id.erase_contacts, R.id.erase_media_recipients, R.id.erase_materials,
-            R.id.erase_evidence_videos, R.id.erase_evidence_audio, R.id.erase_evidence_image})
-    public void manage(View view) {
+    @Override
+    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
+        SharedPrefs sp = SharedPrefs.getInstance();
 
-        CheckedTextView checkedTextView = (CheckedTextView) view;
-        boolean isChecked = checkedTextView.isChecked();
-
-        switch (view.getId()) {
+        switch (v.getId()) {
             case R.id.erase_database:
-                mEraseDatabase.setChecked(!isChecked);
-                SharedPrefs.getInstance().setEraseDatabaseActive(!isChecked);
+                mEraseDatabase.setChecked(isChecked);
+                sp.setEraseDatabaseActive(isChecked);
+                break;
+            case R.id.erase_gallery:
+                mEraseGallery.setChecked(isChecked);
+                sp.setEraseGalleryActive(isChecked);
                 break;
             case R.id.erase_contacts:
-                mEraseContacts.setChecked(!isChecked);
-                SharedPrefs.getInstance().setEraseContactsActive(!isChecked);
+                mEraseContacts.setChecked(isChecked);
+                sp.setEraseContactsActive(isChecked);
                 break;
             case R.id.erase_media_recipients:
-                mEraseMediaRecipients.setChecked(!isChecked);
-                SharedPrefs.getInstance().setEraseMediaActive(!isChecked);
+                mEraseMediaRecipients.setChecked(isChecked);
+                sp.setEraseMediaRecipientsActive(isChecked);
                 break;
             case R.id.erase_materials:
-                mEraseTrainingMaterials.setChecked(!isChecked);
-                SharedPrefs.getInstance().setEraseMaterialsActive(!isChecked);
-                break;
-            case R.id.erase_evidence_videos:
-                mEraseVideos.setChecked(!isChecked);
-                SharedPrefs.getInstance().setEraseVideosActive(!isChecked);
-                break;
-            case R.id.erase_evidence_audio:
-                mEraseAudios.setChecked(!isChecked);
-                SharedPrefs.getInstance().setEraseAudiosActive(!isChecked);
-                break;
-            case R.id.erase_evidence_image:
-                mEraseImages.setChecked(!isChecked);
-                SharedPrefs.getInstance().setErasePhotosActive(!isChecked);
+                mEraseTrainingMaterials.setChecked(isChecked);
+                sp.setEraseMaterialsActive(isChecked);
                 break;
         }
-
     }
 
     @Override
@@ -100,5 +99,4 @@ public class EraseSensitiveDataFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
-
 }

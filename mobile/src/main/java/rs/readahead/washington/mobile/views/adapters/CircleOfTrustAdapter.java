@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.models.TrustedPerson;
+import rs.readahead.washington.mobile.domain.entity.TrustedPerson;
 import rs.readahead.washington.mobile.util.DialogsUtil;
 import rs.readahead.washington.mobile.util.StringUtils;
 import rs.readahead.washington.mobile.views.activity.OnTrustedPersonChangeListener;

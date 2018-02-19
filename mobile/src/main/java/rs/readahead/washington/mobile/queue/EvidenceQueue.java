@@ -10,36 +10,28 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.domain.entity.Evidence;
-import rs.readahead.washington.mobile.bus.event.EvidenceQueueAddedEvent;
-import rs.readahead.washington.mobile.bus.event.EvidenceQueueRemovedEvent;
-import rs.readahead.washington.mobile.bus.RxBus;
-import timber.log.Timber;
+import rs.readahead.washington.mobile.domain.entity.RawMediaFile;
 
 
-public class EvidenceQueue implements ObjectQueue<Evidence> {
-    private final RxBus bus;
-    private final ObjectQueue<Evidence> delegate;
+public class EvidenceQueue implements ObjectQueue<RawMediaFile> {
+    private final ObjectQueue<RawMediaFile> delegate;
 
 
-    private EvidenceQueue(ObjectQueue<Evidence> delegate, RxBus bus) {
+    private EvidenceQueue(ObjectQueue<RawMediaFile> delegate) {
         this.delegate = delegate;
-        this.bus = bus;
     }
 
-    public static EvidenceQueue create(final Context context, final Gson gson, final RxBus bus) {
+    public static EvidenceQueue create(final Context context, final Gson gson) {
         // not much sense to this, but it keeps StrictMode quiet
         return Single.fromCallable(new Callable<EvidenceQueue>() {
                     @Override
                     public EvidenceQueue call() throws Exception {
                         File file = new File(context.getFilesDir(), context.getString(R.string.evidence_queue_file));
-                        FileObjectQueue.Converter<Evidence> converter = new GsonConverter<>(gson, Evidence.class);
-                        FileObjectQueue<Evidence> delegate;
+                        FileObjectQueue.Converter<RawMediaFile> converter = new GsonConverter<>(gson, RawMediaFile.class);
+                        FileObjectQueue<RawMediaFile> delegate;
 
                         try {
                             delegate = new FileObjectQueue<>(file, converter);
@@ -47,7 +39,7 @@ public class EvidenceQueue implements ObjectQueue<Evidence> {
                             throw new RuntimeException("Unable to create file queue.", e);
                         }
 
-                        return new EvidenceQueue(delegate, bus);
+                        return new EvidenceQueue(delegate);
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -62,15 +54,14 @@ public class EvidenceQueue implements ObjectQueue<Evidence> {
     }
 
     @Override
-    public void add(Evidence entry) {
+    public void add(RawMediaFile entry) {
         synchronized (EvidenceQueue.class) {
             delegate.add(entry);
         }
-        bus.post(buildAddedEvent());
     }
 
     @Override
-    public Evidence peek() {
+    public RawMediaFile peek() {
         synchronized (EvidenceQueue.class) {
             return delegate.peek();
         }
@@ -81,21 +72,12 @@ public class EvidenceQueue implements ObjectQueue<Evidence> {
         synchronized (EvidenceQueue.class) {
             delegate.remove();
         }
-        bus.post(buildRemovedEvent());
     }
 
     @Override
-    public void setListener(Listener<Evidence> listener) {
+    public void setListener(Listener<RawMediaFile> listener) {
         synchronized (EvidenceQueue.class) {
             delegate.setListener(listener);
         }
-    }
-
-    private EvidenceQueueAddedEvent buildAddedEvent() {
-        return new EvidenceQueueAddedEvent(size());
-    }
-
-    private EvidenceQueueRemovedEvent buildRemovedEvent() {
-        return new EvidenceQueueRemovedEvent(size());
     }
 }

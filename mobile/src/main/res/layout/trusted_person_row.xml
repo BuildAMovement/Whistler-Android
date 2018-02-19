@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/list_layout"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:textDirection="locale"
     android:background="@drawable/button_pressed"
     android:orientation="vertical">
 
@@ -38,12 +38,13 @@
             style="@style/ImageViewSelector"
             android:layout_marginBottom="7dp"
             android:layout_marginTop="7dp"
-            app:srcCompat="@drawable/edit_icon_selector" />
+            android:src="@drawable/edit_icon_selector"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/delete"
             style="@style/ImageViewSelector"
-            app:srcCompat="@drawable/delete_icon_selector" />
+            android:src="@drawable/delete_icon_selector" />
 
     </LinearLayout>
 
@@ -83,8 +84,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingEnd="0dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="0dp"
             android:paddingStart="15dp"
             android:text="@string/phone_number"
             android:textColor="@color/wa_black"
@@ -97,8 +96,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
             android:paddingEnd="0dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="0dp"
             android:paddingStart="15dp"
             android:textColor="@color/wa_black"
             android:textSize="14sp"

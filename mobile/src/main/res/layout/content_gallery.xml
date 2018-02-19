@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textDirection="locale"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="rs.readahead.washington.mobile.views.activity.GalleryActivity"
+    tools:showIn="@layout/activity_gallery">
+
+    <Button
+        android:id="@+id/attachButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_pressed_yellow"
+        android:textAllCaps="true"
+        android:text="@string/ra_attach_media"
+        android:layout_alignParentBottom="true"
+        android:enabled="false"/>
+
+    <rs.readahead.washington.mobile.views.custom.GalleryRecyclerView
+        android:id="@+id/galleryRecyclerView"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/attachButton"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical"
+        android:paddingBottom="@dimen/fab_clear_padding"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+</RelativeLayout>

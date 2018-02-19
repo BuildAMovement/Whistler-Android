@@ -3,58 +3,98 @@ package rs.readahead.washington.mobile.views.activity;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
+
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.jakewharton.rxrelay2.PublishRelay;
+import com.jakewharton.rxrelay2.Relay;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.subjects.BehaviorSubject;
+import rs.readahead.washington.mobile.MyApplication;
 import rs.readahead.washington.mobile.domain.entity.EvidenceLocation;
-import rs.readahead.washington.mobile.models.SensorData;
+import rs.readahead.washington.mobile.domain.entity.Metadata;
+import rs.readahead.washington.mobile.mvp.contract.IMetadataAttachPresenterContract;
+import rs.readahead.washington.mobile.presentation.entity.SensorData;
+import rs.readahead.washington.mobile.util.DialogsUtil;
 import rs.readahead.washington.mobile.util.LocationUtil;
-import timber.log.Timber;
+import rs.readahead.washington.mobile.util.TelephonyUtils;
 
 
-public class MetadataActivity extends AppCompatActivity implements SensorEventListener {
+public abstract class MetadataActivity extends CacheWordSubscriberBaseActivity implements
+        SensorEventListener {
+    private static final long LOCATION_REQUEST_INTERVAL = 5000; // aggressive
+
     private SensorManager mSensorManager;
     private Sensor mLight;
     private Sensor mAmbientTemperature;
 
-    private LocationManager locationManager;
-    private MetadataLocationListener locationListener;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationCallback locationCallback;
     private WifiManager wifiManager;
     private BroadcastReceiver wifiScanResultReceiver;
+
+    private boolean locationSettingsEnabled = false;
+    private static Location currentBestLocation;
 
     private boolean locationListenerRegistered = false;
     private boolean wifiReceiverRegistered = false;
 
+    private boolean sensorListenerRegistered = false;
     private static SensorData lightSensorData = new SensorData();
     private static SensorData ambientTemperatureSensorData = new SensorData();
 
-    final BehaviorSubject<List<String>> wifiSubject = BehaviorSubject.create();
-    final static BehaviorSubject<EvidenceLocation> locationSubject = BehaviorSubject.create(); // todo: keep it here for now..
-    static Location currentBestLocation;
+    private final BehaviorSubject<List<String>> wifiSubject = BehaviorSubject.create();
+    private final static BehaviorSubject<EvidenceLocation> locationSubject = BehaviorSubject.create();
 
-    // todo: after api level 25 change - implement registerGnssStatusCallback
+    private AlertDialog metadataAlertDialog;
+    private Relay<MetadataHolder> metadataCancelRelay;
+    private CompositeDisposable disposables;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,23 +102,34 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
 
         // Sensors
         mSensorManager = (SensorManager) getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
+        //noinspection ConstantConditions
         mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         mAmbientTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
         // Location
-        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new MetadataLocationListener();
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locationCallback = new MetadataLocationCallback();
 
         // Wifi
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifiScanResultReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Timber.d("***** wifiScanResultReceiver.onReceive %s", wifiManager.getScanResults().size());
-
                 wifiSubject.onNext(getWifiStrings(wifiManager.getScanResults()));
             }
         };
+
+        // UI stuff
+        metadataCancelRelay = PublishRelay.create();
+        disposables = new CompositeDisposable();
+    }
+
+    protected boolean isLocationMetadataEnabled() {
+        return locationSettingsEnabled && !isFineLocationPermissionDenied();
+    }
+
+    protected void setLocationSettingsEnabled(boolean locationSettingsEnabled) {
+        this.locationSettingsEnabled = locationSettingsEnabled;
     }
 
     private List<String> getWifiStrings(List<ScanResult> results) {
@@ -92,19 +143,22 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
     }
 
     protected void startSensorListening() {
-        mSensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mAmbientTemperature, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    protected boolean startLocationMetadataListening() {
-        startLocationListening();
-
-        if (locationListenerRegistered) {
-            startWifiListening(); // android does not return wifi data if location is off
-            return true;
+        if (MyApplication.isAnonymousMode()) {
+            return;
         }
 
-        return false;
+        mSensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mAmbientTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorListenerRegistered = true;
+    }
+
+    protected void startLocationMetadataListening() {
+        if (MyApplication.isAnonymousMode()) {
+            return;
+        }
+
+        startLocationListening();
+        startWifiListening();
     }
 
     @SuppressWarnings("MissingPermission") // we have check
@@ -113,23 +167,33 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
             return;
         }
 
-        if (locationManager == null || locationListenerRegistered) {
+        // google services way..
+        fusedLocationProviderClient.requestLocationUpdates(createLocationRequest(), locationCallback, null);
+        locationListenerRegistered = true;
+
+        // get last known location to start with..
+        getLastLocation();
+    }
+
+    @SuppressWarnings("MissingPermission") // we have check
+    private void getLastLocation() {
+        if (MyApplication.isAnonymousMode()) {
             return;
         }
 
-        Timber.d("***** startLocationListening executed");
-
-        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Timber.d("***** startLocationListening NETWORK_PROVIDER");
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-            locationListenerRegistered = true;
+        if (isFineLocationPermissionDenied()) {
+            return;
         }
 
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Timber.d("***** startLocationListening GPS_PROVIDER");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            locationListenerRegistered = true;
-        }
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            acceptBetterLocation(location);
+                        }
+                    }
+                });
     }
 
     private synchronized void startWifiListening() {
@@ -141,10 +205,7 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
             return;
         }
 
-        Timber.d("***** startWifiListening executed");
-
         // put what you know in subject..
-        Timber.d("***** startWifiListening.getScanResults %s", wifiManager.getScanResults().size());
         wifiSubject.onNext(getWifiStrings(wifiManager.getScanResults()));
 
         IntentFilter filter = new IntentFilter();
@@ -155,13 +216,22 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
     }
 
     protected synchronized void startWifiScan() {
+        if (MyApplication.isAnonymousMode()) {
+            return;
+        }
+
         if (wifiManager != null && wifiReceiverRegistered) {
             wifiManager.startScan();
         }
     }
 
-    protected void stopSensorListening() {
+    private void stopSensorListening() {
+        if (! sensorListenerRegistered) {
+            return;
+        }
+
         mSensorManager.unregisterListener(this);
+        sensorListenerRegistered = false;
     }
 
     protected void stopLocationMetadataListening() {
@@ -170,14 +240,17 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
     }
 
     private synchronized void stopLocationListening() {
-        if (locationManager == null || !locationListenerRegistered) {
+        if (! locationListenerRegistered) {
             return;
         }
 
-        Timber.d("***** stopLocationListening()");
-
-        locationManager.removeUpdates(locationListener);
-        locationListenerRegistered = false;
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        locationListenerRegistered = false;
+                    }
+                });
     }
 
     private synchronized void stopWifiListening() {
@@ -185,19 +258,14 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
             return;
         }
 
-        Timber.d("***** stopWifiListening()");
-
         unregisterReceiver(wifiScanResultReceiver);
         wifiReceiverRegistered = false;
-
-        //wifiSubject.onComplete();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Register Sensor listener
         startSensorListening();
     }
 
@@ -205,7 +273,6 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
     protected void onPause() {
         super.onPause();
 
-        // Unregister Sensor listener
         stopSensorListening();
     }
 
@@ -222,9 +289,13 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        if (disposables != null) {
+            disposables.dispose();
+        }
 
         wifiSubject.onComplete();
+
+        super.onDestroy();
     }
 
     @Override
@@ -235,7 +306,59 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
         return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED);
     }
 
-    // todo: this should be getLast(), getBest()...
+    private LocationRequest createLocationRequest() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(LOCATION_REQUEST_INTERVAL);
+        locationRequest.setFastestInterval(LOCATION_REQUEST_INTERVAL);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return locationRequest;
+    }
+
+    interface LocationSettingsCheckDoneListener {
+        void onContinue();
+    }
+
+    protected void checkLocationSettings(final int requestCode, final LocationSettingsCheckDoneListener listener) {
+        if (isFineLocationPermissionDenied()) {
+            listener.onContinue();
+            return;
+        }
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(createLocationRequest());
+
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+
+        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                setLocationSettingsEnabled(true);
+                listener.onContinue();
+            }
+        });
+
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                int statusCode = ((ApiException) e).getStatusCode();
+                switch (statusCode) {
+                    case CommonStatusCodes.RESOLUTION_REQUIRED:
+                        try {
+                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                            resolvable.startResolutionForResult(MetadataActivity.this, requestCode);
+                        } catch (IntentSender.SendIntentException ignored) {
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        setLocationSettingsEnabled(false);
+                        listener.onContinue();
+                        break;
+                }
+            }
+        });
+    }
+
     public SensorData getLightSensorData() {
         return lightSensorData;
     }
@@ -257,17 +380,12 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
      * combined, each time one of them changes. If there is no data for one of them,
      * empty data is in MetadataHolder object.
      *
-     * @return stream if metadata holder objects
+     * @return stream of metadata holder objects
      */
     public Observable<MetadataHolder> observeMetadata() {
-        // todo: problem with this is that while waiting for other, first can not be improved (take(1)). can be better..
         return Observable.combineLatest(
-                observeLocationData()
-                        .take(1)
-                        .startWith(EvidenceLocation.createEmpty()),
-                observeWifiData()
-                        .take(1)
-                        .startWith(Collections.<String>emptyList()),
+                observeLocationData().startWith(EvidenceLocation.createEmpty()),
+                observeWifiData().startWith(Collections.<String>emptyList()),
                 new BiFunction<EvidenceLocation, List<String>, MetadataHolder>() {
                     @Override
                     public MetadataHolder apply(EvidenceLocation evidenceLocation, List<String> strings) throws Exception {
@@ -276,40 +394,116 @@ public class MetadataActivity extends AppCompatActivity implements SensorEventLi
                 })
                 .filter(new Predicate<MetadataHolder>() {
                     @Override
-                    public boolean test(MetadataHolder metadataHolder) throws Exception {
-                        return (!metadataHolder.getLocation().isEmpty() || !metadataHolder.getWifis().isEmpty());
+                    public boolean test(MetadataHolder mh) throws Exception {
+                        return (!mh.getWifis().isEmpty() || !mh.getLocation().isEmpty());
+                    }
+                })
+                .take((5 * 60 * 1000) / LOCATION_REQUEST_INTERVAL) // approx max 5 min of trying limit
+                .takeUntil(new Predicate<MetadataHolder>() {
+                    @Override
+                    public boolean test(MetadataHolder mh) throws Exception {
+                        return !mh.getWifis().isEmpty() && !mh.getLocation().isEmpty();
                     }
                 });
     }
 
-    private static class MetadataLocationListener implements LocationListener {
-        public void onLocationChanged(final Location location) {
-            Timber.d("###### onLocationChanged %s", location);
-
-            if (! LocationUtil.isBetterLocation(location, currentBestLocation)) {
-                Timber.d("***** onLocationChanged: not isBetterLocation %s: %s, %s", location.getProvider(), location, currentBestLocation);
-                return;
-            }
-
-            currentBestLocation = location;
-
-            EvidenceLocation el = new EvidenceLocation();
-            el.setTimestamp(location.getTime());
-            el.setAccuracy(location.getAccuracy());
-            el.setAltitude(location.getAltitude());
-            el.setLatitude(location.getLatitude());
-            el.setLongitude(location.getLongitude());
-
-            locationSubject.onNext(el);
+    private static class MetadataLocationCallback extends LocationCallback {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location location = locationResult.getLastLocation();
+            acceptBetterLocation(location);
         }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-        public void onProviderEnabled(String provider) {}
-
-        public void onProviderDisabled(String provider) {}
     }
 
+    private static void acceptBetterLocation(Location location) {
+        if (! LocationUtil.isBetterLocation(location, currentBestLocation)) {
+            return;
+        }
+
+        currentBestLocation = location;
+        locationSubject.onNext(EvidenceLocation.fromLocation(location));
+    }
+
+    // UI stuff
+    protected void attachMediaFileMetadata(final long mediaFileId, final IMetadataAttachPresenterContract.IPresenter metadataAttacher) {
+        // skip metadata if anonymous mode..
+        if (MyApplication.isAnonymousMode()) {
+            metadataAttacher.attachMetadata(mediaFileId, null);
+            return;
+        }
+
+        final Metadata metadata = new Metadata();
+
+        // set basic metadata
+        metadata.setTimestamp(System.currentTimeMillis() / 1000L);
+        metadata.setAmbientTemperature(getAmbientTemperatureSensorData().hasValue() ? getAmbientTemperatureSensorData().getValue() : null);
+        metadata.setLight(getLightSensorData().hasValue() ? getLightSensorData().getValue() : null);
+
+        // set cells
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            metadata.setCells(TelephonyUtils.getCellInfo(this));
+        }
+
+        // set location metadata
+        disposables.add(observeMetadata()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showMetadataProgressBarDialog();
+                    }
+                })
+                .takeUntil(metadataCancelRelay) // this observable emits when user press skip in dialog.
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        hideMetadataProgressBarDialog();
+                    }
+                })
+                .subscribeWith(new DisposableObserver<MetadataHolder>() {
+                    @Override
+                    public void onNext(MetadataActivity.MetadataHolder value) {
+                        if (! value.getWifis().isEmpty()) {
+                            metadata.setWifis(value.getWifis());
+                        }
+
+                        if (! value.getLocation().isEmpty()) {
+                            metadata.setEvidenceLocation(value.getLocation());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onComplete();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        metadataAttacher.attachMetadata(mediaFileId, metadata);
+                    }
+                })
+        );
+    }
+
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
+    protected void showMetadataProgressBarDialog() {
+        metadataAlertDialog = DialogsUtil.showMetadataProgressBarDialog(this, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                metadataCancelRelay.accept(MetadataHolder.createEmpty()); // :)
+            }
+        });
+    }
+
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
+    protected void hideMetadataProgressBarDialog() {
+        if (metadataAlertDialog != null) {
+            metadataAlertDialog.dismiss();
+        }
+    }
+
+    // Helper Classes
     static class MetadataHolder {
         private EvidenceLocation location;
         private List<String> wifis;

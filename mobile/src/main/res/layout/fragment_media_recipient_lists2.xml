@@ -3,11 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:textDirection="locale"
     tools:context="rs.readahead.washington.mobile.views.activity.MediaRecipients2Activity$RecipientListsFragment">
 
     <ListView
         android:id="@+id/recipient_lists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay"
+        android:paddingBottom="@dimen/fab_clear_padding"/>
 </RelativeLayout>

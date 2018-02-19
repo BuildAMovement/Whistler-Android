@@ -1,9 +1,7 @@
 package rs.readahead.washington.mobile.views.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,9 +15,10 @@ import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.util.CommonUtils;
 
 
-public class AboutHelpActivity extends AppCompatActivity {
+public class AboutHelpActivity extends CacheWordSubscriberBaseActivity {
     @BindView(R.id.version)
     TextView version;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +27,7 @@ public class AboutHelpActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();

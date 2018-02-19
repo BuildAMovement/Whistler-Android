@@ -3,7 +3,7 @@ package rs.readahead.washington.mobile.bus.event;
 import java.util.List;
 
 import rs.readahead.washington.mobile.bus.IEvent;
-import rs.readahead.washington.mobile.models.MediaRecipientList;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipientList;
 import rs.readahead.washington.mobile.views.interfaces.IRecipientListsHandler;
 
 

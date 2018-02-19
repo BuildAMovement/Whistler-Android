@@ -21,6 +21,9 @@ public class ReportEntity {
     @SerializedName("location")
     private String location;
 
+    @SerializedName("contactInformation")
+    private String contactInformation;
+
     @SerializedName("public")
     private boolean publicReport;
 
@@ -93,6 +96,14 @@ public class ReportEntity {
 
     public void setPublicReport(boolean publicReport) {
         this.publicReport = publicReport;
+    }
+
+    public String getContactInformation() {
+        return contactInformation;
+    }
+
+    public void setContactInformation(String contactInformation) {
+        this.contactInformation = contactInformation;
     }
 
     public static class EvidenceEntity {

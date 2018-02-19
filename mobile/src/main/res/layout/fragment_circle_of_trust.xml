@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:clipToPadding="false"
-        android:paddingBottom="120dp"/>
+        android:scrollbarStyle="outsideOverlay"
+        android:paddingBottom="@dimen/fab_clear_padding"/>
 
 
     <com.github.clans.fab.FloatingActionButton

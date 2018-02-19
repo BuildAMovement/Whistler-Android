@@ -14,6 +14,7 @@ import info.guardianproject.cacheword.ICacheWordSubscriber;
 import me.zhanghai.android.patternlock.PatternUtils;
 import me.zhanghai.android.patternlock.PatternView;
 import me.zhanghai.android.patternlock.SetPatternActivity;
+import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.util.DialogsUtil;
 
 
@@ -49,7 +50,7 @@ public class NewPatternActivity extends SetPatternActivity implements ICacheWord
 
     @Override
     protected void onConfirmed() {
-        dialog = DialogsUtil.showProgressDialog(context);
+        dialog = DialogsUtil.showProgressDialog(context, getString(R.string.setting_data));
         new Thread(new Runnable() {
             @Override
             public void run() {

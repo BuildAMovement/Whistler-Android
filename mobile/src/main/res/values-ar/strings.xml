@@ -1,0 +1,481 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--A-->
+    <string name="app_name">تطبيق ويسلر</string>
+    <string name="action_search">بحث</string>
+    <string name="action_add">إضافة </string>
+    <string name="action_update">تحديث</string>
+    <string name="about_n_help">عن &amp; المساعدة</string>
+    <string name="about_n_help_info">قائمة الأسئلة, قائمة الاتصالات, سياسة الخصوصة و الترخيص </string>
+    <string name="attention">انتباه</string>
+    <string name="add_new_recipient">اضافة مستلم جديد</string>
+    <string name="add_new_recipient_list">اضافة قائمة مستلمين جديدة</string>
+    <string name="ra_add_collect_server">اضافة سيرفر ( خادم)</string>
+
+    <!--B-->
+    <string name="ra_blank">فارغ</string>
+
+    <!--C-->
+    <string name="close">اغلاق</string>
+    <string name="cancel">الغاءl</string>
+    <string name="circle_of_trust">دائرة الثقة </string>
+    <string name="circle_of_trust_info"> إدارة اكثر التواصلات لديك ثقة والذين سيتم تنبيههم عند تفعيل وضع الذعر </string>
+    <string name="change_secret_moder_password"> تغيير كلمة مرور الوضع السري </string>
+    <string name="change_panic_mode_password"> تغيير كلمة مرور وضع الطوارئ </string>
+    <string name="create_new_secret_password"> انشاء كلمة مرور الوضع السري </string>
+    <string name="create_new_panic_password"> انشاء كلمة مرور جديدة لوضع الطوارئ </string>
+    <string name="change_secret_password"> تغيير كلمة مرور الوضع السري </string>
+    <string name="change_panic_password"> تغيير كبمة مرور وضع الطوارئ </string>
+    <string name="create_pass_info"> من اجل ان تضمن امن على اقصى مستوى الرجاء انشاء نموذج اقفال التطبيق الخاص بك ولن يتم فتح التطبيق الا عن طريق فتحها وهكذا لن يتمكن اي شخص باستثنائك من الوصول الى البيانات. لابد ان يحتوي النموذج على الاقل على 6 نقاط</string>
+    <string name="contact_us">التواصل معنا</string>
+    <string name="copyright"> حقوق النسخ @2017 بناء حركة </string>
+    <string name="ra_collect">جمع</string>
+
+    <!--D-->
+    <string name="download_in_progress">  جار التنزيل…</string>
+    <string name="download_completed"> انتهى التنزيل.</string>
+    <string name="download_starting"> ابتدأ التنزيل …</string>
+    <string name="draft_reports">  مسودة التقرير </string>
+    <string name="delete_draft"> حذف المسودة?</string>
+    <string name="delete">حذف</string>
+    <string name="ra_draft">النسخة</string>
+    <string name="ra_download">تنزيل</string>
+
+    <!--E-->
+    <string name="evidence">الدليل</string>
+    <string name="error">خطأ </string>
+    <string name="empty_field_error"> لا يمكن ترك هذا الحقل فارغا.</string>
+    <string name="edit">تعديل</string>
+    <string name="edit_recipient"> تعديل معلومات التواصل </string>
+    <string name="enable_secret_mode"> اختيار الوضع السري Secrt mode</string>
+    <string name="empty_list_archived"> ارشيفك فارغ في الوقت الحالي.</string>
+    <string name="empty_list_drafts"> قائمة النسخ الخاصة بك فارغة في الوقت الحالي.</string>
+    <string name="erase_contacts"> دائرة الثقة </string>
+    <string name="erase_database"> قاعدة  بيانات تطبيق ويسلر </string>
+    <string name="erase_materials">المواد التدريبية</string>
+    <string name="erase_instruction">عند تفعيل وضع الطوارئ، يمكن لتطبيق ويسلر ان يمسح كل البيانات الحساسة التي لا تريد لها ان تكون في متناول اي طرف ثالث. قم باختيار ما هي البيانات التي تود مسحها:</string>
+    <string name="erasing_data"> مسح البيانات الحساسة </string>
+    <string name="exit"> اعادة النقر على الزر من اجل الخروج </string>
+    <string name="email_field_error">الحقل لا يحتوي على بريد الكتروني صالح  </string>
+    <string name="ra_collect_server_load_error"> حدث خطأ عند محاولة الحصول عل قوائم السيرفر الرجاء المحاولة مرة اخرى.</string>
+    <string name="ra_collect_server_create_error"> حدث خطأ في انشاء اعدادات السيرفر الرجاء المحاولة مرة اخرى.</string>
+    <string name="ra_collect_server_update_error"> حدث خطأ عند تحديث اعدادات السيرفر الرجاء المحاولة لاحقا.</string>
+    <string name="ra_collect_server_remove_error"> حدث خطأ اثناء ازالة اعدادات السيرفر الرجاء المحاولة لاحقا </string>
+
+    <!--F-->
+    <string name="faq">التعليمات</string>
+
+    <!--G-->
+    <string name="ra_gallery">الاستديو</string>
+
+    <!--H-->
+
+    <!--I-->
+    <string name="internet_error"> الرجاء التأكد من اتصالك بالأنترنت.</string>
+    <string name="incorrect_password"> كلمة المرور المدخلة غير صحيحة.</string>
+    <string name="include_geolocation"> تضمين الموقع الجغرافي في الرسالة النصية </string>
+
+    <!--J-->
+
+    <!--K-->
+
+    <!--L-->
+    <string name="lists">القوائم </string>
+    <string name="log_out">تسجيل خروج </string>
+    <string name="lock_screen_open">فتح </string>
+    <string name="lock_screen_create_pattern">انشاء انماط </string>
+    <string name="lock_screen_passphrase_hint">ادخال كلمة المرور</string>
+    <string name="location_info">معلومات الموقع</string>
+    <string name="licence">الترخيص </string>
+
+
+    <!--M-->
+    <string name="make_oppression_info"> إدارة المستلمين والقوائم </string>
+    <string name="metadata_waiting_progress"> القيام بتجميع البيانات الوصفية للموقع الحالي . يمكنك التجاوز والمواصلة عن طريق انشاء تقرير.</string>
+    <string name="make_report_public"> جعل التقرير عام </string>
+    <string name="make_report_public_desc"> سيكون التقرير متوفر لأي شخص ليطلع عليه على موقع الويسلر الالكتروني. اذا جعلته خاص سيتمكن فقط المستلمون الخاصون بك على الاطلاع عليه t.</string>
+    <string name="make_report_public_disabled_desc"> عند تضمين معلومات الاتصال فأن تقريرك لن يكون عام.</string>
+    <string name="ra_manage_servers"> ادارة السيرفر </string>
+
+    <!--N-->
+    <string name="navigation_drawer_open"> فتح درج التنقل </string>
+    <string name="navigation_drawer_close"> اغلاق درج التنقل </string>
+    <string name="new_recipient"> اضافة حساب تواصل جديد لدائرة الثقة الخاصة </string>
+    <string name="name_of_recipient"> اسم المستلم </string>
+    <string name="name_of_recipient_list"> اسم قائمة المستلم </string>
+    <string name="new_list"> انشاء قائمة جديدة </string>
+    <string name="name">الاسم </string>
+    <string name="new_report"> تقرير الجديد</string>
+    <string name="not_included"> ليس مضمنا </string>
+    <string name="no_recipient_available"> لا يوجد اي مستلم متوفر </string>
+    <string name="no_recipient_list_available"> لا يوجد اي قائمة متوفرة </string>
+    <string name="new_recipient_short"> مستلم جديد </string>
+    <string name="new_list_short"> قائمة جديدة </string>
+
+    <!--O-->
+    <string name="ok">ok</string>
+    <string name="ra_open">فتح </string>
+    <string name="ra_odk_invalid_answer_error"> المعذرة، هذه الاجابة غير صالحة  </string>
+    <string name="ra_odk_required_answer_error"> المعذرة ، هذه الاجابة مطلوبة</string>
+
+    <!--P-->
+    <string name="panic_mode_activation"> تفعيل وضع الطوارئ </string>
+    <string name="panic_button"> زر الطوارئ </string>
+    <string name="permission_call"> من اجل ان تدخل الى تطبيق الويسلر تحتاج  تصريح اتصال الوضع السري </string>
+    <string name="permission_sms"> من اجل ان تنبه اصدقائك ان وضع الطوارئ قد تم تنشيطه يتوجب عليك ان تسمح لتطبيق ويسلر من ارسال رسالة نصية </string>
+    <string name="permission_audio"> من اجل تسجيل ملفات صوتية يتوجب عليك ان تدخل على </string>
+    <string name="permission_location"> من اجل مشاركة موقعك بتوجب عليك الدخول على الجي بي اس </string>
+    <string name="panic_message"> رسالة الطوارئ </string>
+    <string name="panic_message_info"> صياغة الرسالة التي ستتسلمها دائرة الثقة عند تفعيل وضع الطوارئ </string>
+    <string name="panic_message_saved"> تم حفظ رسالة الطوارئ بنجاح</string>
+    <string name="phone_number"> رقم الهاتف </string>
+    <string name="password"> كلمة المرور </string>
+    <string name="password_old"> كلمة المرور القديمة </string>
+    <string name="password_new"> كلمة المرور الجديدة </string>
+    <string name="password_confirm"> تأكيد كلمة المرور </string>
+    <string name="password_match_error"> كلمة المرور لا تتوافق مع كلمة المرور التي تم </string>
+    <string name="password_changed"> تم تغيير كلمة المرور بتجاج</string>
+    <string name="panic_secret_password_error"> كلمة مرور الطوارئ وكلمة المرور لا يمكن ان تكونا نفس الكلمة </string>
+    <string name="panic_message_title"> رسالة الذعر سيتم ارسالها على شكل رسالة نصية لدائرة الثقة الخاصة بك عند تشغيلك لوضع الطوارئ تاكد من كونها واضحة ومركزة. خذ بعين الاعتبار استخدام الشفرات في حال تم اعتراض رسالتك  </string>
+    <string name="panic_message_geolocation"> تضمين موقعك الجغرافي سيسمح دائرة التقة لديك كم معرفة موقعك بالضبط عند تشغيلك لوضع الذعر ومع ذلك لابج من تفعيل الجي بي اس</string>
+    <string name="panic_sent"> تم ارسال رسالة الطوارئ بنجاح</string>
+    <string name="panic_sent_error_generic">  فشل عملية الارسال بسبب فشل عام </string>
+    <string name="panic_sent_error_service">  فشل عملية الارسال بسبب خطأ في الخدمة </string>
+    <string name="privacy_policy"> سياسة الخصوصية </string>
+
+    <!--Q-->
+
+    <!--R-->
+    <string name="recipients"> المستلمون </string>
+    <string name="record_audio"> تسجيل صوت </string>
+    <string name="removed_recipient"> تم ازالة المستلم بنجاح  </string>
+    <string name="removed_recipient_list">تم ازالة  قائمة المستلم بنجاح</string>
+    <string name="recipient_added"> تم اضافة المستلم بنجاح</string>
+    <string name="recipient_list_added"> تم اضافة قائمة المستلم بنجاح  </string>
+    <string name="recipient_remove_all_text">  انت على وشك ازالة المستلم 1% هل تريد </string>
+    <string name="recipient_list_remove_all_text"> انت على وشك حذف قائمة المستلم 1% حذف القائمة لن يحذف المستلمين المرتبطين هل تريد المواصلة  </string>
+    <string name="recipient_mail">الايميل </string>
+    <string name="recorded_unsuccessfully">  لم يتم تسجيل الصوت الرجاء المحاولة مجددا </string>
+    <string name="recoding_instruction"> اذا اردت ان تسجل صوت الرجاء النقر على زر تسجيل على الشاشة </string>
+    <string name="recoding_play_instruction">  يمكنك الان ان تستخدم التسجيل الصوتي كدليل او يمكنك سماعه عن
+    طريق النقر على زر تشغيل الموجود على الشاشة</string>
+    <string name="recording"> تسجيل صوتي</string>
+    <string name="recording_play"> تشغيل المقطع الصوتي</string>
+    <string name="report_preview"> عرض التقرير </string>
+    <string name="recipient_updated"> تم تحديث المستلم بنجاح </string>
+    <string name="recipient_list_updated"> تم تحديث القائمة بنجاح</string>
+    <string name="ra_remove">ازالة </string>
+    <string name="ra_report">تقرير </string>
+
+    <!--S-->
+    <string name="swipe_up_to_trigger">  مرر للأعلى</string>
+    <string name="settings">الاعدادات</string>
+    <string name="settings_panic_mode"> وضع الطوارئ </string>
+    <string name="settings_panic_mode_info"> تعديل رسالة الذعر، دائرة الثقة و البيانات التي شستم </string>
+    <string name="send"> ارسالSend</string>
+    <string name="save">حفظ</string>
+    <string name="secret_mode_text"> الوضع السري يقوم باحفاء تطبيق ويسلر من الشاشة الرئيسية ومن المهام. لكل تفتح التطبيق يتوجب عليك ان تضغط على كلمة مرور الوضع السري في تطبيقات الاتصال ومن ثم الاتصال به. تذكر دائما ان الوضع السري يحميك من البحث السطحي في جهازك ويظل تطبيق الويسلر ظاهر في الاعدادات   > Apps</string>
+    <string name="secret_mode_on"> موافق ، لن يظل التطبيق ظاهرا في الصفحة الرئيسية في هذه اللحظة </string>
+    <string name="secret_mode_off"> موافق، سيبقى التطبيق ظاهرا في الصفحة الرئيسية في هذه اللحظة </string>
+    <string name="start_time">00 : 00</string>
+    <string name="save_drafts"> حفظ مسودة </string>
+    <string name="saved_to_drafts"> تم حفظ التقرير في صندوق المسودات </string>
+    <string name="setting_data"> اعدادات البيانات </string>
+    <string name="sensitive_data"> البيانات الحساسة </string>
+    <string name="sensitive_data_info">قم باختيار البيانات التي تريد من تطبيق الويسلر ان يزيلها عند تفعيل وضع الطوارئ </string>
+    <string name="secret_mode_info"> قم باختيار الوضع الذي يخفي تطبيق الويسلر من الصفحة الرئيسية. ولكي تفتح التطبيق يتوجب عليك ان تضغط  كلمة مرور الوضع السري والاتصال به. . تذكر دائما ان الوضع السري يحميك من البحث السطحي في جهازك ويظل تطبيق الويسلر ظاهر في الاعدادات  > Apps</string>
+    <string name="sending_report_progress"> ارسال التقرير</string>
+    <string name="sending_report_error"> خطأ في ارسال التقرير الرجاء المحاولة مجددا او حفظ نسخة التقرير لمحاولات لاحقة </string>
+    <string name="sending_report_success"> تم ارسال تقرير البيانات بنجاح</string>
+    <string name="sending_report_evidences_msg"> دليل الوسائط المتعددة سيتم ارسالة في الخلفية </string>
+    <string name="skip">تجاوز </string>
+    <string name="subtitle_activity_edit_media_recipient_list"> اعادة التسمية وادارة المستلمين </string>
+    <string name="source_code"> مصدر الرمز </string>
+    <string name="ra_send_attachments_over_wifi"> ارسال البيانات فقط عن طريق الواي فاي </string>
+    <string name="ra_send_attachments_over_wifi_desc"> يمكن ان تكون مرفقات الوسائط المتعددة كبيرة جدا. قم باختيار ما اذا كننت تريد ارسال المرفقات بشكل منفصل من النماذج المتوفرة لديك عن طريق الواي فاي فقط ؛( عندما تقوم بتحميل المرقثات ستكون متصلة بالنموذج) </string>
+    <string name="ra_server_removed"> تم ازالة السيرفر</string>
+    <string name="ra_server_created"> تم انشاء السيرفر بنجاح</string>
+    <string name="ra_server_updated"> تم تحديث السيرفر بنجاح</string>
+    <string name="ra_server_settings"> اعدادات السيرفر </string>
+    <string name="ra_server_name"> اسم السيرفر </string>
+    <string name="ra_server_url">عنوان سيرفر الخادم</string>
+    <string name="ra_submitted"> تم التسليم </string>
+
+    <!--T-->
+    <string name="tap_anywhere_to_cancel"> اضغط على اي مكان للإلغاء </string>
+    <string name="title_of_report"> قم بعمل عنوان للتقرير </string>
+    <string name="title_activity_training_room_activity"> غرفة التدريب </string>
+    <string name="trusted_person_remove_text"> هل انت متاكد انك تريد حذف 1% من دائرة الثقة؟ </string>
+    <string name="removed_trusted">تم حذف جهة الاتصال بنجاح </string>
+    <string name="title_activity_panic_mode"> وضع الطوارئ </string>
+    <string name="title_activity_lock_screen"> امن تطبيق ويسلر </string>
+    <string name="title_activity_audio_record"> تسجيل صوتي </string>
+    <string name="today"> اليوم </string>
+    <string name="title_not_included"> العنوان غير مضمن </string>
+    <string name="title_activity_security"> شاشة الاغلاق </string>
+    <string name="title_activity_about_help">عن  &amp; مساعدة</string>
+    <string name="title_activity_media_recipients2">تقرير </string>
+    <string name="title_activity_edit_media_recipient_list"> تعديل القائمة</string>
+    <string name="title_activity_collect_main">جمع </string>
+    <string name="ra_title_activity_collect_settings"> جمع الاعدادات </string>
+    <string name="ra_train">تدريب</string>
+
+    <!--U-->
+    <string name="unzipping_file"> فتح الملفات </string>
+    <string name="unzipping_finished"> تم الانتهاء من فتح الملفات.</string>
+    <string name="use_evidence"> يستخدم كدليل </string>
+    <string name="unknown"> غير معروف </string>
+    <string name="update_recipient"> تحديث المستلم </string>
+    <string name="ra_username"> اسم المستخدم </string>
+    <string name="ra_updated_with_param"> تحديث: %1$s</string>
+
+    <!--V-->
+    <string name="version">الاصدار</string>
+
+    <!--X-->
+
+    <!--W-->
+
+    <!--X-->
+
+    <!--Y-->
+    <string name="yesterday"> امس </string>
+    <string name="your_panic_message"> رسالة الطوارئ الخاصة بك </string>
+
+    <!--Z-->
+
+    <!-- ODK Collect -->
+
+    <string name="ra_attachments"> المرفقات </string>
+    <string name="ra_media_attached_to_form"> الوسائط المرفقة </string>
+    <string name="ra_draft_saved"> تم حفظ النسخة بنجاح </string>
+    <string name="ra_submitting_form"> تسليم النموذج</string>
+    <string name="ra_error_submitting_form"> خطأ في تسليم التموذج </string>
+    <string name="ra_form_received_reply"> تم استلام النموذج </string>
+    <string name="ra_form_accepted_reply"> تم قبول النموذج لا تحاول اعادة التسليم </string>
+    <string name="ra_form_unused_reply"> Received response is not from OpenRosa compliant server (%d). Check your server URL settings and make sure proxy servers are not involved.</string>
+    <string name="ra_answers_validation_errors"> هناك اخطاء في صحة الاجابات </string>
+    <string name="ra_media_location_permissions">  من اجل ان تضمن موقعك في الوسائط يتوحب ان تسمح بالدخول الى الموقع</string>
+    <string name="ra_select_time"> اختيار الوقت </string>
+    <string name="ra_select_date"> اختيار التاريخ </string>
+    <string name="ra_no_date_selected"> لم يتم اختيار التاريخ </string>
+    <string name="ra_getting_blank_forms"> الحصول على نموذج فارغ من السيرفر</string>
+    <string name="ra_error_getting_forms"> حدث خطا في الحصول على النموذج  </string>
+    <string name="ra_form_parse_error">حدث خطا في تحليل هذا النموذج </string>
+    <string name="ra_attach_media"> تم ارفاق الوسائط </string>
+    <string name="ra_no_multimedia_attached_to_this_form"> لا يوجد اي وسائط متعددة مرفقة لهذا التموذج </string>
+    <string name="ra_save_form"> حفظ النموذج </string>
+
+    <!-- pattern lock library -->
+    <string name="pl_draw_pattern_to_unlock"> قم برسم انماط للفتح </string>
+    <string name="pl_wrong_pattern"> الانماط غير صحيحة الرجاء اعادة المحاولة. </string>
+    <string name="pl_cancel">Cancel</string>
+    <string name="pl_confirm">Confirm</string>
+    <string name="pl_confirm_pattern">Draw the pattern again to confirm</string>
+    <string name="pl_continue">Continue</string>
+    <string name="pl_draw_pattern">Draw an unlock pattern</string>
+    <string name="pl_pattern_confirmed">Your new unlock pattern</string>
+    <string name="pl_pattern_recorded">Pattern recorded</string>
+    <string name="pl_pattern_too_short">Connect at least %d dots, please redraw</string>
+    <string name="pl_recording_pattern">Release finger when done</string>
+    <string name="pl_redraw">Redraw</string>
+    <string name="tap_submit_form_to_send">tap Submit Form below to send</string>
+    <string name="form_sent_when_online">If you are not connected to the Internet, your form will be sent as soon as you get online.</string>
+    <string name="once_submitted_resubmit">Once submitted, you will still be able to edit the form and re-submit it.</string>
+    <string name="form_send_attachments_will_be_sent_over_wifi">To save cellular data, multimedia attachments will be sent over WiFi if you have enabled it in your settings.</string>
+    <string name="submit_form">Submit Form</string>
+    <string name="previous_section">Previous Section</string>
+    <string name="next_section">Next Section</string>
+    <string name="ra_stop">Stop</string>
+    <string name="ra_play">Play</string>
+    <string name="ra_record">Record</string>
+    <string name="ra_title_activity_audio_play">Play Audio</string>
+    <string name="ra_delete_cloned_form">This will only delete the form from your device. As it was already submitted, the data will remain accessible on the server.</string>
+    <string name="ra_delete_draft_form">Draft form will be deleted.</string>
+    <string name="ra_form_deleted">Form deleted</string>
+    <string name="ra_language">Language</string>
+    <string name="ra_language_settings_info">Select the language for the app menu</string>
+    <string name="ra_default_info">Keep Whistler in the same language as my device</string>
+    <string name="ra_default">Default</string>
+    <string name="title_activity_language_settings">Language selection</string>
+    <string name="ra_share">Share</string>
+    <string name="ra_unauthorized">Unauthorized</string>
+    <string name="ra_select_from_gallery">Select from Whistler gallery</string>
+    <string name="ra_select_photo_from_device">Import photo from device</string>
+    <string name="ra_import_media_error">There was an error while importing media</string>
+    <string name="ra_import_video_from_device">Import video from device</string>
+    <string name="ra_go_back_and_edit">Go back\nand edit</string>
+    <string name="ra_reached_the_end">You\'ve reached\nthe end of the form</string>
+    <string name="ra_multimedia_attached_to_form">These multimedia files are already attached to the form. You can remove them from the form or add more files by tapping +</string>
+    <string name="ra_remove_gallery_att_dialog_title">Remove attachments?</string>
+    <string name="ra_remove_gallery_att_dialog_message">Note that a copy of the files will remain in the Whistler gallery.</string>
+    <string name="ra_form_send_submission_pending">Form not sent as you are not connected. Your form will ne sent as soon as you get online.</string>
+    <string name="ra_cancel_pending_form_msg">Pending form submission will be discarded.</string>
+    <string name="discard">Discard</string>
+    <string name="ra_submit">Submit</string>
+    <string name="ra_delete_form">Form will be deleted.</string>
+    <string name="ra_form_saved">Form saved successfully</string>
+    <string name="ra_media_added_to_gallery">Media added to gallery</string>
+    <string name="ra_export">Export</string>
+    <string name="ra_media_exported">Media exported</string>
+    <string name="ra_media_export_error">There was an error while exporting media</string>
+    <string name="ra_media_export_rationale">In order to export media, application needs permission to write external storage</string>
+    <string name="ra_media_deleted_msg">%1$d media deleted.</string>
+    <string name="ra_media_deleted_error">Error deleting files. Some media is not deleted.</string>
+    <string name="ra_media_export_msg">%1$d media exported</string>
+    <string name="ra_delete_media">Delete media?</string>
+    <string name="ra_media_will_be_deleted">Selected media will be permanently deleted from your gallery.</string>
+    <string name="ra_save_to_device_storage">Save to device storage?</string>
+    <string name="ra_saving_outside_whistler_message">Saving this media to your device storage will make it accessible from outside of the Whistler app, by other apps and in your device\'s gallery.</string>
+    <string name="ra_import_media_progress">Encrypting media…</string>
+    <string name="ra_export_media_progress">Decrypting media…</string>
+    <string name="ra_record_video">Record video</string>
+    <string name="ra_video_record_rationale">In order to record video, application needs permission to access external storage</string>
+    <string name="ra_import_from_device">Import from device</string>
+    <string name="ra_error_opening_phone_gallery">Error opening phone gallery for import</string>
+    <string name="ra_error_submitting_form_tmp">Error submitting form: %s</string>
+    <string name="ra_form_received_no_reply">Form received.</string>
+    <string name="ra_form_accepted_no_reply">Form accepted, do not try to resubmit.</string>
+    <string name="ra_camera_rationale">In order to acquire media application needs access to your camera and audio.</string>
+    <string name="ra_retry">Retry</string>
+    <string name="ra_capture_error">There was an error while capturing media.</string>
+    <string name="ra_media_form_attach_error">There was an error on attaching media.</string>
+    <string name="ra_camera_capture">Capture with camera</string>
+    <string name="ra_error_get_form_def">Error getting form definition</string>
+    <string name="ra_error_get_form_def_tmp">Error getting form definition: %s</string>
+    <string name="ra_not_found">Not found</string>
+    <string name="ra_whistler_gallery">Whistler Gallery</string>
+    <string name="ra_camera_preview">In order to show camera preview application needs access to your camera.</string>
+    <string name="ra_enable_camera_preview">Enable camera preview</string>
+    <string name="ra_capture_verifiable_photo_video">Capture verifiable photo and video</string>
+    <string name="ra_anonymous_mode">No metadata</string>
+    <string name="ra_anonymous_mode_desc">Whistler does not store metadata that might identify you, but embeds anonymized metadata to help authenticate your evidence (geolocation, altitude, etc). If this puts you in danger, activate “No metadata” to strip all metadata.</string>
+    <string name="ra_out_of_disk">Insufficient disk space</string>
+    <string name="ra_zip_corrupted">Zip file corrupted</string>
+    <string name="ra_train_dwownload_error">Error downloading train module.</string>
+    <string name="ra_train_module_downloading">The module downloading is in progress</string>
+    <string name="ra_module_dl_size">Module download size is %s.</string>
+    <string name="ra_train_module_will_dl">Selected train module will be deleted.</string>
+    <string name="ra_getting_train_modules">Getting training modules from server…</string>
+    <string name="ra_train_module_removed">Train module removed</string>
+    <string name="ra_train_modeule_remove_error">Removing train module failed</string>
+    <string name="ra_train_modle_dl_started">Module download in background started</string>
+    <string name="ra_train_modele_dl_start_error">Error starting module download</string>
+    <string name="ra_search_train_module">Search by name or ID number</string>
+    <string name="ra_train_module_dl_paused_title">Module download paused</string>
+    <string name="ra_train_module_dl_paused_content">Waiting for network connection to resume.</string>
+    <string name="ra_general">General</string>
+    <string name="ra_general_settings_info">Manage language and method of sending multimedia attachments</string>
+    <string name="ra_security_settings">Security</string>
+    <string name="ra_security_settings_info">Manage Secret Mode and the Panic Button</string>
+    <string name="ra_contact_settings">Contact</string>
+    <string name="ra_contact_settings_info">Decide how recipients can reach you</string>
+    <string name="ra_report_settings_info">Manage contact information, recipients and lists</string>
+    <string name="ra_prevent_blocking">Bypass blocking</string>
+    <string name="ra_prevent_blocking_desc">Only enable if you know about attempts to block Whistler in your region or country</string>
+    <string name="title_activity_report">Report</string>
+    <string name="title_activity_recipients">Recipients</string>
+    <string name="save_data"><![CDATA[To save cellular data, multimedia evidence can be sent separately over WiFi (see <a href="whistler_scheme://open.general.settings.activity">settings</a>).]]></string>
+    <string name="create_new_report">Create new report</string>
+    <string name="drafts">Drafts</string>
+    <string name="sent">Sent</string>
+    <string name="drafts_info">Edit and send reports that you\'ve already started</string>
+    <string name="sent_info">View and resend reports you\'ve already sent</string>
+    <string name="include_geolocation_automatically"><![CDATA[Whistler automatically includes geolocation metadata to your reports to make them more verifiable. If this puts you in danger, activate “No metadata” in <a href="whistler_scheme://open.general.settings.activity">settings</a> to strip all metadata.]]></string>
+    <string name="required">Required</string>
+    <string name="recommended">Recommended</string>
+    <string name="date">Date</string>
+    <string name="description">Description</string>
+    <string name="include_contact_information">Include contact information</string>
+    <string name="contact_info">For recipients who want to ask you additional questions before using or publishing your evidence</string>
+    <string name="description_info">Include here any information that may help recipients better understand your report (who is in the video, what exactly happened, what was the context, ets).</string>
+    <string name="select">Select</string>
+    <string name="decide_recipient_info">Decide who will receive your reports.</string>
+    <string name="ra_evidences">Evidences</string>
+    <string name="ra_multimedia_attached_to_evidence">These multimedia files will be attached to the report by tapping √. You can remove them from the report or add more files by tapping +</string>
+    <string name="ra_no_multimedia_attached_to_this_report">There is no multimedia attached to this report.\n Tap + to add.</string>
+    <string name="ra_remove_evidence_att_dialog_title">Remove evidence?</string>
+    <string name="ra_remove_evidence_att_dialog_message">Note that a copy of the file will remain in the Whistler gallery.</string>
+    <string name="ra_media_attached_to_report">Media attached to report</string>
+    <string name="ra_report_send_validation_msg">Required fields are missing</string>
+    <string name="sent_reports">Sent reports</string>
+    <string name="delete_sent_report">Delete sent report?</string>
+    <string name="sent_reports_empty">You have no sent reports that are saved.</string>
+    <string name="edit_report">Edit report</string>
+    <string name="contact_info_disabled"><![CDATA[For recipients who want to ask you additional questions before using or publishing your evidence. You must first specify you contact information <a href="whistler_scheme://open.contact_settings.activity">here</a>.]]></string>
+    <string name="ra_multimedia_attached_to_evidence_preview">These multimedia files are attached to the report. You can remove them from the report or add more files by entering edit report mode.</string>
+    <string name="ra_no_multimedia_attached_to_this_report_preview">There is no multimedia attached to this report.\n You can add multimedia files by entering edit report mode.</string>
+    <string name="recipients_preview_mode">You can change who will receive your reports by entering edit report mode.</string>
+
+    <!--TODO CHECK MISSING QUANTITY-->
+    <plurals name="recipients_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s recipient</item>
+        <item quantity="other">%1$s recipients</item>
+    </plurals>
+
+    <plurals name="photo_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s photo</item>
+        <item quantity="other">%1$s photos</item>
+    </plurals>
+
+    <plurals name="video_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s video</item>
+        <item quantity="other">%1$s videos</item>
+    </plurals>
+
+    <plurals name="audio_number" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$s audio</item>
+        <item quantity="other">%1$s audios</item>
+    </plurals>
+    <string name="title_activity_archive">Archive</string>
+    <string name="ra_contact_info">Recipients of your reports may want to ask you additional questions before using or publishing your evidence. Enter here your preferred method to be contacted. \n\nBefore sending a report, you will be able to choose whether to include this contact information. \n\nTo better protect yourself, consider entering a secure mode of communication (Signal, Wickr, ProtonMail, etc) or a dedicated email account.</string>
+    <string name="ra_preferred_method">Preferred method</string>
+    <string name="ra_unspecified">Unspecified</string>
+    <string name="ra_recommended">Recommended</string>
+    <string name="ra_other">Other</string>
+    <string name="ra_select_preferred_method_of_contact">Select your preferred method to be contacted</string>
+
+    <!-- Contact methods -->
+    <string name="ra_contact_signal">Signal</string>
+    <string name="ra_contact_wickr">Wickr</string>
+    <string name="ra_contact_wire">Wire</string>
+    <string name="ra_contact_email">Email</string>
+    <string name="ra_contact_whatsapp">Whatsapp</string>
+    <string name="ra_contact_telegram">Telegram</string>
+    <string name="ra_contact_facebook">Facebook</string>
+    <string name="ra_contact_twitter">Twitter</string>
+    <string name="ra_contact_other">Other</string>
+    <string name="ra_contact_signal_hint">Your Signal number</string>
+    <string name="ra_contact_wickr_hint">Your Wickr username</string>
+    <string name="ra_contact_wire_hint">Your Wire username</string>
+    <string name="ra_contact_email_hint">Your email address</string>
+    <string name="ra_contact_whatsapp_hint">Your Whatsapp number</string>
+    <string name="ra_contact_telegram_hint">Your Telegram username or phone number</string>
+    <string name="ra_contact_facebook_hint">Your Facebook URL</string>
+    <string name="ra_contact_twitter_hint">Your Twitter handle</string>
+    <string name="ra_contact_other_hint">Your contact information</string>
+    <string name="ra_train_module_downloaded">Training module downloaded</string>
+    <string name="report_sent_when_online">If you are not connected to the Internet, your report will be sent as soon as you get online.</string>
+    <string name="collect_explanatory_text"><![CDATA[Collect enables you to fill forms and securely send data. To receive and submit forms, you must first connect to a compatible server. To manage servers, go to <a href="whistler_scheme://open.collect.manage.servers.activity">settings</a>.]]></string>
+    <string name="ra_server_remove_confirmation_text">If you delete this server, all draft and submitted forms will be deleted from your device. Delete anyway?</string>
+    <string name="erase_recipients_and_lists">Report recipients and lists</string>
+    <string name="tell_us">Tell us what you think</string>
+    <string name="feedback">Feedback</string>
+    <string name="feedback_explanatory_text">Use this space to tell us wht you think about Whistler and share:\n- bugs and glitches that you may experience\n- ideas on how to improve existing features\n- suggestions for new features\n- any other comment you may have to make Whistler better!</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="feedback_name_hint">Name (optional)</string>
+    <string name="feedback_email_hint">Email (optional)</string>
+    <string name="feedback_hint">Type your feedback here</string>
+    <string name="feedback_sent">Your feedback has been successfully submitted</string>
+    <string name="feedback_sending_error">An error has occurred during submission of your feedback</string>
+    <string name="ra_sending_feedback">Please wait while Whistler submits your feedback.</string>
+    <string name="your_draft_will_be_lost">Your draft will be lost.</string>
+    <string name="save_and_exit">SAVE AND EXIT</string>
+    <string name="exit_anyway">EXIT ANYWAY</string>
+    <string name="no_metadata_description"><![CDATA[“No metadata” is activated. This means your report will not be verifiable by recipients. <a href="whistler_scheme://open.general.settings.activity">Turn off here</a> to make verifiable.]]></string>
+    <string name="date_not_included">Date not included</string>
+    <string name="share_in_report">Share in a Report</string>
+    <string name="share_in_collect">Share in a Collect form</string>
+    <string name="ra_single_media_deleted_msg">Media deleted</string>
+    <string name="ra_no_connection_available">No connection available</string>
+    <string name="not_web_url_field_error">Field is not valid web URL</string>
+</resources>

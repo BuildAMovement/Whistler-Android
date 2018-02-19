@@ -1,13 +1,12 @@
 package rs.readahead.washington.mobile.views.adapters;
 
-import android.content.Context;
-import android.support.v7.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -15,27 +14,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.models.Report;
+import rs.readahead.washington.mobile.domain.entity.Report;
 import rs.readahead.washington.mobile.util.DateUtil;
-import rs.readahead.washington.mobile.util.DialogsUtil;
-import rs.readahead.washington.mobile.views.fragment.DraftsListFragment;
+import rs.readahead.washington.mobile.views.interfaces.IOnReportInteractionListener;
+
 
 public class DraftsRecyclerViewAdapter extends RecyclerView.Adapter<DraftsRecyclerViewAdapter.ViewHolder> {
     private final List<Report> mValues;
-    private final DraftsListFragment.OnListFragmentInteractionListener mListener;
-    private final DraftsListFragment.OnEditInteractionListener mEditListener;
-    private final DraftsListFragment.OnDeleteInteractionListener mDeleteListener;
-    private final Context context;
-    private AlertDialog mRemoveDialog;
+    private final IOnReportInteractionListener mListener;
 
-    public DraftsRecyclerViewAdapter(List<Report> items, DraftsListFragment.OnListFragmentInteractionListener listener,
-                                     DraftsListFragment.OnEditInteractionListener editListener,DraftsListFragment.OnDeleteInteractionListener deleteListener,
-                                     Context context) {
+    public DraftsRecyclerViewAdapter(List<Report> items, IOnReportInteractionListener listener) {
         mValues = items;
         mListener = listener;
-        mEditListener = editListener;
-        mDeleteListener = deleteListener;
-        this.context = context;
     }
 
     @Override
@@ -46,50 +36,49 @@ public class DraftsRecyclerViewAdapter extends RecyclerView.Adapter<DraftsRecycl
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         final Report report = mValues.get(position);
-        holder.mTitle.setText(report.getTitle());
-        holder.mDate.setText(DateUtil.getStringFromDate(report.getDate()));
+
+        String title = report.getTitle();
+        if (TextUtils.isEmpty(title)) {
+            title = holder.mTitle.getContext().getString(R.string.title_not_included);
+        }
+        holder.mTitle.setText(title);
+
+        if (report.getDate() != null) {
+            holder.mDate.setText(DateUtil.getStringFromDate(report.getDate()));
+        } else {
+            holder.mDate.setText(holder.mDate.getContext().getString(R.string.date_not_included));
+        }
 
         holder.mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mEditListener) {
-                    mEditListener.onEditFragmentInteraction(report);
-                }
+                    mListener.onEditReport(report.getId());
             }
         });
 
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDraftDeleteDialog(report.getTitle(), position);
+                mListener.onDeleteReport(report, position);
             }
         });
 
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onListFragmentInteraction(report);
+                mListener.onPreviewReport(report.getId());
             }
         });
     }
 
-    private void deleteDraft(int position) {
-        mDeleteListener.onDeleteFragmentInteraction(mValues.get(position));
+    public boolean removeDraft(int position) {
         mValues.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
-    }
 
-    private void showDraftDeleteDialog(String title, final int position) {
-        mRemoveDialog = DialogsUtil.showRemoveReportDialog(title, context, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteDraft(position);
-                mRemoveDialog.dismiss();
-            }
-        });
+        return getItemCount() == 0;
     }
 
     @Override
@@ -102,12 +91,11 @@ public class DraftsRecyclerViewAdapter extends RecyclerView.Adapter<DraftsRecycl
         @BindView(R.id.mob_date) TextView mDate;
         @BindView(R.id.edit_draft) ImageView mEdit;
         @BindView(R.id.delete_draft) ImageView mDelete;
-        @BindView(R.id.draft_layout) LinearLayout mLayout;
+        @BindView(R.id.draft_layout) ViewGroup mLayout;
 
         ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
         }
-
     }
 }

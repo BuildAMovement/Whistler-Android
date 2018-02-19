@@ -5,6 +5,13 @@
         android:id="@+id/save_to_drafts"
         android:orderInCategory="100"
         android:title="@string/save_drafts"
-        android:icon="@drawable/save_draft_icon"
+        android:icon="@drawable/ic_save_white_24dp"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/edit_report"
+        android:orderInCategory="100"
+        android:title="@string/edit_report"
+        android:icon="@drawable/edit_icon_white"
         app:showAsAction="always" />
 </menu>

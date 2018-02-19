@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/wa_white"
     android:padding="@dimen/activity_horizontal_margin"
+    android:textDirection="locale"
     tools:context="rs.readahead.washington.mobile.views.fragment.ActivationSettingsFragment">
 
     <android.support.v4.widget.NestedScrollView

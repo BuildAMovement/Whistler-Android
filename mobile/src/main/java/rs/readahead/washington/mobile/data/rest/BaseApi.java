@@ -35,17 +35,21 @@ public class BaseApi {
         public Builder() {
             retrofitBuilder = new Retrofit.Builder();
             okClientBuilder = new OkHttpClient.Builder();
+
+            DFOkHttpConfigurator.configure(okClientBuilder);
         }
 
         public Builder setLogLevelFull() {
-            okClientBuilder.addInterceptor(
+            okClientBuilder.addNetworkInterceptor(
                     new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
             return this;
         }
 
         public void build(String restBase) {
             // set client to baseRetrofit builder
-            retrofitBuilder.client(okClientBuilder.build());
+            retrofitBuilder.client(okClientBuilder
+                    .addInterceptor(new DFInterceptor())
+                    .build());
 
             // build them
             synchronized (BaseApi.class) {
@@ -57,6 +61,4 @@ public class BaseApi {
             }
         }
     }
-
-
 }

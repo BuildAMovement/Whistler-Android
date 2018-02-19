@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import rs.readahead.washington.mobile.models.MediaRecipient;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipient;
 import rs.readahead.washington.mobile.presentation.entity.MediaRecipientSelection;
 
 

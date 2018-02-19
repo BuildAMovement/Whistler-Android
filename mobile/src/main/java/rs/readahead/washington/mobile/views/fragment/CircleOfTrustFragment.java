@@ -2,6 +2,7 @@ package rs.readahead.washington.mobile.views.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,8 +23,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import info.guardianproject.cacheword.CacheWordHandler;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.database.DataSource;
-import rs.readahead.washington.mobile.models.TrustedPerson;
+import rs.readahead.washington.mobile.data.database.DataSource;
+import rs.readahead.washington.mobile.domain.entity.TrustedPerson;
 import rs.readahead.washington.mobile.util.DialogsUtil;
 import rs.readahead.washington.mobile.views.activity.OnTrustedPersonChangeListener;
 import rs.readahead.washington.mobile.views.activity.OnTrustedPersonInteractionListener;
@@ -49,7 +50,7 @@ public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonCh
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_circle_of_trust, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -60,10 +61,9 @@ public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonCh
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!mCacheWord.isLocked()) {
-            dataSource = DataSource.getInstance(mCacheWord, getContext().getApplicationContext());
+        if (! mCacheWord.isLocked()) {
+            dataSource = DataSource.getInstance(getContext(), mCacheWord.getEncryptionKey());
         }
-
     }
 
     private void populateList() {

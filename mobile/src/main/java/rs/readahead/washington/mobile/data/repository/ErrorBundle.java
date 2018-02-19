@@ -11,9 +11,11 @@ import rs.readahead.washington.mobile.domain.entity.IErrorBundle;
 import timber.log.Timber;
 
 
-class ErrorBundle extends Throwable implements IErrorBundle {
+public class ErrorBundle extends Throwable implements IErrorBundle {
     private int code = 0;
     private String message = null;
+    private long serverId;
+    private String serverName;
 
 
     ErrorBundle(final Throwable throwable) {
@@ -55,7 +57,7 @@ class ErrorBundle extends Throwable implements IErrorBundle {
     }
 
     @Override
-    public Throwable getExeption() {
+    public Throwable getException() {
         return getCause();
     }
 
@@ -67,5 +69,23 @@ class ErrorBundle extends Throwable implements IErrorBundle {
     @Override
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public String getServerName() {
+        return serverName;
+    }
+
+    void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
+
+    @Override
+    public long getServerId() {
+        return serverId;
+    }
+
+    void setServerId(long serverId) {
+        this.serverId = serverId;
     }
 }

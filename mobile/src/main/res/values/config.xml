@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="api_base_url">https://www.whistlerapp.org/rest/v1/</string>
-    <string name="upload_url">https://www.whistlerapp.org/files/</string> <!-- todo: make this version enabled -->
-    <string name="evidence_queue_file">evidence_queue.db</string>
-
-    <string name="config_help_url">https://whistlerapp.org/faq</string>
-    <string name="config_faq_url">https://whistlerapp.org/faq</string>
-    <string name="config_contact_url">https://whistlerapp.org/contact</string>
-    <string name="config_privacy_url">https://www.iubenda.com/privacy-policy/8140751</string>
-    <string name="config_licence_url">https://whistlerapp.org/</string>
-    <string name="config_source_code_url">https://github.com/BuildAMovement/Whistler-Android</string>
+    <string name="api_base_url" translatable="false">https://www.whistlerapp.org/rest/v1/</string>
+    <string name="upload_url" translatable="false">https://www.whistlerapp.org/files/</string> <!-- todo: make this version enabled -->
+    <string name="ra_media_upload_url" translatable="false">https://www.whistlerapp.org/media/</string> <!-- todo: make this version enabled -->
+    <string name="evidence_queue_file" translatable="false">evidence_queue.db</string>
+    <string name="ra_media_file_queue_file" translatable="false">media_file_queue.db</string>
+    <string name="config_faq_url" translatable="false">https://whistlerapp.org/faq</string>
+    <string name="config_contact_url" translatable="false">https://whistlerapp.org/contact</string>
+    <string name="config_privacy_url" translatable="false">https://www.iubenda.com/privacy-policy/8140751</string>
+    <string name="config_licence_url" translatable="false">http://www.apache.org/licenses/LICENSE-2.0</string>
+    <string name="config_source_code_url" translatable="false">https://github.com/BuildAMovement/Whistler-Android</string>
+    <string name="ra_config_form_attachment_field" translatable="false">whistler_attachments</string>
+    <string name="ra_config_form_attachment_url" translatable="false">https://whistlerapp.org/attachments/%1$s</string>
+    <string-array name="ra_lang_codes" translatable="false">
+        <item>ar</item>
+        <item>en</item>
+        <item>es</item>
+        <item>ru</item>
+    </string-array>
+    <string name="ra_server_prefix" translatable="false">https://</string>
 </resources>

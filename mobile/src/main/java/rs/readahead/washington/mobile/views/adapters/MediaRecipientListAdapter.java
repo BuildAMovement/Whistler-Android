@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.models.MediaRecipient;
+import rs.readahead.washington.mobile.domain.entity.MediaRecipient;
 import rs.readahead.washington.mobile.views.interfaces.IRecipientsHandler;
 
 
@@ -38,9 +38,9 @@ public class MediaRecipientListAdapter extends ArrayAdapter<MediaRecipient> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.recipient_row_for_list, parent, false);
         }
 
-        TextView titleView = (TextView) convertView.findViewById(R.id.recipient_title);
-        ImageView editRecipient = (ImageView) convertView.findViewById(R.id.edit);
-        ImageView removeRecipient = (ImageView) convertView.findViewById(R.id.delete);
+        TextView titleView = convertView.findViewById(R.id.recipient_title);
+        ImageView editRecipient = convertView.findViewById(R.id.edit);
+        ImageView removeRecipient = convertView.findViewById(R.id.delete);
 
         if (mediaRecipientList != null) {
             titleView.setText(mediaRecipientList.getTitle());

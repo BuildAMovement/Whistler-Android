@@ -1,10 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusableInTouchMode="true"
-                tools:context="rs.readahead.washington.mobile.views.fragment.PanicMessageFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:textDirection="locale"
+    tools:context="rs.readahead.washington.mobile.views.fragment.PanicMessageFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -31,7 +32,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/panic_message_title"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp"
+                    android:layout_marginBottom="15dp"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/panic_message_layout"
@@ -49,27 +51,21 @@
                         android:inputType="textCapSentences"
                         android:maxLength="115"
                         android:textColor="@color/wa_black"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"/>
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
 
-            <!--<View style="@style/SettingsMainLine"/>-->
+            <!--<View style="@style/SettingsMainLine"/>  android:layout_marginTop="10dp"-->
 
-            <CheckedTextView
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/geolocation"
-                style="@style/MyCheckTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:paddingEnd="15dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="5dp"
-                android:paddingStart="15dp"
-                android:paddingTop="15dp"
-                android:text="@string/include_geolocation"
-                android:textSize="18sp"/>
+                app:theme="@style/TextViewBlack"
+                android:gravity="center_vertical"
+                android:text="@string/include_geolocation"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -81,35 +77,5 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/button_bottom_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/wa_button_gray"
-        android:orientation="horizontal">
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/panic_cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="1dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="1dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_pressed"
-            android:text="@string/cancel"/>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/panic_ok"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_pressed"
-            android:text="@string/save"/>
-    </LinearLayout>
 
 </RelativeLayout>

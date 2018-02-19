@@ -2,18 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_activation_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/wa_white"
+    android:textDirection="locale"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="rs.readahead.washington.mobile.views.activity.ActivationSettingsActivity"
+    tools:context="rs.readahead.washington.mobile.views.activity.SecuritySettingsActivity"
     tools:showIn="@layout/activity_activation_settings">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
@@ -22,92 +21,93 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <CheckedTextView
-                android:id="@+id/enable_secret_mode"
-                style="@style/EraseDataCheckedText"
-                android:gravity="center_vertical"
-                android:text="@string/enable_secret_mode"/>
+            <LinearLayout style="@style/VerticalLinearLayout">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="15dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:text="@string/secret_mode_info"/>
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/enable_secret_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/enable_secret_mode"
+                    android:theme="@style/SettingsTextViewBlack" />
 
-            <View style="@style/SettingsMainLine"/>
+                <TextView
+                    style="@style/SettingsTextViewGray"
+                    android:text="@string/secret_mode_info" />
+
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
 
             <LinearLayout
                 android:id="@+id/new_secret"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/ClickableVerticalLinerLayout">
 
                 <TextView
                     android:id="@+id/create_secret_mode_password"
-                    style="@style/EraseDataCheckedText"
-                    android:text="@string/create_new_secret_password"/>
+                    style="@style/SettingsTextViewBlack"
+                    android:text="@string/create_new_secret_password" />
 
-                <View style="@style/SettingsMainLine"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/change_secret"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/ClickableVerticalLinerLayout">
 
                 <TextView
                     android:id="@+id/change_secret_moder_password"
-                    style="@style/EraseDataCheckedText"
-                    android:text="@string/change_secret_moder_password"/>
+                    style="@style/SettingsTextViewBlack"
+                    android:text="@string/change_secret_moder_password" />
 
-                <View style="@style/SettingsMainLine"/>
             </LinearLayout>
 
-            <!--<LinearLayout
-                android:id="@+id/panic_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/panic_mode_password"
-                    style="@style/EraseDataCheckedText"
-                    android:text="@string/create_panic_mode_password"/>
-
-                <View style="@style/SettingsMainLine"/>
-            </LinearLayout>-->
+            <View style="@style/SettingsMainLine" />
 
             <LinearLayout
                 android:id="@+id/change_panic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/ClickableVerticalLinerLayout">
 
                 <TextView
                     android:id="@+id/change_panic_mode_password"
-                    style="@style/EraseDataCheckedText"
-                    android:text="@string/change_panic_mode_password"/>
+                    style="@style/SettingsTextViewBlack"
+                    android:text="@string/change_panic_mode_password" />
 
-                <View style="@style/SettingsMainLine"/>
+                <View style="@style/SettingsMainLine" />
             </LinearLayout>
 
-            <!--<CheckedTextView
-                android:id="@+id/enable_tor"
-                style="@style/EraseDataCheckedText"
-                android:text="@string/enable_tor"/>
+            <LinearLayout
+                android:id="@+id/panic_mode_layout"
+                style="@style/ClickableVerticalLinerLayout">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="15dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:text="@string/orbot_info"/>
+                <TextView
+                    style="@style/SettingsTextViewBlack"
+                    android:text="@string/settings_panic_mode" />
 
-            <View style="@style/SettingsMainLine"/>-->
+                <TextView
+                    style="@style/SettingsTextViewGray"
+                    android:text="@string/settings_panic_mode_info" />
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout style="@style/VerticalLinearLayout">
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/enable_df"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/ra_prevent_blocking"
+                    android:theme="@style/SettingsTextViewBlack" />
+
+                <TextView
+                    style="@style/SettingsTextViewGray"
+                    android:text="@string/ra_prevent_blocking_desc" />
+
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

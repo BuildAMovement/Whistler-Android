@@ -1,24 +1,27 @@
 package rs.readahead.washington.mobile.domain.entity;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.UUID;
 
+import rs.readahead.washington.mobile.util.C;
+
 
 public final class Evidence implements Serializable {
     private static final int SOURCE_UNKNOWN = -1;
-    public static final int PICKED_IMAGE = 1;
-    public static final int CAPTURED_IMAGE = 2;
-    public static final int CAPTURED_VIDEO = 3;
-    public static final int RECORDED_AUDIO = 4;
+    public static final int PICKED_IMAGE = C.PICKED_IMAGE;
+    public static final int CAPTURED_IMAGE = C.CAPTURED_IMAGE;
+    public static final int CAPTURED_VIDEO = C.CAPTURED_VIDEO;
+    public static final int RECORDED_AUDIO = C.RECORDED_AUDIO;
 
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({SOURCE_UNKNOWN, CAPTURED_IMAGE, PICKED_IMAGE, RECORDED_AUDIO, CAPTURED_VIDEO})
-    @interface EvidenceSource {}
+    public @interface EvidenceSource {}
 
     private String uid;
     private String path;
@@ -34,24 +37,13 @@ public final class Evidence implements Serializable {
     }
 
     public Evidence(String path, @EvidenceSource int source) {
-        this(UUID.randomUUID().toString(), path, source);
+        this(uuid(), path, source);
     }
 
-    public Evidence(String name, String path, Metadata metadata) {
-        this(name, path, SOURCE_UNKNOWN, metadata);
-    }
-
-    public Evidence(String name, String path, @EvidenceSource int source) {
-        this.uid = name;
+    private Evidence(String uid, String path, @EvidenceSource int source) {
+        this.uid = uid;
         this.path = path;
         this.source = source;
-    }
-
-    public Evidence(String name, String path, @EvidenceSource int source, Metadata metadata) {
-        this.uid = name;
-        this.path = path;
-        this.source = source;
-        this.metadata = metadata;
     }
 
     public String getUid() {
@@ -66,6 +58,7 @@ public final class Evidence implements Serializable {
         this.path = path;
     }
 
+    @Nullable
     public Metadata getMetadata() {
         return metadata;
     }
@@ -114,5 +107,13 @@ public final class Evidence implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public void refreshUid() {
+        setUid(uuid());
+    }
+
+    private static String uuid() {
+        return UUID.randomUUID().toString();
     }
 }

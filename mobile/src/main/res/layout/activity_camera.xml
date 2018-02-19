@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+    <!--<com.wonderkiln.camerakit.CameraView
+        xmlns:camerakit="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        camerakit:ckZoom="pinch"/>-->
+
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:keepScreenOn="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"/>
+
+    <RelativeLayout
+        android:id="@+id/controlLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/top_camera_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <rs.readahead.washington.mobile.views.custom.CameraSwitchButton
+                android:id="@+id/switchButton"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@android:color/transparent"
+                android:padding="24dp"/>
+
+            <rs.readahead.washington.mobile.views.custom.CameraFlashButton
+                android:id="@+id/flashButton"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:background="@android:color/transparent"
+                android:padding="24dp"
+                tools:ignore="RelativeOverlap" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/captureLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60dp">
+
+            <rs.readahead.washington.mobile.views.custom.CameraDurationTextView
+                android:id="@+id/durationView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:padding="2dp"
+                android:shadowColor="@android:color/black"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="2"
+                android:textColor="@android:color/white"/>
+
+            <rs.readahead.washington.mobile.views.custom.CameraCaptureButton
+                android:layout_below="@+id/durationView"
+                android:id="@+id/captureButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:background="@drawable/capture_button_background"/>
+
+            <rs.readahead.washington.mobile.views.custom.CameraModeButton
+                android:id="@+id/modeButton"
+                android:layout_below="@+id/durationView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="30dp"
+                android:padding="10dp"
+                android:background="@drawable/capture_button_background"/>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+    
+    <FrameLayout
+        android:id="@+id/confirmLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/wa_black"
+        android:visibility="gone">
+        
+        <ImageView
+            android:id="@+id/confirmImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:contentDescription="@null"/>
+
+        <android.support.v7.widget.ButtonBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:background="@color/wa_player_background">
+            
+            <Button
+                android:id="@+id/confirmRetry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ra_retry"
+                android:background="@android:color/transparent"
+                android:textColor="@color/wa_white"/>
+
+            <Button
+                android:id="@+id/confirmOK"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ok"
+                android:background="@android:color/transparent"
+                android:textColor="@color/wa_white"/>
+            
+        </android.support.v7.widget.ButtonBarLayout>
+    </FrameLayout>
+</FrameLayout>

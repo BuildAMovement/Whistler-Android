@@ -10,8 +10,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:textDirection="locale"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".views.activity.AudioRecordActivity"
+    tools:context=".views.activity.AudioRecordActivity2"
     tools:showIn="@layout/activity_audio_record">
 
     <TextView
@@ -72,9 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/imageView"
         android:orientation="vertical">
 
         <ImageButton
@@ -85,13 +84,14 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/button_pressed"
             android:padding="5dp"
-            app:srcCompat="@drawable/record" />
+            android:src="@drawable/record"
+            android:contentDescription="@string/ra_record"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Record" />
+            android:text="@string/ra_record" />
     </LinearLayout>
 
     <LinearLayout
@@ -109,20 +109,21 @@
             android:layout_margin="2dp"
             android:background="@drawable/button_pressed"
             android:padding="5dp"
-            app:srcCompat="@drawable/ic_stop_black_24dp" />
+            android:src="@drawable/ic_stop_black_24dp"
+            android:contentDescription="@string/ra_stop"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Stop" />
+            android:text="@string/ra_stop" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/stop_audio_layout"
         android:orientation="vertical">
 
@@ -133,14 +134,14 @@
             android:layout_margin="2dp"
             android:background="@drawable/button_pressed"
             android:padding="5dp"
-
-            app:srcCompat="@drawable/ic_play_arrow_black_60dp" />
+            android:src="@drawable/ic_play_arrow_black_60dp"
+            android:contentDescription="@string/ra_play"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Play" />
+            android:text="@string/ra_play" />
 
     </LinearLayout>
 

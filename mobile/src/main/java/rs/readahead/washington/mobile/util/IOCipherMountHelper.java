@@ -1,15 +1,8 @@
 package rs.readahead.washington.mobile.util;
 
-import android.util.Log;
-
-import java.io.IOException;
-
-import info.guardianproject.cacheword.CacheWordHandler;
-import info.guardianproject.iocipher.VirtualFileSystem;
-
 public class IOCipherMountHelper {
 
-    private static String TAG = "IOCipherMountHelper";
+    /*private static String TAG = "IOCipherMountHelper";
     private CacheWordHandler mHandler;
     private static VirtualFileSystem mVFS;
 
@@ -38,5 +31,5 @@ public class IOCipherMountHelper {
 
     public boolean isMounted(){
         return mVFS.isMounted();
-    }
+    }*/
 }

@@ -5,11 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.webkit.MimeTypeMap;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class CommonUtils {
     private CommonUtils() {}
+
+    public static String getVideoDuration(int seconds) {
+        return String.format("%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
+    }
 
     public static void startBrowserIntent(Context context, String url) {
         final PackageManager packageManager = context.getPackageManager();
@@ -23,24 +32,30 @@ public class CommonUtils {
         }
     }
 
-    public static void openUri(Context context, Uri uri) {
-        final PackageManager packageManager = context.getPackageManager();
+    public static long currentTimestamp() {
+        return System.currentTimeMillis();
+    }
 
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        String mime = "*/*";
+    public static String getDateTimeString() {
+        return getDateTimeString(currentTimestamp());
+    }
 
-        if (mimeTypeMap.hasExtension(MimeTypeMap.getFileExtensionFromUrl(uri.toString()))) {
-            mime = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(uri.toString()));
-        }
+    public static String getDateTimeString(long timestamp) {
+        return getDateTimeString(timestamp, "dd-MM-yyyy HH:mm");
+    }
 
+    private static String getDateTimeString(long timestamp, String format) {
         try {
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, mime);
+            return new SimpleDateFormat(format, Locale.US).format(new Date(timestamp));
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
-            if (intent.resolveActivity(packageManager) != null) {
-                context.startActivity(intent);
-            }
-        } catch (ActivityNotFoundException ignore) {
+    public static void hideKeyboard(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

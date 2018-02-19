@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:textDirection="locale"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/module_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin">
+
+        <ImageButton
+            android:id="@+id/popupMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_action_more_vert"
+            android:padding="8dp"
+            android:layout_marginTop="-8dp"
+            android:layout_marginEnd="-8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@null"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/popupMenu"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+
+            <LinearLayout
+                android:id="@+id/training_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/downloadState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="@dimen/small_text_margin"
+                    android:contentDescription="@null"/>
+
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/LineTextViewBlack"
+                    android:lines="1"
+                    android:ellipsize="end"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/organization"
+                style="@style/LineTextViewGray"
+                android:paddingTop="2dp"
+                android:lines="1"
+                android:ellipsize="end"/>
+
+            <LinearLayout
+                android:id="@+id/training_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    style="@style/LineTextViewGray"
+                    android:lines="1"
+                    android:ellipsize="end"/>
+
+                <TextView
+                    android:id="@+id/size"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    style="@style/LineTextViewGray"
+                    android:lines="1"
+                    android:ellipsize="end"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wa_gray"
+        android:layout_gravity="bottom" />
+</FrameLayout>

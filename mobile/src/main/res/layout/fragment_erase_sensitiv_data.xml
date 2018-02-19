@@ -6,6 +6,7 @@
     android:background="@color/wa_white"
     android:clipToPadding="false"
     android:paddingBottom="60dp"
+    android:textDirection="locale"
     tools:context="rs.readahead.washington.mobile.views.fragment.EraseSensitiveDataFragment">
 
     <LinearLayout
@@ -21,53 +22,58 @@
             android:textColor="@color/wa_black"
             android:textSize="14sp"/>
 
-        <CheckedTextView
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/erase_database"
-            style="@style/EraseDataCheckedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextViewBlack"
+            android:gravity="center_vertical"
+            android:padding="10dp"
             android:text="@string/erase_database"/>
 
         <View style="@style/SettingsMainLine"/>
 
-        <CheckedTextView
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/erase_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextViewBlack"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:text="@string/ra_whistler_gallery"/>
+
+        <View style="@style/SettingsMainLine"/>
+
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/erase_contacts"
-            style="@style/EraseDataCheckedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextViewBlack"
+            android:gravity="center_vertical"
+            android:padding="10dp"
             android:text="@string/erase_contacts"/>
 
-
         <View style="@style/SettingsMainLine"/>
 
-        <CheckedTextView
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/erase_media_recipients"
-            style="@style/EraseDataCheckedText"
-            android:text="@string/erase_media"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextViewBlack"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:text="@string/erase_recipients_and_lists"/>
 
         <View style="@style/SettingsMainLine"/>
 
-        <CheckedTextView
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/erase_materials"
-            style="@style/EraseDataCheckedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextViewBlack"
+            android:gravity="center_vertical"
+            android:padding="10dp"
             android:text="@string/erase_materials"/>
-
-        <View style="@style/SettingsMainLine"/>
-
-        <CheckedTextView
-            android:id="@+id/erase_evidence_videos"
-            style="@style/EraseDataCheckedText"
-            android:text="@string/erase_videos"/>
-
-        <View style="@style/SettingsMainLine"/>
-
-        <CheckedTextView
-            android:id="@+id/erase_evidence_audio"
-            style="@style/EraseDataCheckedText"
-            android:text="@string/erase_audio"/>
-
-        <View style="@style/SettingsMainLine"/>
-
-        <CheckedTextView
-            android:id="@+id/erase_evidence_image"
-            style="@style/EraseDataCheckedText"
-            android:text="@string/erase_photos"/>
 
         <View style="@style/SettingsMainLine"/>
     </LinearLayout>

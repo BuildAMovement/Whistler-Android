@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="rs.readahead.washington.mobile.views.activity.PanicModeActivity">
+    android:textDirection="locale"
+    tools:context="rs.readahead.washington.mobile.views.activity.PanicModeSettingsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

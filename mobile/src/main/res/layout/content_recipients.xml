@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="rs.readahead.washington.mobile.views.activity.RecipientsActivity"
+    tools:showIn="@layout/activity_recipients">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            style="@style/VerticalLinearLayout"
+            android:background="@android:color/white"
+            android:padding="0dp">
+
+            <TextView
+                android:id="@+id/metadata_text"
+                style="@style/ExplanatoryEmptyMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:linksClickable="true"
+                android:background="@color/wa_button_gray"
+                android:text="@string/decide_recipient_info"/>
+
+            <LinearLayout
+                android:id="@+id/button_bottom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/wa_button_gray"
+                android:orientation="horizontal"
+                android:paddingBottom="0.5dp">
+
+                <Button
+                    android:id="@+id/new_recipient"
+                    style="@style/RecipientButtonNew"
+                    android:text="@string/new_recipient_short"/>
+
+                <Button
+                    android:id="@+id/new_list"
+                    style="@style/RecipientButtonNew"
+                    android:text="@string/new_list_short"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/VerticalLinearLayout"
+                android:paddingEnd="32dp"
+                android:paddingStart="32dp">
+
+                <TextView
+                    style="@style/RecipientTitle"
+                    android:text="@string/lists"/>
+
+                <LinearLayout
+                    android:id="@+id/recipient_lists_list"
+                    style="@style/VerticalLinearLayout"
+                    android:padding="0dp"/>
+
+                <TextView
+                    style="@style/RecipientTitle"
+                    android:text="@string/recipients"/>
+
+                <LinearLayout
+                    android:id="@+id/recipient_list"
+                    style="@style/VerticalLinearLayout"
+                    android:padding="0dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

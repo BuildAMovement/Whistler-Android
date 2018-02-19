@@ -3,75 +3,48 @@ package rs.readahead.washington.mobile.util;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.Nullable;
 
 
 public class LocationProvider {
-
-    public static interface LocationCallback {
-        public void onNewLocationAvailable(Location location);
+    public interface LocationCallback {
+        void onNewLocationAvailable(@Nullable Location location);
     }
 
     public static void requestSingleUpdate(final Context context, final LocationCallback callback) {
-        final LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        if (lm == null) {
+            callback.onNewLocationAvailable(null);
             return;
         }
+
+        boolean isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!PermissionUtil.checkPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) &&
+                !PermissionUtil.checkPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            callback.onNewLocationAvailable(null);
+            return;
+        }
+
         if (isNetworkEnabled) {
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-
-            locationManager.requestSingleUpdate(criteria, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    callback.onNewLocationAvailable(location);
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-                }
-            }, null);
+            lm.requestSingleUpdate(criteria, new SimpleLocationListener(callback), null);
         } else {
-            boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isGPSEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if (isGPSEnabled) {
                 Criteria criteria = new Criteria();
                 criteria.setAccuracy(Criteria.ACCURACY_FINE);
-                locationManager.requestSingleUpdate(criteria, new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        callback.onNewLocationAvailable(location);
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-                    }
-                }, null);
+                lm.requestSingleUpdate(criteria, new SimpleLocationListener(callback), null);
             } else {
-                callback.onNewLocationAvailable(new Location((LocationManager.GPS_PROVIDER)));
+                callback.onNewLocationAvailable(null);
             }
         }
     }
@@ -81,8 +54,35 @@ public class LocationProvider {
     }
 
     public static boolean isLocationEnabled(Context context) {
-        final LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        return (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
+        final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        return lm != null &&
+                (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || lm.isProviderEnabled(LocationManager.GPS_PROVIDER));
+    }
+
+    private static class SimpleLocationListener implements LocationListener {
+        final LocationCallback callback;
+
+        SimpleLocationListener(LocationCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            callback.onNewLocationAvailable(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
     }
 }
 

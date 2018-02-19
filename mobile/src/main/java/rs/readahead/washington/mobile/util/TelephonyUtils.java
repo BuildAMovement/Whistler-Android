@@ -11,6 +11,8 @@ import android.telephony.CellInfoWcdma;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,21 +26,30 @@ public class TelephonyUtils {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         List<String> list = new ArrayList<>();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            for (CellInfo cellInfo: tm.getAllCellInfo()) {
-                //list.add(cellInfoToString18(cellInfo));
-                addNew(list, cellInfoToString18(cellInfo));
+        if (tm == null) {
+            return list;
+        }
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                for (CellInfo cellInfo : tm.getAllCellInfo()) {
+                    //list.add(cellInfoToString18(cellInfo));
+                    addNew(list, cellInfoToString18(cellInfo));
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                for (CellInfo cellInfo : tm.getAllCellInfo()) {
+                    //list.add(cellInfoToString17(cellInfo));
+                    addNew(list, cellInfoToString17(cellInfo));
+                }
+            } else {
+                //noinspection deprecation
+                for (NeighboringCellInfo cellInfo : tm.getNeighboringCellInfo()) {
+                    //list.add(neighboringCellInfoToString(cellInfo));
+                    addNew(list, neighboringCellInfoToString(cellInfo));
+                }
             }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            for (CellInfo cellInfo: tm.getAllCellInfo()) {
-                //list.add(cellInfoToString17(cellInfo));
-                addNew(list, cellInfoToString17(cellInfo));
-            }
-        } else {
-            for (NeighboringCellInfo cellInfo: tm.getNeighboringCellInfo()) {
-                //list.add(neighboringCellInfoToString(cellInfo));
-                addNew(list, neighboringCellInfoToString(cellInfo));
-            }
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         }
 
         return list;

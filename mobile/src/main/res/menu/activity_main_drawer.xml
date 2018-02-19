@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:id="@+id/drawer_main_group"
-        android:checkableBehavior="none">
-        <!--<item
-            android:id="@+id/nav_secure_messaging"
-            android:icon="@drawable/nv_secure_messaging"
-            android:title="@string/secure_messaging" />-->
+    <group>
         <item
-            android:id="@+id/nav_make_oppression_backfire"
-            android:icon="@drawable/nv_make_opression"
-            android:title="@string/reporting" />
+            android:id="@+id/nav_collect"
+            android:icon="@drawable/ic_collect_menu"
+            android:title="@string/ra_collect" />
+        <item
+            android:id="@+id/nav_reporting"
+            android:icon="@drawable/ic_report_menu"
+            android:title="@string/ra_report" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/ra_gallery" />
         <item
             android:id="@+id/nav_training_room"
-            android:icon="@drawable/nv_training"
-            android:title="@string/training_room" />
+            android:icon="@drawable/ic_training_menu"
+            android:title="@string/ra_train" />
     </group>
-    <group
-        android:id="@+id/drawer_settings_group"
-        android:checkableBehavior="none">
+    <group android:id="@+id/nav_group_id1">
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/nv_settings"
             android:title="@string/settings" />
-        <!--<item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/nv_help"
-            android:title="@string/help" />-->
     </group>
-    <group
-        android:id="@+id/drawer_about_group"
-        android:checkableBehavior="none">
+    <group android:id="@+id/nav_group_id2"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_about_n_help"
             android:icon="@drawable/nv_about"
+            android:checkable="false"
             android:title="@string/about_n_help" />
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback_black_24px"
+            android:title="@string/tell_us"
+            android:checked="true"/>
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/nv_log_out"
+            android:checkable="false"
             android:title="@string/log_out" />
     </group>
 </menu>

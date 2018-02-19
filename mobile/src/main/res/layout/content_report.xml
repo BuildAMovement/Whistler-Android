@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textDirection="locale"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="rs.readahead.washington.mobile.views.activity.ReportActivity"
+    tools:showIn="@layout/activity_report">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/new_report">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/wa_button_gray"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                tools:ignore="RtlSymmetry">
+
+                <LinearLayout
+                    style="@style/ReportInfoContainerLayout"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        style="@style/ReportInfoImageView"
+                        android:src="@drawable/ic_location_black"
+                        tools:ignore="ContentDescription"/>
+
+                    <TextView
+                        android:id="@+id/meta_data_text"
+                        style="@style/ReportInfoTextView"
+                        android:text="@string/include_geolocation_automatically"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/MultipleReportInfoContainerLayout"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        style="@style/ReportInfoImageView"
+                        android:src="@drawable/ic_signal_cellular_black_24dp"
+                        tools:ignore="ContentDescription"/>
+
+                    <TextView
+                        style="@style/ReportInfoTextView"
+                        android:text="@string/report_sent_when_online"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/MultipleReportInfoContainerLayout"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        style="@style/ReportInfoImageView"
+                        android:src="@drawable/ic_settings_black"
+                        tools:ignore="ContentDescription"/>
+
+                    <TextView
+                        android:id="@+id/data_text"
+                        style="@style/ReportInfoTextView"
+                        android:text="@string/save_data"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/drafts_reports"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/SettingsTextViewBlack"
+                    android:text="@string/drafts" />
+                <TextView
+                    style="@style/SettingsTextViewGray"
+                    android:text="@string/drafts_info"/>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine"/>
+
+            <LinearLayout
+                android:id="@+id/sent_reports"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/SettingsTextViewBlack"
+                    android:text="@string/sent" />
+
+                <TextView
+                    style="@style/SettingsTextViewGray"
+                    android:text="@string/sent_info"/>
+
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/new_report"
+        style="@style/BottomYellowButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/create_new_report"/>
+</RelativeLayout>

@@ -1,5 +1,7 @@
 package rs.readahead.washington.mobile.domain.entity;
 
+import android.location.Location;
+
 import java.io.Serializable;
 
 
@@ -66,6 +68,17 @@ public final class EvidenceLocation implements Serializable {
         empty.setTimestamp(UNKNOWN);
 
         return empty;
+    }
+
+    public static EvidenceLocation fromLocation(Location location) {
+        EvidenceLocation el = new EvidenceLocation();
+        el.setTimestamp(location.getTime());
+        el.setAccuracy(location.getAccuracy());
+        el.setAltitude(location.getAltitude());
+        el.setLatitude(location.getLatitude());
+        el.setLongitude(location.getLongitude());
+
+        return el;
     }
 
     @Override

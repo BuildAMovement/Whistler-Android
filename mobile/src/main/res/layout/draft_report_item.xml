@@ -1,56 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/draft_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/button_pressed"
-    android:orientation="vertical">
+    android:textDirection="locale"
+    android:background="@drawable/button_pressed">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="4"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/mob_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textColor="@color/wa_black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/mob_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/wa_dark_gray"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/edit_draft"
-            style="@style/ImageViewSelector"
-            app:srcCompat="@drawable/edit_icon_selector" />
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <ImageView
             android:id="@+id/delete_draft"
             style="@style/ImageViewSelector"
-            app:srcCompat="@drawable/delete_icon_selector" />
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/delete_icon_selector"
+            tools:ignore="ContentDescription"/>
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/edit_draft"
+            style="@style/ImageViewSelector"
+            android:layout_toStartOf="@id/delete_draft"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:src="@drawable/edit_icon_selector"
+            tools:ignore="ContentDescription"/>
 
-    <View style="@style/SettingsMainLine" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/edit_draft"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/mob_title"
+                style="@style/LineTextViewBlack"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/mob_date"
+                style="@style/LineTextViewGray"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View style="@style/SettingsMainLine"
+        android:layout_gravity="bottom"/>
+</FrameLayout>

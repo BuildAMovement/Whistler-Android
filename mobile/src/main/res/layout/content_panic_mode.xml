@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/allRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/wa_light_gray"
     android:orientation="vertical"
+    android:textDirection="locale"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".views.activity.PanicModeActivity"
+    tools:context=".views.activity.PanicModeSettingsActivity"
     tools:showIn="@layout/activity_panic_mode">
 
     <FrameLayout
@@ -30,11 +30,11 @@
                     style="@style/ClickableVerticalLinerLayout">
 
                     <TextView
-                        style="@style/TextViewBlack"
+                        style="@style/SettingsTextViewBlack"
                         android:text="@string/panic_message" />
 
                     <TextView
-                        style="@style/TextViewGray"
+                        style="@style/SettingsTextViewGray"
                         android:text="@string/panic_message_info" />
                 </LinearLayout>
 
@@ -45,11 +45,11 @@
                     style="@style/ClickableVerticalLinerLayout">
 
                     <TextView
-                        style="@style/TextViewBlack"
+                        style="@style/SettingsTextViewBlack"
                         android:text="@string/circle_of_trust" />
 
                     <TextView
-                        style="@style/TextViewGray"
+                        style="@style/SettingsTextViewGray"
                         android:text="@string/circle_of_trust_info" />
                 </LinearLayout>
 
@@ -60,11 +60,11 @@
                     style="@style/ClickableVerticalLinerLayout">
 
                     <TextView
-                        style="@style/TextViewBlack"
+                        style="@style/SettingsTextViewBlack"
                         android:text="@string/sensitive_data" />
 
                     <TextView
-                        style="@style/TextViewGray"
+                        style="@style/SettingsTextViewGray"
                         android:text="@string/sensitive_data_info" />
                 </LinearLayout>
 

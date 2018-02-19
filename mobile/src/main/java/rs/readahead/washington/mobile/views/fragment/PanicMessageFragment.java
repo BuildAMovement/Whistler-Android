@@ -4,30 +4,36 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.sharedpref.SharedPrefs;
+import rs.readahead.washington.mobile.data.sharedpref.SharedPrefs;
 import rs.readahead.washington.mobile.util.C;
 import rs.readahead.washington.mobile.util.LocationProvider;
-import rs.readahead.washington.mobile.util.PermissionHandler;
+import rs.readahead.washington.mobile.util.PermissionUtil;
 
-public class PanicMessageFragment extends Fragment {
 
-    @BindView(R.id.panic_message) EditText mPanicMessageView;
-    @BindView(R.id.geolocation) CheckedTextView mGeolocationView;
-    @BindView(R.id.panic_message_layout) TextInputLayout mPanicMessageLayout;
+public class PanicMessageFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+    @BindView(R.id.panic_message)
+    EditText mPanicMessageView;
+    @BindView(R.id.geolocation)
+    SwitchCompat mGeolocationView;
+    @BindView(R.id.panic_message_layout)
+    TextInputLayout mPanicMessageLayout;
 
     private Unbinder unbinder;
 
@@ -37,17 +43,49 @@ public class PanicMessageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_panic_message, container, false);
         unbinder = ButterKnife.bind(this, view);
         setViews();
+        mGeolocationView.setOnCheckedChangeListener(this);
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.panic_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            return redirectBack();
+        }
+
+        if (id == R.id.action_select) {
+            mPanicMessageView.clearFocus();
+            SharedPrefs.getInstance().setPanicMessage(mPanicMessageView.getText().toString());
+            Toast.makeText(getActivity(), R.string.panic_message_saved, Toast.LENGTH_SHORT).show();
+            return redirectBack();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean redirectBack() {
+        if (getActivity() != null) {
+            getActivity().onBackPressed();
+            return true;
+        }
+
+        return false;
     }
 
     private void setViews() {
@@ -55,44 +93,29 @@ public class PanicMessageFragment extends Fragment {
         mGeolocationView.setChecked(SharedPrefs.getInstance().isPanicGeolocationActive());
     }
 
-    @OnClick(R.id.panic_ok)
-    public void onOkClicked() {
-        mPanicMessageView.clearFocus();
-        SharedPrefs.getInstance().setPanicMessage(mPanicMessageView.getText().toString());
-        Snackbar.make(mGeolocationView, R.string.panic_message_saved, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @OnClick(R.id.panic_cancel)
-    public void onCancelClicked() {
-        getActivity().onBackPressed();
-    }
-
-
-    @OnClick(R.id.geolocation)
-    public void handleClick(View view) {
-
-        CheckedTextView checkedTextView = (CheckedTextView) view;
-        if (checkedTextView.isChecked()) {
-            SharedPrefs.getInstance().setPanicGeolocationActive(false);
-            mGeolocationView.setChecked(false);
-        } else {
-            if (PermissionHandler.checkPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION, getString(R.string.permission_location))) {
-                if (!LocationProvider.isLocationEnabled(getContext())) {
-                    LocationProvider.openSettings(getContext());
-                    return;
+    @Override
+    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
+        if (v.getId() == R.id.geolocation) {
+            if (isChecked) {
+                if (PermissionUtil.checkPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION, getString(R.string.permission_location))) {
+                    if (!LocationProvider.isLocationEnabled(getContext())) {
+                        LocationProvider.openSettings(getContext());
+                        return;
+                    }
+                    SharedPrefs.getInstance().setPanicGeolocationActive(isChecked);
+                    mGeolocationView.setChecked(isChecked);
                 }
-
-                SharedPrefs.getInstance().setPanicGeolocationActive(true);
-                mGeolocationView.setChecked(true);
+            } else {
+                SharedPrefs.getInstance().setPanicGeolocationActive(isChecked);
+                mGeolocationView.setChecked(isChecked);
             }
         }
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         switch (requestCode) {
             case C.REQUEST_CODE_ASK_PERMISSIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -109,6 +132,4 @@ public class PanicMessageFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
-
-
 }
