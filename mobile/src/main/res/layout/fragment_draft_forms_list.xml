@@ -13,4 +13,13 @@
         android:clipToPadding="false"
         android:scrollbarStyle="outsideOverlay"
         android:scrollbars="vertical"/>
+
+    <TextView
+        android:id="@+id/blank_draft_forms_info"
+        style="@style/ExplanatoryEmptyMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:text="@string/collect_draft_empty_text"
+        android:visibility="gone"/>
 </RelativeLayout>

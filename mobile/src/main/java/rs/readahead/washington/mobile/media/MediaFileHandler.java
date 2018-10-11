@@ -51,6 +51,7 @@ import rs.readahead.washington.mobile.data.database.DataSource;
 import rs.readahead.washington.mobile.data.provider.EncryptedFileProvider;
 import rs.readahead.washington.mobile.domain.entity.KeyBundle;
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
+import rs.readahead.washington.mobile.domain.entity.RawMediaFile;
 import rs.readahead.washington.mobile.domain.entity.TempMediaFile;
 import rs.readahead.washington.mobile.presentation.entity.MediaFileThumbnailData;
 import rs.readahead.washington.mobile.util.C;
@@ -131,14 +132,13 @@ public class MediaFileHandler {
     }
 
     public static void exportMediaFile(Context context, MediaFile mediaFile) throws IOException {
-        String envDirType,
-            mime = mediaFile.getPrimaryMimeType();
+        String envDirType;
 
-        if ("image".equals(mime)) {
+        if (mediaFile.getType() == MediaFile.Type.IMAGE) {
             envDirType = Environment.DIRECTORY_PICTURES;
-        } else if ("video".equals(mime)) {
+        } else if (mediaFile.getType() == MediaFile.Type.VIDEO) {
             envDirType = Environment.DIRECTORY_MOVIES;
-        } else if ("audio".equals(mime)) {
+        } else if (mediaFile.getType() == MediaFile.Type.AUDIO) {
             envDirType = Environment.DIRECTORY_MUSIC;
         } else { // this should not happen anyway..
             if (Build.VERSION.SDK_INT >= 19) {
@@ -393,9 +393,7 @@ public class MediaFileHandler {
     @SuppressWarnings("UnusedReturnValue")
     static boolean deleteFile(Context context, @NonNull MediaFile mediaFile) {
         try {
-            File mediaPath = new File(context.getFilesDir(), mediaFile.getPath());
-            File file = new File(mediaPath, mediaFile.getFileName());
-            return file.delete();
+            return getFile(context, mediaFile).delete();
         } catch (Throwable ignored) {
             return false;
         }
@@ -413,8 +411,7 @@ public class MediaFileHandler {
     @Nullable
     public static InputStream getStream(Context context, MediaFile mediaFile) {
         try {
-            File mediaPath = new File(context.getFilesDir(), mediaFile.getPath());
-            File file = new File(mediaPath, mediaFile.getFileName());
+            File file = getFile(context, mediaFile);
             FileInputStream fis = new FileInputStream(file);
             KeyBundle keyBundle;
 
@@ -427,7 +424,7 @@ public class MediaFileHandler {
                 return null;
             }
 
-            return EncryptedFileProvider.getDecryptedInputStream(key, fis, file.getName());
+            return EncryptedFileProvider.getDecryptedLimitedInputStream(key, fis, file);
 
         } catch (IOException ignored) {
             Timber.d(ignored, MediaFileHandler.class.getName());
@@ -437,43 +434,22 @@ public class MediaFileHandler {
     }
 
     public static Uri getEncryptedUri(Context context, MediaFile mediaFile) {
-        File mediaPath = new File(context.getFilesDir(), mediaFile.getPath());
-        File newFile = new File(mediaPath, mediaFile.getFileName());
+        File newFile = getFile(context, mediaFile);
         return FileProvider.getUriForFile(context, EncryptedFileProvider.AUTHORITY, newFile);
     }
 
     public static File getTempFile(Context context, TempMediaFile mediaFile) {
-        File mediaPath = new File(context.getFilesDir(), mediaFile.getPath());
-        return new File(mediaPath, mediaFile.getFileName());
+        return getFile(context, mediaFile);
     }
 
-    // todo: this is temp, until cipher/plain size is implemented
     public static long getSize(Context context, MediaFile mediaFile) {
-        InputStream is = getStream(context, mediaFile);
-
-        if (is == null) return 0L;
-
-        int c;
-        long l = 0L;
-        byte[] buffer = new byte[4096];
-        try {
-            while ((c = is.read(buffer, 0, buffer.length)) > 0) {
-                l += c;
-            }
-        } catch (IOException ignored) {
-            return 0L;
-        } finally {
-            FileUtil.close(is);
-        }
-
-        return l;
+        return getFile(context, mediaFile).length() - EncryptedFileProvider.IV_SIZE;
     }
 
     @Nullable
     static OutputStream getOutputStream(Context context, MediaFile mediaFile) {
         try {
-            File mediaPath = new File(context.getFilesDir(), mediaFile.getPath());
-            File file = new File(mediaPath, mediaFile.getFileName());
+            File file = getFile(context, mediaFile);
             FileOutputStream fos = new FileOutputStream(file);
             KeyBundle keyBundle;
 
@@ -525,7 +501,7 @@ public class MediaFileHandler {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_STREAM, mediaFileUri);
-        shareIntent.setType(mediaFile.getMimeType());
+        shareIntent.setType(FileUtil.getMimeType(mediaFile.getFileName()));
 
         context.startActivity(Intent.createChooser(shareIntent, context.getText(R.string.ra_share)));
     }
@@ -543,6 +519,11 @@ public class MediaFileHandler {
         shareIntent.setType("*/*");
 
         context.startActivity(Intent.createChooser(shareIntent, context.getText(R.string.ra_share)));
+    }
+
+    private static File getFile(@NonNull Context context, RawMediaFile mediaFile) {
+        final File mediaPath = new File(context.getFilesDir(), mediaFile.getPath());
+        return new File(mediaPath, mediaFile.getFileName());
     }
 
     private MediaFileThumbnailData getThumbnailData(final MediaFile mediaFile) throws NoSuchElementException {
@@ -581,8 +562,7 @@ public class MediaFileHandler {
     @NonNull
     private MediaFileThumbnailData createThumb(Context context, MediaFile mediaFile) {
         try {
-            File mediaPath = new File(context.getFilesDir(), mediaFile.getPath());
-            File file = new File(mediaPath, mediaFile.getFileName());
+            File file = getFile(context, mediaFile);
             FileInputStream fis = new FileInputStream(file);
             KeyBundle keyBundle;
 
@@ -595,13 +575,12 @@ public class MediaFileHandler {
                 return MediaFileThumbnailData.NONE;
             }
 
-            InputStream inputStream = EncryptedFileProvider.getDecryptedInputStream(key, fis, file.getName());
+            InputStream inputStream = EncryptedFileProvider.getDecryptedInputStream(key, fis, file.getName()); // todo: move to limited variant
             final Bitmap bm = BitmapFactory.decodeStream(inputStream);
 
             Bitmap thumb;
-            String type = mediaFile.getPrimaryMimeType();
 
-            if ("image".equals(type)) {
+            if (mediaFile.getType() == MediaFile.Type.IMAGE) {
                 thumb = ThumbnailUtils.extractThumbnail(bm, bm.getWidth() / 10, bm.getHeight() / 10);
             } else {
                 return MediaFileThumbnailData.NONE;

@@ -7,7 +7,7 @@
             android:title="@string/ra_collect" />
         <item
             android:id="@+id/nav_reporting"
-            android:icon="@drawable/ic_report_menu"
+            android:icon="@drawable/ic_prime_report"
             android:title="@string/ra_report" />
         <item
             android:id="@+id/nav_gallery"

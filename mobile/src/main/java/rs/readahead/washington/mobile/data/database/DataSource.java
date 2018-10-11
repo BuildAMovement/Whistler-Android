@@ -37,7 +37,6 @@ import java.util.concurrent.Callable;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.subjects.ReplaySubject;
 import rs.readahead.washington.mobile.data.entity.MetadataEntity;
 import rs.readahead.washington.mobile.data.entity.mapper.EntityMapper;
 import rs.readahead.washington.mobile.domain.entity.ContactSetting;
@@ -66,7 +65,8 @@ import rs.readahead.washington.mobile.domain.repository.ISettingsRepository;
 import rs.readahead.washington.mobile.domain.repository.ITrainModuleRepository;
 import rs.readahead.washington.mobile.presentation.entity.DownloadState;
 import rs.readahead.washington.mobile.presentation.entity.MediaFileThumbnailData;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
+import rs.readahead.washington.mobile.util.FileUtil;
 import timber.log.Timber;
 
 
@@ -76,13 +76,10 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     private SQLiteDatabase database;
     private static Gson gson = new GsonBuilder().create();
 
-    private static volatile ReplaySubject<DataSource> subject = ReplaySubject.createWithSize(1);
-
 
     public static synchronized DataSource getInstance(Context context, byte[] key) {
         if (dataSource == null) {
             dataSource = new DataSource(context.getApplicationContext(), key);
-            subject.onNext(dataSource);
         }
 
         return dataSource;
@@ -139,6 +136,29 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     @Override
+    public Single<List<MediaRecipient>> getDifferentMediaRecipientsFromRecipientList(
+            final MediaRecipientList mediaRecipientList,
+            final List<MediaRecipientList> checkedRecipientLists) {
+        return Single.fromCallable(new Callable<List<MediaRecipient>>() {
+            @Override
+            public List<MediaRecipient> call() throws Exception {
+                Integer selectedListId = mediaRecipientList.getId();
+                List<Integer> listIds = new ArrayList<>();
+
+                for (MediaRecipientList list : checkedRecipientLists) {
+                    listIds.add(list.getId());
+                }
+
+                if (listIds.contains(selectedListId)) {
+                    listIds.remove(selectedListId);
+                }
+
+                return getRecipientsFromList(selectedListId, listIds);
+            }
+        });
+    }
+
+    @Override
     public Single<List<MediaRecipient>> listMediaRecipients() {
         return Single.fromCallable(new Callable<List<MediaRecipient>>() {
             @Override
@@ -186,11 +206,11 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                 Set<Long> recipientIds = new HashSet<>(recipients.size());
                 Set<Integer> listIds = new HashSet<>(lists.size());
 
-                for (MediaRecipient recipient: recipients) {
+                for (MediaRecipient recipient : recipients) {
                     recipientIds.add(recipient.getId());
                 }
 
-                for (MediaRecipientList list: lists) {
+                for (MediaRecipientList list : lists) {
                     listIds.add(list.getId());
                 }
 
@@ -498,12 +518,11 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         });
     }
 
-    @Override
-    public Single<List<MediaFile>> listMediaFiles() {
+    public Single<List<MediaFile>> listMediaFiles(final Filter filter, final Sort sort) {
         return Single.fromCallable(new Callable<List<MediaFile>>() {
             @Override
             public List<MediaFile> call() throws Exception {
-                return getMediaFiles();
+                return getMediaFiles(filter, sort);
             }
         });
     }
@@ -539,6 +558,16 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     @Override
+    public Single<MediaFile> getMediaFile(final long id) {
+        return Single.fromCallable(new Callable<MediaFile>() {
+            @Override
+            public MediaFile call() throws Exception {
+                return getMediaFileFromDb(id);
+            }
+        });
+    }
+
+    @Override
     public Single<MediaFile> deleteMediaFile(final MediaFile mediaFile, final IMediaFileDeleter deleter) {
         return Single.fromCallable(new Callable<MediaFile>() {
             @Override
@@ -560,7 +589,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
     private MediaFile registerMediaFileRecord(MediaFile mediaFile, MediaFileThumbnailData thumbnailData) {
         if (mediaFile.getCreated() == 0) {
-            mediaFile.setCreated(CommonUtils.currentTimestamp());
+            mediaFile.setCreated(Util.currentTimestamp());
         }
 
         try {
@@ -579,7 +608,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
             mediaFile.setId(database.insert(D.T_MEDIA_FILE, null, values));
 
-            if (! MediaFileThumbnailData.NONE.equals(thumbnailData)) {
+            if (!MediaFileThumbnailData.NONE.equals(thumbnailData)) {
                 updateThumbnail(mediaFile.getId(), thumbnailData);
             }
 
@@ -602,7 +631,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_COLLECT_SERVER,
-                    new String[] {D.C_ID, D.C_NAME, D.C_URL, D.C_USERNAME, D.C_PASSWORD},
+                    new String[]{D.C_ID, D.C_NAME, D.C_URL, D.C_USERNAME, D.C_PASSWORD},
                     null,
                     null,
                     null, null,
@@ -631,9 +660,9 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_COLLECT_SERVER,
-                    new String[] {D.C_ID, D.C_NAME, D.C_URL, D.C_USERNAME, D.C_PASSWORD},
+                    new String[]{D.C_ID, D.C_NAME, D.C_URL, D.C_USERNAME, D.C_PASSWORD},
                     D.C_ID + "= ?",
-                    new String[] {Long.toString(id)},
+                    new String[]{Long.toString(id)},
                     null, null, null, null);
 
             if (cursor.moveToFirst()) {
@@ -659,7 +688,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     false,
                     D.T_COLLECT_BLANK_FORM + " JOIN " + D.T_COLLECT_SERVER + " ON " +
                             D.T_COLLECT_BLANK_FORM + "." + D.C_COLLECT_SERVER_ID + " = " + D.T_COLLECT_SERVER + "." + D.C_ID,
-                    new String[] {
+                    new String[]{
                             cn(D.T_COLLECT_BLANK_FORM, D.C_ID, D.A_COLLECT_BLANK_FORM_ID),
                             D.C_COLLECT_SERVER_ID,
                             D.C_FORM_ID,
@@ -675,7 +704,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     null, null, null, null
             );
 
-            cursor = database.rawQuery(query, new String[] {formID});
+            cursor = database.rawQuery(query, new String[]{formID});
 
             if (cursor.moveToFirst()) {
                 OdkForm form = cursorToOdkForm(cursor);
@@ -716,7 +745,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     false,
                     D.T_COLLECT_BLANK_FORM + " JOIN " + D.T_COLLECT_SERVER + " ON " +
                             D.T_COLLECT_BLANK_FORM + "." + D.C_COLLECT_SERVER_ID + " = " + D.T_COLLECT_SERVER + "." + D.C_ID,
-                    new String[] {
+                    new String[]{
                             cn(D.T_COLLECT_BLANK_FORM, D.C_ID, D.A_COLLECT_BLANK_FORM_ID),
                             D.C_COLLECT_SERVER_ID,
                             D.C_FORM_ID,
@@ -785,7 +814,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         List<String> formIDs = new ArrayList<>(forms.size());
         List<String> errorServerIDs = new ArrayList<>(errors.size());
 
-        for (CollectForm form: forms) {
+        for (CollectForm form : forms) {
             formIDs.add(DatabaseUtils.sqlEscapeString(form.getForm().getFormID()));
 
             CollectForm current = getBlankCollectForm(form.getForm().getFormID());
@@ -814,7 +843,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         }
 
         // get serverIds with errors in form list
-        for (IErrorBundle error: errors) {
+        for (IErrorBundle error : errors) {
             errorServerIDs.add(Long.toString(error.getServerId()));
         }
 
@@ -839,7 +868,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         ContentValues values = new ContentValues();
         values.put(D.C_FAVORITE, !form.isFavorite());
 
-        int num = database.update(D.T_COLLECT_BLANK_FORM, values, D.C_ID + "= ?", new String[] {Long.toString(form.getId())});
+        int num = database.update(D.T_COLLECT_BLANK_FORM, values, D.C_ID + "= ?", new String[]{Long.toString(form.getId())});
         if (num > 0) {
             form.setFavorite(!form.isFavorite());
         }
@@ -854,9 +883,9 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_COLLECT_BLANK_FORM,
-                    new String[] {D.C_FORM_DEF},
+                    new String[]{D.C_FORM_DEF},
                     D.C_FORM_ID + "= ? AND " + D.C_VERSION + " = ?",
-                    new String[] {form.getForm().getFormID(), form.getForm().getVersion()},
+                    new String[]{form.getForm().getFormID(), form.getForm().getVersion()},
                     null, null, null, null);
 
             if (cursor.moveToFirst()) {
@@ -883,7 +912,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         }
 
         String[] stringIds = new String[ids.length];
-        for(int i = 0; i < ids.length; i++) {
+        for (int i = 0; i < ids.length; i++) {
             stringIds[i] = Long.toString(ids[i]);
         }
 
@@ -891,7 +920,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
             final String query = SQLiteQueryBuilder.buildQueryString(
                     false,
                     D.T_MEDIA_FILE,
-                    new String[] {
+                    new String[]{
                             cn(D.T_MEDIA_FILE, D.C_ID, D.A_MEDIA_FILE_ID),
                             D.C_PATH,
                             D.C_UID,
@@ -926,7 +955,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_MEDIA_FILE,
-                    new String[] {
+                    new String[]{
                             cn(D.T_MEDIA_FILE, D.C_ID, D.A_MEDIA_FILE_ID),
                             D.C_PATH,
                             D.C_UID,
@@ -936,7 +965,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                             D.C_DURATION,
                             D.C_ANONYMOUS},
                     cn(D.T_MEDIA_FILE, D.C_ID) + " = ?",
-                    new String[] {Long.toString(id)},
+                    new String[]{Long.toString(id)},
                     null, null, null, null
             );
 
@@ -979,7 +1008,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         values.put(D.C_METADATA, new GsonBuilder().create().toJson(new EntityMapper().transform(metadata)));
 
         database.update(D.T_MEDIA_FILE, values, D.C_ID + " = ?",
-                new String[] {Long.toString(mediaFileId)});
+                new String[]{Long.toString(mediaFileId)});
 
         return getMediaFileFromDb(mediaFileId);
     }
@@ -992,7 +1021,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     false,
                     D.T_COLLECT_FORM_INSTANCE + " JOIN " + D.T_COLLECT_SERVER + " ON " +
                             cn(D.T_COLLECT_FORM_INSTANCE, D.C_COLLECT_SERVER_ID) + " = " + cn(D.T_COLLECT_SERVER, D.C_ID),
-                    new String[] {
+                    new String[]{
                             cn(D.T_COLLECT_FORM_INSTANCE, D.C_ID, D.A_COLLECT_FORM_INSTANCE_ID),
                             D.C_COLLECT_SERVER_ID,
                             D.C_STATUS,
@@ -1008,7 +1037,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     null, null, null, null
             );
 
-            cursor = database.rawQuery(query, new String[] {Long.toString(id)});
+            cursor = database.rawQuery(query, new String[]{Long.toString(id)});
 
             if (cursor.moveToFirst()) {
                 CollectFormInstance instance = cursorToCollectFormInstance(cursor);
@@ -1033,7 +1062,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private void deleteCollectFormInstance(long id) throws NotFountException {
-        int count = database.delete(D.T_COLLECT_FORM_INSTANCE, D.C_ID + " = ?", new String[] {Long.toString(id)});
+        int count = database.delete(D.T_COLLECT_FORM_INSTANCE, D.C_ID + " = ?", new String[]{Long.toString(id)});
 
         if (count != 1) {
             throw new NotFountException();
@@ -1049,7 +1078,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     false,
                     D.T_MEDIA_FILE + " JOIN " + D.T_COLLECT_FORM_INSTANCE_MEDIA_FILE + " ON " +
                             cn(D.T_MEDIA_FILE, D.C_ID) + " = " + cn(D.T_COLLECT_FORM_INSTANCE_MEDIA_FILE, D.C_MEDIA_FILE_ID),
-                    new String[] {
+                    new String[]{
                             cn(D.T_MEDIA_FILE, D.C_ID, D.A_MEDIA_FILE_ID),
                             D.C_PATH,
                             D.C_UID,
@@ -1062,7 +1091,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     null, null, null, null
             );
 
-            cursor = database.rawQuery(query, new String[] {Long.toString(instanceId)});
+            cursor = database.rawQuery(query, new String[]{Long.toString(instanceId)});
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 mediaFiles.add(cursorToMediaFile(cursor));
@@ -1086,12 +1115,12 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
             final String query = SQLiteQueryBuilder.buildQueryString(
                     false,
                     D.T_MEDIA_FILE,
-                    new String[] {D.C_THUMBNAIL},
+                    new String[]{D.C_THUMBNAIL},
                     D.C_ID + "= ?",
                     null, null, null, null
             );
 
-            cursor = database.rawQuery(query, new String[] {Long.toString(id)});
+            cursor = database.rawQuery(query, new String[]{Long.toString(id)});
 
             if (cursor.moveToFirst()) {
                 MediaFileThumbnailData mediaFileThumbnailData =
@@ -1123,7 +1152,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
             database.update(D.T_MEDIA_FILE, values,
                     D.C_ID + "= ?",
-                    new String[] {Long.toString(mediaFileId)});
+                    new String[]{Long.toString(mediaFileId)});
         } catch (Exception e) {
             Timber.d(e, getClass().getName());
         }
@@ -1131,15 +1160,17 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         return thumbnailData;
     }
 
-    private List<MediaFile> getMediaFiles() {
+    private List<MediaFile> getMediaFiles(final Filter filter, final Sort sort) {
         Cursor cursor = null;
         List<MediaFile> mediaFiles = new ArrayList<>();
+
+        String order = (sort == Sort.OLDEST ? "ASC" : "DESC");
 
         try {
             final String query = SQLiteQueryBuilder.buildQueryString(
                     false,
                     D.T_MEDIA_FILE,
-                    new String[] {
+                    new String[]{
                             cn(D.T_MEDIA_FILE, D.C_ID, D.A_MEDIA_FILE_ID),
                             D.C_PATH,
                             D.C_UID,
@@ -1149,14 +1180,17 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                             D.C_DURATION,
                             D.C_ANONYMOUS},
                     null, null, null,
-                    D.C_ID + " DESC",
+                    D.C_CREATED + " " + order,
                     null
             );
 
             cursor = database.rawQuery(query, null);
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                mediaFiles.add(cursorToMediaFile(cursor));
+                MediaFile mediaFile = cursorToMediaFile(cursor);
+                if (mediaFileFilter(mediaFile, filter)) {
+                    mediaFiles.add(mediaFile);
+                }
             }
         } catch (Exception e) {
             Timber.d(e, getClass().getName());
@@ -1177,7 +1211,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
             database.update(D.T_COLLECT_BLANK_FORM, values,
                     D.C_FORM_ID + "= ? AND " + D.C_VERSION + " = ?",
-                    new String[] { form.getForm().getFormID(), form.getForm().getVersion() });
+                    new String[]{form.getForm().getFormID(), form.getForm().getVersion()});
 
             form.setDownloaded(true);
         } catch (IOException e) {
@@ -1188,7 +1222,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     private List<CollectFormInstance> getDraftCollectFormInstances() {
-        return getCollectFormInstances(new CollectFormInstanceStatus[] {
+        return getCollectFormInstances(new CollectFormInstanceStatus[]{
                 CollectFormInstanceStatus.UNKNOWN,
                 CollectFormInstanceStatus.DRAFT,
                 CollectFormInstanceStatus.FINALIZED
@@ -1196,7 +1230,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     private List<CollectFormInstance> getSubmitCollectFormInstances() {
-        return getCollectFormInstances(new CollectFormInstanceStatus[] {
+        return getCollectFormInstances(new CollectFormInstanceStatus[]{
                 CollectFormInstanceStatus.SUBMITTED,
                 CollectFormInstanceStatus.SUBMISSION_ERROR,
                 CollectFormInstanceStatus.SUBMISSION_PENDING
@@ -1204,7 +1238,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     private List<CollectFormInstance> getPendingCollectFormInstances() {
-        return getCollectFormInstances(new CollectFormInstanceStatus[] {
+        return getCollectFormInstances(new CollectFormInstanceStatus[]{
                 CollectFormInstanceStatus.SUBMISSION_PENDING
         });
     }
@@ -1214,7 +1248,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         List<CollectFormInstance> instances = new ArrayList<>();
 
         List<String> s = new ArrayList<>(statuses.length);
-        for (CollectFormInstanceStatus status: statuses) {
+        for (CollectFormInstanceStatus status : statuses) {
             s.add(Integer.toString(status.ordinal()));
         }
         String selection = "(" + TextUtils.join(", ", s) + ")";
@@ -1225,7 +1259,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     D.T_COLLECT_FORM_INSTANCE +
                             " JOIN " + D.T_COLLECT_SERVER + " ON " +
                             cn(D.T_COLLECT_FORM_INSTANCE, D.C_COLLECT_SERVER_ID) + " = " + cn(D.T_COLLECT_SERVER, D.C_ID),
-                    new String[] {
+                    new String[]{
                             cn(D.T_COLLECT_FORM_INSTANCE, D.C_ID, D.A_COLLECT_FORM_INSTANCE_ID),
                             D.C_COLLECT_SERVER_ID,
                             D.C_STATUS,
@@ -1279,7 +1313,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
             values.put(D.C_FORM_ID, instance.getFormID());
             values.put(D.C_VERSION, instance.getVersion());
             values.put(D.C_FORM_NAME, instance.getFormName());
-            values.put(D.C_UPDATED, CommonUtils.currentTimestamp());
+            values.put(D.C_UPDATED, Util.currentTimestamp());
             values.put(D.C_INSTANCE_NAME, instance.getInstanceName());
 
             if (instance.getStatus() == CollectFormInstanceStatus.UNKNOWN) {
@@ -1307,11 +1341,11 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
             database.delete(
                     D.T_COLLECT_FORM_INSTANCE_MEDIA_FILE,
                     D.C_COLLECT_FORM_INSTANCE_ID + " = ?",
-                    new String[] {Long.toString(id)});
+                    new String[]{Long.toString(id)});
 
             // insert MediaFiles
             List<MediaFile> mediaFiles = instance.getMediaFiles();
-            for (MediaFile mediaFile: mediaFiles) {
+            for (MediaFile mediaFile : mediaFiles) {
                 values = new ContentValues();
                 values.put(D.C_COLLECT_FORM_INSTANCE_ID, id);
                 values.put(D.C_MEDIA_FILE_ID, mediaFile.getId());
@@ -1358,7 +1392,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         values.put(D.C_USERNAME, server.getUsername());
         values.put(D.C_PASSWORD, server.getPassword());
 
-        database.update(D.T_COLLECT_SERVER, values, D.C_ID + "= ?", new String[] {Long.toString(server.getId())});
+        database.update(D.T_COLLECT_SERVER, values, D.C_ID + "= ?", new String[]{Long.toString(server.getId())});
 
         return server;
     }
@@ -1367,8 +1401,8 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             database.beginTransaction();
 
-            database.delete(D.T_COLLECT_FORM_INSTANCE, D.C_COLLECT_SERVER_ID + " = ?",  new String[] {Long.toString(id)});
-            database.delete(D.T_COLLECT_SERVER, D.C_ID + " = ?", new String[] {Long.toString(id)});
+            database.delete(D.T_COLLECT_FORM_INSTANCE, D.C_COLLECT_SERVER_ID + " = ?", new String[]{Long.toString(id)});
+            database.delete(D.T_COLLECT_SERVER, D.C_ID + " = ?", new String[]{Long.toString(id)});
 
             database.setTransactionSuccessful();
         } finally {
@@ -1387,6 +1421,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         deleteTable(D.T_EVIDENCE);
         deleteTable(D.T_RECIPIENT_LIST);
         deleteTable(D.T_REPORT_RECIPIENT);
+        deleteTable(D.T_REPORT_MEDIA_FILE);
         deleteTable(D.T_COLLECT_BLANK_FORM);
         deleteTable(D.T_COLLECT_FORM_INSTANCE);
         deleteTable(D.T_COLLECT_FORM_INSTANCE_MEDIA_FILE);
@@ -1406,6 +1441,18 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
     public void deleteTrainModules() {
         deleteTable(D.T_TRAIN_MODULE);
+    }
+
+    public void deleteReports() {
+        deleteTable(D.T_REPORT);
+        deleteTable(D.T_REPORT_RECIPIENT);
+        deleteTable(D.T_REPORT_MEDIA_FILE);
+    }
+
+    public void deleteForms() {
+        //deleteTable(D.T_COLLECT_BLANK_FORM); // only draft and sent forms are to be deleted
+        deleteTable(D.T_COLLECT_FORM_INSTANCE);
+        deleteTable(D.T_COLLECT_FORM_INSTANCE_MEDIA_FILE);
     }
 
     public void deleteMediaFiles() {
@@ -1473,11 +1520,11 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
         List<String> wheres = new ArrayList<>();
 
-        if (! selectedRecipients.isEmpty()) {
+        if (!selectedRecipients.isEmpty()) {
             wheres.add(D.C_ID + " IN (" + TextUtils.join(",", selectedRecipients) + ")");
         }
 
-        if (! selectedRecipientLists.isEmpty()) {
+        if (!selectedRecipientLists.isEmpty()) {
             wheres.add(D.C_ID + " IN (SELECT " + D.C_RECIPIENT_ID +
                     " FROM " + D.T_RECIPIENT_RECIPIENT_LIST +
                     " WHERE " + D.C_RECIPIENT_LIST_ID +
@@ -1538,11 +1585,11 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         ContentValues contentValues = new ContentValues();
         contentValues.put(D.C_TITLE, name);
 
-        database.update(D.T_RECIPIENT_LIST, contentValues, D.C_ID + " = ? ", new String[] {Integer.toString(listId)});
+        database.update(D.T_RECIPIENT_LIST, contentValues, D.C_ID + " = ? ", new String[]{Integer.toString(listId)});
     }
 
     private void deleteMediaRecipientListRecipients(int id) {
-        database.delete(D.T_RECIPIENT_RECIPIENT_LIST, D.C_RECIPIENT_LIST_ID + " = ?", new String[] {Integer.toString(id)});
+        database.delete(D.T_RECIPIENT_RECIPIENT_LIST, D.C_RECIPIENT_LIST_ID + " = ?", new String[]{Integer.toString(id)});
     }
 
     private void insertMediaRecipientListRecipient(long recipientId, int listId) {
@@ -1561,7 +1608,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
             deleteMediaRecipientListRecipients(mediaRecipientList.getId());
             if (recipientIds.size() > 0) {
-                for (Integer recipientId: recipientIds) {
+                for (Integer recipientId : recipientIds) {
                     insertMediaRecipientListRecipient(recipientId, mediaRecipientList.getId());
                 }
             }
@@ -1583,7 +1630,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     private void insertReportRecipients(Report report) {
-        for (MediaRecipient recipient: report.getRecipients()) {
+        for (MediaRecipient recipient : report.getRecipients()) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(D.C_RECIPIENT_ID, recipient.getId());
             contentValues.put(D.C_REPORT_ID, report.getId());
@@ -1639,6 +1686,38 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     @NonNull
+    private List<MediaRecipient> getRecipientsFromList(
+            @NonNull Integer selectedList,
+            @NonNull List<Integer> selectedRecipientLists) {
+
+        Cursor cursor = null;
+        List<MediaRecipient> recipients = new ArrayList<>();
+
+        try {
+            String sqlQuery = "SELECT * FROM " + D.T_RECIPIENT + " WHERE " + D.C_ID +
+                    " IN (SELECT " + D.C_RECIPIENT_ID + " FROM " + D.T_RECIPIENT_RECIPIENT_LIST +
+                    " WHERE " + D.C_RECIPIENT_LIST_ID + " = " +  selectedList.toString() +
+                    " EXCEPT SELECT " + D.C_RECIPIENT_ID + " FROM " + D.T_RECIPIENT_RECIPIENT_LIST +
+                    " WHERE " + D.C_RECIPIENT_LIST_ID +
+                    " IN (" + TextUtils.join(",", selectedRecipientLists) + "))";
+
+            cursor = database.rawQuery(sqlQuery, null);
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                MediaRecipient recipient = cursorToRecipient(cursor);
+                recipients.add(recipient);
+            }
+        } catch (Exception e) {
+            Timber.d(e, getClass().getName());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return recipients;
+    }
+
+    @NonNull
     public List<Integer> getRecipientIdsByListId(long listId) {
         List<Integer> ids = new ArrayList<>();
         Cursor cursor = null;
@@ -1646,8 +1725,8 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_RECIPIENT_RECIPIENT_LIST,
-                    new String[] {D.C_RECIPIENT_ID},
-                    D.C_RECIPIENT_LIST_ID + " = ?", new String[] {Long.toString(listId)},
+                    new String[]{D.C_RECIPIENT_ID},
+                    D.C_RECIPIENT_LIST_ID + " = ?", new String[]{Long.toString(listId)},
                     null, null, null);
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -1770,7 +1849,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     private void insertReportEvidences(Report report) {
-        final String sql = createSQLInsert(D.T_REPORT_MEDIA_FILE, new String[] {
+        final String sql = createSQLInsert(D.T_REPORT_MEDIA_FILE, new String[]{
                 D.C_REPORT_ID,
                 D.C_MEDIA_FILE_ID
         });
@@ -1778,7 +1857,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         // todo: close resources
         net.sqlcipher.database.SQLiteStatement stmt = database.compileStatement(sql);
 
-        for (MediaFile mediaFile: report.getEvidences()) {
+        for (MediaFile mediaFile : report.getEvidences()) {
             stmt.bindLong(1, report.getId());
             stmt.bindLong(2, mediaFile.getId());
             stmt.execute();
@@ -1799,7 +1878,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     D.T_REPORT,
                     reportColumns,
                     D.C_SAVED + " = ?",
-                    new String[] { Integer.toString(saved.ordinal()) },
+                    new String[]{Integer.toString(saved.ordinal())},
                     null, null, D.C_ID + " DESC");
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -1828,7 +1907,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     D.T_REPORT,
                     reportColumns,
                     D.C_ID + " = ?",
-                    new String[] { Long.toString(id) },
+                    new String[]{Long.toString(id)},
                     null, null, null);
 
             if (cursor.getCount() == 1) {
@@ -1860,7 +1939,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     false,
                     D.T_MEDIA_FILE + " JOIN " + D.T_REPORT_MEDIA_FILE + " ON " +
                             cn(D.T_MEDIA_FILE, D.C_ID) + " = " + cn(D.T_REPORT_MEDIA_FILE, D.C_MEDIA_FILE_ID),
-                    new String[] {
+                    new String[]{
                             cn(D.T_MEDIA_FILE, D.C_ID, D.A_MEDIA_FILE_ID),
                             D.C_PATH,
                             D.C_UID,
@@ -1873,7 +1952,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                     null, null, null, null
             );
 
-            cursor = database.rawQuery(query, new String[] {Long.toString(reportId)});
+            cursor = database.rawQuery(query, new String[]{Long.toString(reportId)});
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 mediaFiles.add(cursorToMediaFile(cursor));
@@ -1898,7 +1977,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
                 true,
                 D.T_RECIPIENT + " JOIN " + D.T_REPORT_RECIPIENT + " AS RR ON " +
                         D.T_RECIPIENT + "." + D.C_ID + " = RR." + D.C_RECIPIENT_ID,
-                new String[] {D.C_ID, D.C_TITLE, D.C_MAIL},
+                new String[]{D.C_ID, D.C_TITLE, D.C_MAIL},
                 "RR." + D.C_REPORT_ID + " = " + String.valueOf(reportId),
                 null, null, null, null
         );
@@ -1927,8 +2006,8 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_RECIPIENT_LIST,
-                    new String[] {D.C_ID, D.C_TITLE},
-                    D.C_ID + "= ?", new String[] {Long.toString(id)},
+                    new String[]{D.C_ID, D.C_TITLE},
+                    D.C_ID + "= ?", new String[]{Long.toString(id)},
                     null, null, null);
 
             if (cursor.getCount() == 1) {
@@ -1951,7 +2030,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         Date date = null;
 
         int dateColumnIndex = cursor.getColumnIndexOrThrow(D.C_DATE);
-        if (! cursor.isNull(dateColumnIndex)) {
+        if (!cursor.isNull(dateColumnIndex)) {
             date = new Date(cursor.getLong(dateColumnIndex));
         }
         report.setDate(date);
@@ -2013,7 +2092,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         String fileName = cursor.getString(cursor.getColumnIndexOrThrow(D.C_FILE_NAME));
         MetadataEntity metadataEntity = new Gson().fromJson(cursor.getString(cursor.getColumnIndexOrThrow(D.C_METADATA)), MetadataEntity.class);
 
-        MediaFile mediaFile = new MediaFile(path, uid, fileName);
+        MediaFile mediaFile = new MediaFile(path, uid, fileName, FileUtil.getMediaFileType(fileName));
         mediaFile.setId(cursor.getLong(cursor.getColumnIndexOrThrow(D.A_MEDIA_FILE_ID)));
         mediaFile.setMetadata(new EntityMapper().transform(metadataEntity));
         mediaFile.setCreated(cursor.getLong(cursor.getColumnIndexOrThrow(D.C_CREATED)));
@@ -2071,7 +2150,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_TRAIN_MODULE,
-                    new String[] {D.C_TRAIN_MODULE_ID, D.C_DOWNLOADED, D.C_NAME, D.C_URL, D.C_ORGANIZATION, D.C_TYPE, D.C_SIZE},
+                    new String[]{D.C_TRAIN_MODULE_ID, D.C_DOWNLOADED, D.C_NAME, D.C_URL, D.C_ORGANIZATION, D.C_TYPE, D.C_SIZE},
                     null,
                     null,
                     null, null,
@@ -2100,9 +2179,9 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_TRAIN_MODULE,
-                    new String[] { D.C_TRAIN_MODULE_ID, D.C_DOWNLOADED, D.C_NAME, D.C_URL, D.C_ORGANIZATION, D.C_TYPE, D.C_SIZE },
+                    new String[]{D.C_TRAIN_MODULE_ID, D.C_DOWNLOADED, D.C_NAME, D.C_URL, D.C_ORGANIZATION, D.C_TYPE, D.C_SIZE},
                     D.C_DOWNLOADED + "= ?",
-                    new String[] { Integer.toString(DownloadState.DOWNLOADING.ordinal()) },
+                    new String[]{Integer.toString(DownloadState.DOWNLOADING.ordinal())},
                     null,
                     null,
                     null,
@@ -2124,7 +2203,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     private void removeTrainModule(long id) {
-        database.delete(D.T_TRAIN_MODULE, D.C_TRAIN_MODULE_ID + "= ?", new String[] {Long.toString(id)});
+        database.delete(D.T_TRAIN_MODULE, D.C_TRAIN_MODULE_ID + "= ?", new String[]{Long.toString(id)});
     }
 
     private void insertOrIgnoreTrainModule(final TrainModule module) {
@@ -2159,11 +2238,11 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         ContentValues values = new ContentValues();
         values.put(D.C_DOWNLOADED, state.ordinal());
 
-        database.update(D.T_TRAIN_MODULE, values, D.C_TRAIN_MODULE_ID + " = ? ", new String[] {Long.toString(id)});
+        database.update(D.T_TRAIN_MODULE, values, D.C_TRAIN_MODULE_ID + " = ? ", new String[]{Long.toString(id)});
     }
 
     private void updateTrainModules(final List<TrainModule> modules) {
-        for (TrainModule module: modules) {
+        for (TrainModule module : modules) {
             insertOrIgnoreTrainModule(module);
         }
     }
@@ -2191,8 +2270,8 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_SETTINGS,
-                    new String[] {D.C_NAME, D.C_INT_VALUE, D.C_TEXT_VALUE },
-                    D.C_NAME + "= ?", new String[] {name},
+                    new String[]{D.C_NAME, D.C_INT_VALUE, D.C_TEXT_VALUE},
+                    D.C_NAME + "= ?", new String[]{name},
                     null, null, null);
 
             if (cursor.getCount() == 1) {
@@ -2222,7 +2301,7 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     }
 
     private void dbRemoveSetting(String name) {
-        database.delete(D.T_SETTINGS, D.C_NAME + " = ?", new String[] {name});
+        database.delete(D.T_SETTINGS, D.C_NAME + " = ?", new String[]{name});
     }
 
     /*private boolean dbExistsSetting(String name) {
@@ -2251,11 +2330,11 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
 
         Setting setting = new Setting();
 
-        if (! cursor.isNull(intIndex)) {
+        if (!cursor.isNull(intIndex)) {
             setting.intValue = cursor.getInt(intIndex);
         }
 
-        if (! cursor.isNull(stringIndex)) {
+        if (!cursor.isNull(stringIndex)) {
             setting.stringValue = cursor.getString(stringIndex);
         }
 
@@ -2268,9 +2347,9 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
         try {
             cursor = database.query(
                     D.T_TRAIN_MODULE,
-                    new String[] { D.C_TRAIN_MODULE_ID, D.C_DOWNLOADED, D.C_NAME, D.C_URL, D.C_ORGANIZATION, D.C_TYPE, D.C_SIZE },
+                    new String[]{D.C_TRAIN_MODULE_ID, D.C_DOWNLOADED, D.C_NAME, D.C_URL, D.C_ORGANIZATION, D.C_TYPE, D.C_SIZE},
                     D.C_TRAIN_MODULE_ID + "= ?",
-                    new String[] { Long.toString(id) },
+                    new String[]{Long.toString(id)},
                     null,
                     null,
                     null,
@@ -2293,5 +2372,30 @@ public class DataSource implements ICollectServersRepository, ICollectFormsRepos
     private static class Setting {
         Integer intValue;
         String stringValue;
+    }
+
+    private boolean mediaFileFilter(MediaFile mediaFile, Filter filter) {
+        switch (filter) {
+            case ALL:
+                return true;
+
+            case AUDIO:
+                return mediaFile.getType() == MediaFile.Type.AUDIO;
+
+            case PHOTO:
+                return mediaFile.getType() == MediaFile.Type.IMAGE;
+
+            case VIDEO:
+                return mediaFile.getType() == MediaFile.Type.VIDEO;
+
+            case WITH_METADATA:
+                return mediaFile.getMetadata() != null;
+
+            case WITHOUT_METADATA:
+                return mediaFile.getMetadata() == null;
+
+            default:
+                return true;
+        }
     }
 }

@@ -14,12 +14,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rs.readahead.washington.mobile.R;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.data.sharedpref.SharedPrefs;
 
 
 public class EraseSensitiveDataFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
-    @BindView(R.id.erase_database)
-    SwitchCompat mEraseDatabase;
+    @BindView(R.id.erase_everything)
+    SwitchCompat eraseEverything;
     @BindView(R.id.erase_gallery)
     SwitchCompat mEraseGallery;
     @BindView(R.id.erase_contacts)
@@ -28,6 +29,10 @@ public class EraseSensitiveDataFragment extends Fragment implements CompoundButt
     SwitchCompat mEraseMediaRecipients;
     @BindView(R.id.erase_materials)
     SwitchCompat mEraseTrainingMaterials;
+    @BindView(R.id.erase_reports)
+    SwitchCompat eraseReports;
+    @BindView(R.id.erase_forms)
+    SwitchCompat eraseForms;
 
     private Unbinder unbinder;
 
@@ -47,23 +52,20 @@ public class EraseSensitiveDataFragment extends Fragment implements CompoundButt
 
         setViews();
 
-        mEraseDatabase.setOnCheckedChangeListener(this);
+        eraseEverything.setOnCheckedChangeListener(this);
         mEraseGallery.setOnCheckedChangeListener(this);
         mEraseContacts.setOnCheckedChangeListener(this);
         mEraseMediaRecipients.setOnCheckedChangeListener(this);
         mEraseTrainingMaterials.setOnCheckedChangeListener(this);
+        eraseReports.setOnCheckedChangeListener(this);
+        eraseForms.setOnCheckedChangeListener(this);
 
         return view;
     }
 
     private void setViews() {
-        SharedPrefs sp = SharedPrefs.getInstance();
-
-        mEraseDatabase.setChecked(sp.isEraseDatabaseActive());
-        mEraseGallery.setChecked(sp.isEraseGalleryActive());
-        mEraseContacts.setChecked(sp.isEraseContactsActive());
-        mEraseMediaRecipients.setChecked(sp.isEraseMediaRecipientsActive());
-        mEraseTrainingMaterials.setChecked(sp.isEraseMaterialsActive());
+        eraseEverything.setChecked(Preferences.isEraseEverything());
+        updateOthers(Preferences.isEraseEverything());
     }
 
     @Override
@@ -71,9 +73,10 @@ public class EraseSensitiveDataFragment extends Fragment implements CompoundButt
         SharedPrefs sp = SharedPrefs.getInstance();
 
         switch (v.getId()) {
-            case R.id.erase_database:
-                mEraseDatabase.setChecked(isChecked);
-                sp.setEraseDatabaseActive(isChecked);
+            case R.id.erase_everything:
+                eraseEverything.setChecked(isChecked);
+                Preferences.setEraseEverything(isChecked);
+                updateOthers(isChecked);
                 break;
             case R.id.erase_gallery:
                 mEraseGallery.setChecked(isChecked);
@@ -91,7 +94,43 @@ public class EraseSensitiveDataFragment extends Fragment implements CompoundButt
                 mEraseTrainingMaterials.setChecked(isChecked);
                 sp.setEraseMaterialsActive(isChecked);
                 break;
+            case R.id.erase_reports:
+                eraseReports.setChecked(isChecked);
+                Preferences.setEraseReports(isChecked);
+                break;
+            case R.id.erase_forms:
+                eraseForms.setChecked(isChecked);
+                Preferences.setEraseForms(isChecked);
+                break;
         }
+    }
+
+    private void updateOthers(boolean eraseEverything) {
+        SharedPrefs sp = SharedPrefs.getInstance();
+
+        mEraseGallery.setChecked(eraseEverything || sp.isEraseGalleryActive());
+        mEraseGallery.setEnabled(!eraseEverything);
+        sp.setEraseGalleryActive(eraseEverything || sp.isEraseGalleryActive());
+
+        mEraseContacts.setChecked(eraseEverything || sp.isEraseContactsActive());
+        mEraseContacts.setEnabled(!eraseEverything);
+        sp.setEraseContactsActive(eraseEverything || sp.isEraseContactsActive());
+
+        mEraseMediaRecipients.setChecked(eraseEverything || sp.isEraseMediaRecipientsActive());
+        mEraseMediaRecipients.setEnabled(!eraseEverything);
+        sp.setEraseMediaRecipientsActive(eraseEverything || sp.isEraseMediaRecipientsActive());
+
+        mEraseTrainingMaterials.setChecked(eraseEverything || sp.isEraseMaterialsActive());
+        mEraseTrainingMaterials.setEnabled(!eraseEverything);
+        sp.setEraseMaterialsActive(eraseEverything || sp.isEraseMaterialsActive());
+
+        eraseReports.setChecked(eraseEverything || Preferences.isEraseReports());
+        eraseReports.setEnabled(!eraseEverything);
+        Preferences.setEraseReports(eraseEverything || Preferences.isEraseReports());
+
+        eraseForms.setChecked(eraseEverything || Preferences.isEraseForms());
+        eraseForms.setEnabled(!eraseEverything);
+        Preferences.setEraseForms(eraseEverything || Preferences.isEraseForms());
     }
 
     @Override

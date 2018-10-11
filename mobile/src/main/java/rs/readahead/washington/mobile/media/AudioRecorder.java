@@ -19,7 +19,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 import timber.log.Timber;
 
 
@@ -57,9 +57,9 @@ public class AudioRecorder {
                             return MediaFile.NONE;
                         }
 
-                        long start = CommonUtils.currentTimestamp();
+                        long start = Util.currentTimestamp();
                         encode(outputStream); // heigh-ho, heigh-ho..
-                        long duration = CommonUtils.currentTimestamp() - start;
+                        long duration = Util.currentTimestamp() - start;
 
                         if (isCancelled()) {
                             MediaFileHandler.deleteFile(context, mediaFile);

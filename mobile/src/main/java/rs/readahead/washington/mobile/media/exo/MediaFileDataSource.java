@@ -3,9 +3,11 @@ package rs.readahead.washington.mobile.media.exo;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DataSpec;
+import com.google.android.exoplayer2.upstream.TransferListener;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -18,14 +20,18 @@ import rs.readahead.washington.mobile.media.MediaFileHandler;
 class MediaFileDataSource implements DataSource {
     private final Context context;
     private final MediaFile mediaFile;
+    private final @Nullable TransferListener<? super DataSource> listener;
 
-    private Uri         uri;
+    private Uri uri;
     private InputStream inputSteam;
 
 
-    MediaFileDataSource(@NonNull Context context, @NonNull MediaFile mediaFile) {
+    MediaFileDataSource(@NonNull Context context,
+                        @NonNull MediaFile mediaFile,
+                        @Nullable TransferListener<? super DataSource> listener) {
         this.context = context;
         this.mediaFile = mediaFile;
+        this.listener = listener;
     }
 
     @Override
@@ -35,7 +41,12 @@ class MediaFileDataSource implements DataSource {
         inputSteam = MediaFileHandler.getStream(context, mediaFile);
 
         if (inputSteam == null) {
+            close();
             throw new IOException("InputStream not found");
+        }
+
+        if (listener != null) {
+            listener.onTransferStart(this, dataSpec);
         }
 
         long skipped = inputSteam.skip(dataSpec.position);
@@ -47,6 +58,7 @@ class MediaFileDataSource implements DataSource {
         long size = MediaFileHandler.getSize(context, mediaFile);
 
         if (size - dataSpec.position <= 0) {
+            close();
             throw new EOFException();
         }
 
@@ -55,7 +67,13 @@ class MediaFileDataSource implements DataSource {
 
     @Override
     public int read(byte[] buffer, int offset, int readLength) throws IOException {
-        return inputSteam.read(buffer, offset, readLength);
+        int read = inputSteam.read(buffer, offset, readLength);
+
+        if (read > 0 && listener != null) {
+            listener.onBytesTransferred(this, read);
+        }
+
+        return read;
     }
 
     @Override

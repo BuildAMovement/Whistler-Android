@@ -18,7 +18,7 @@ public interface IFormParserContract {
         void formQuestion(FormEntryPrompt[] prompts, FormEntryCaption[] groups);
         void formGroup(FormEntryPrompt[] prompts, FormEntryCaption[] groups);
         void formRepeat(FormEntryPrompt[] prompts, FormEntryCaption[] groups);
-        void formPromptNewRepeat();
+        void formPromptNewRepeat(int lastRepeatCount, String groupText);
         void formParseError(Throwable error);
         void formPropertiesChecked(boolean enableAttachments, boolean enableDelete);
         Context getContext();
@@ -32,5 +32,7 @@ public interface IFormParserContract {
         boolean isFormChanged();
         void startFormChangeTracking();
         List<MediaFile> getFormAttachments();
+        void executeRepeat();
+        void cancelRepeat();
     }
 }

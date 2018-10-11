@@ -42,7 +42,6 @@ public class MediaRecipient implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-
         if (obj == this) {
             return true;
         }
@@ -54,5 +53,10 @@ public class MediaRecipient implements Serializable {
         MediaRecipient mediaRecipient = (MediaRecipient) obj;
 
         return id == mediaRecipient.id ;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id>>>32));
     }
 }

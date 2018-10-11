@@ -37,12 +37,51 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:id="@+id/blank_forms_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:background="@color/wa_light_gray"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/blank_forms_title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/wa_black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:textAlignment="center"
+            android:text="@string/easy_data_collection" />
+
+        <TextView
+            android:id="@+id/blank_forms_text"
+            style="@style/EmptyScreenExplanatoryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/collect_servers_info" />
+
+        <TextView
+            android:id="@+id/send_report_info"
+            style="@style/EmptyScreenExplanatoryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_report_info" />
+    </LinearLayout>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/wa_white"/>
+        android:background="@color/wa_white"
+        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

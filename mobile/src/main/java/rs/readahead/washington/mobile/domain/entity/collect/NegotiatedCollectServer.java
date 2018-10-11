@@ -1,8 +1,6 @@
 package rs.readahead.washington.mobile.domain.entity.collect;
 
 
-import rs.readahead.washington.mobile.domain.entity.collect.CollectServer;
-
 public class NegotiatedCollectServer extends CollectServer {
     private boolean openRosa = false;
     private String openRosaVersion;

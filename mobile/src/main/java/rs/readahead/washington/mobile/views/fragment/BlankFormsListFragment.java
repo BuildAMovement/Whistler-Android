@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,6 @@ import rs.readahead.washington.mobile.domain.entity.collect.ListFormResult;
 import rs.readahead.washington.mobile.mvp.contract.ICollectBlankFormListPresenterContract;
 import rs.readahead.washington.mobile.mvp.presenter.CollectBlankFormListPresenter;
 import rs.readahead.washington.mobile.util.DialogsUtil;
-import rs.readahead.washington.mobile.util.StringUtils;
 import rs.readahead.washington.mobile.views.adapters.CollectFormRecycleViewAdapter;
 import timber.log.Timber;
 
@@ -41,7 +38,6 @@ public class BlankFormsListFragment extends FormListFragment implements
     private CollectFormRecycleViewAdapter adapter;
 
     private ProgressDialog progressDialog;
-
 
     public static BlankFormsListFragment newInstance() {
         return new BlankFormsListFragment();
@@ -63,10 +59,6 @@ public class BlankFormsListFragment extends FormListFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_blank_forms_list, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-
-        blankFormsInfo.setText(Html.fromHtml(getString(R.string.collect_explanatory_text)));
-        blankFormsInfo.setMovementMethod(LinkMovementMethod.getInstance());
-        StringUtils.stripUnderlines(blankFormsInfo);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -118,7 +110,7 @@ public class BlankFormsListFragment extends FormListFragment implements
 
         // todo: make this multiply errors friendly
         for (IErrorBundle error : listFormResult.getErrors()) {
-            Toast.makeText(getActivity(), getString(R.string.ra_error_getting_forms) + error.getServerName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), String.format("%s %s", getString(R.string.ra_error_getting_forms), error.getServerName()), Toast.LENGTH_SHORT).show();
             Timber.d(error.getException(), getClass().getName());
         }
     }

@@ -23,5 +23,4 @@
         android:layout_gravity="top"
         android:text="@string/collect_explanatory_text"
         android:visibility="gone"/>
-
 </FrameLayout>

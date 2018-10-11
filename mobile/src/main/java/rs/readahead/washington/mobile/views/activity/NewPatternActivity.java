@@ -2,7 +2,6 @@ package rs.readahead.washington.mobile.views.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,8 +13,10 @@ import info.guardianproject.cacheword.ICacheWordSubscriber;
 import me.zhanghai.android.patternlock.PatternUtils;
 import me.zhanghai.android.patternlock.PatternView;
 import me.zhanghai.android.patternlock.SetPatternActivity;
+import rs.readahead.washington.mobile.MyApplication;
 import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.util.DialogsUtil;
+import rs.readahead.washington.mobile.util.LocaleManager;
 
 
 public class NewPatternActivity extends SetPatternActivity implements ICacheWordSubscriber {
@@ -25,6 +26,10 @@ public class NewPatternActivity extends SetPatternActivity implements ICacheWord
     private ProgressDialog dialog;
     private String mNewPassphrase;
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleManager.getInstance().getLocalizedContext(base));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +84,9 @@ public class NewPatternActivity extends SetPatternActivity implements ICacheWord
             dialog.dismiss();
         }
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        MyApplication.startMainActivity(this);
         finish();
+
         overridePendingTransition(0, 0);
     }
 

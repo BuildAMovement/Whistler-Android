@@ -16,7 +16,6 @@ public class C {
     public static final int CAPTURED_IMAGE              = 10002;
     public static final int CAPTURED_VIDEO              = 10003;
     public static final int RECORDED_AUDIO              = 10004;
-    public static final int SELECT_MEDIA_FROM_GALLERY   = 10008;
     public static final int IMPORT_IMAGE                = 10009;
     public static final int IMPORT_VIDEO                = 10010;
     public static final int IMPORT_MEDIA                = 10011;

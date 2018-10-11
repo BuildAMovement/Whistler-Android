@@ -1,5 +1,6 @@
 package rs.readahead.washington.mobile.views.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -12,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rs.readahead.washington.mobile.BuildConfig;
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 
 
 public class AboutHelpActivity extends CacheWordSubscriberBaseActivity {
@@ -34,9 +35,10 @@ public class AboutHelpActivity extends CacheWordSubscriberBaseActivity {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.title_activity_about_help);
         }
 
-        version.setText(getString(R.string.version) + " " + BuildConfig.VERSION_NAME);
+        version.setText(String.format("%s %s", getString(R.string.version), BuildConfig.VERSION_NAME));
     }
 
     @Override
@@ -50,11 +52,17 @@ public class AboutHelpActivity extends CacheWordSubscriberBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick({R.id.faq, R.id.contact, R.id.privacy, R.id.licence, R.id.source_code})
+    @OnClick({R.id.setup, R.id.faq, R.id.contact, R.id.privacy, R.id.licence, R.id.source_code})
     public void startActivity(View view) {
         String url = null;
 
         switch (view.getId()) {
+            case R.id.setup:
+                Intent intent = new Intent(this, WhistlerIntroActivity.class);
+                intent.putExtra(WhistlerIntroActivity.FROM_ABOUT, true);
+                startActivity(intent);
+                return;
+
             case R.id.faq:
                 url = getString(R.string.config_faq_url);
                 break;
@@ -77,7 +85,7 @@ public class AboutHelpActivity extends CacheWordSubscriberBaseActivity {
         }
 
         if (url != null) {
-            CommonUtils.startBrowserIntent(this, url);
+            Util.startBrowserIntent(this, url);
         }
     }
 }

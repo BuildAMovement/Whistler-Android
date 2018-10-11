@@ -17,7 +17,12 @@
     <color name="wa_card_media_background">@color/wa_gray</color>
     <color name="wa_gallery_info_background">#BB000000</color>
     <color name="wa_camera_capture_background">#80525252</color>
-
+    <color name="wa_home_screen_gradient_start">#FF000000</color>
+    <color name="wa_home_screen_gradient_end">#00000000</color>
+    <color name="wa_gallery_gradient_start">#BB000000</color>
+    <color name="wa_gallery_gradient_end">#00000000</color>
+    <color name="wa_design_textinput_error_color">#FFDD2C00</color>
+    <color name="wa_transparent">@android:color/transparent</color>
 
     <color name="colorPrimary">@color/wa_black</color>
     <color name="colorPrimaryDark">@color/wa_dark_gray</color>

@@ -8,17 +8,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -41,6 +45,9 @@ import rs.readahead.washington.mobile.bus.event.GalleryFlingTopEvent;
 import rs.readahead.washington.mobile.bus.event.MediaFileDeletedEvent;
 import rs.readahead.washington.mobile.data.database.CacheWordDataSource;
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
+import rs.readahead.washington.mobile.domain.repository.IMediaFileRecordRepository;
+import rs.readahead.washington.mobile.domain.repository.IMediaFileRecordRepository.Filter;
+import rs.readahead.washington.mobile.domain.repository.IMediaFileRecordRepository.Sort;
 import rs.readahead.washington.mobile.media.MediaFileHandler;
 import rs.readahead.washington.mobile.mvp.contract.IGalleryPresenterContract;
 import rs.readahead.washington.mobile.mvp.presenter.GalleryPresenter;
@@ -51,8 +58,10 @@ import rs.readahead.washington.mobile.util.C;
 import rs.readahead.washington.mobile.util.DialogsUtil;
 import rs.readahead.washington.mobile.util.FileUtil;
 import rs.readahead.washington.mobile.util.PermissionUtil;
+import rs.readahead.washington.mobile.views.adapters.AttachmentsRecycleViewAdapter;
 import rs.readahead.washington.mobile.views.adapters.GalleryRecycleViewAdapter;
 import rs.readahead.washington.mobile.views.custom.GalleryRecyclerView;
+import rs.readahead.washington.mobile.views.interfaces.IAttachmentsMediaHandler;
 import rs.readahead.washington.mobile.views.interfaces.IGalleryMediaHandler;
 import timber.log.Timber;
 
@@ -60,38 +69,39 @@ import timber.log.Timber;
 @RuntimePermissions
 public class GalleryActivity extends MetadataActivity implements
         IGalleryPresenterContract.IView,
-        IGalleryMediaHandler {
-    public static final String SELECTED_MEDIA_FILES = "smf";
-    public static final String GALLERY_MODE = "gm";
+        IGalleryMediaHandler, IAttachmentsMediaHandler {
     public static final String GALLERY_ANIMATED = "ga";
     private boolean animated = false;
 
-    enum Mode {
-        GALLERY_SELECT_MEDIA,
-        GALLERY_VIEW_MEDIA
-    }
-
     @BindView(R.id.galleryRecyclerView)
     GalleryRecyclerView recyclerView;
-    @BindView(R.id.attachButton)
-    Button attachButton;
     @BindView(R.id.menu)
     FloatingActionMenu fabMenu;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.attachmentsToolbar)
+    View attachmentsToolbar;
+    @BindView(R.id.attachmentsRecyclerView)
+    RecyclerView attachmentsRecyclerView;
+    @BindView(R.id.gallery_blank_list_info)
+    TextView blankGalleryInfo;
 
     private GalleryRecycleViewAdapter adapter;
     private GalleryPresenter presenter;
     private CacheWordDataSource cacheWordDataSource;
     private EventCompositeDisposable disposables;
 
+    private AttachmentsRecycleViewAdapter attachmentsAdapter;
+    private RecyclerView.LayoutManager attachmentsLayoutManager;
 
-    Mode mode;
     private int selectedNum;
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
+    private Filter filter = Filter.ALL;
+    private Sort sort = Sort.NEWEST;
+    private ReportViewType type = ReportViewType.EDIT;
 
 
     @Override
@@ -103,29 +113,11 @@ public class GalleryActivity extends MetadataActivity implements
 
         presenter = new GalleryPresenter(this);
 
-        mode = Mode.GALLERY_VIEW_MEDIA;
-        if (getIntent().hasExtra(GALLERY_MODE)) {
-            mode = Mode.valueOf(getIntent().getStringExtra(GALLERY_MODE));
-        }
-
         if (getIntent().hasExtra(GALLERY_ANIMATED)) {
             animated = getIntent().getBooleanExtra(GALLERY_ANIMATED, false);
         }
 
-        if (mode == Mode.GALLERY_VIEW_MEDIA) {
-            attachButton.setVisibility(View.GONE);
-            updateFabMenu();
-        } else {
-            fabMenu.setVisibility(View.GONE);
-            attachButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setSelectedMediaResult();
-                    onBackPressed();
-                }
-            });
-        }
-
+        updateFabMenu();
         setupToolbar();
         setupFab();
 
@@ -144,16 +136,26 @@ public class GalleryActivity extends MetadataActivity implements
             @Override
             public void onNext(MediaFileDeletedEvent event) {
                 showToast(R.string.ra_single_media_deleted_msg);
-                presenter.getFiles();
+                presenter.getFiles(filter, sort);
             }
         });
 
-        adapter = new GalleryRecycleViewAdapter(this, this, new MediaFileHandler(cacheWordDataSource), null);
-        final RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        adapter = new GalleryRecycleViewAdapter(this, this,
+                new MediaFileHandler(cacheWordDataSource), R.layout.card_gallery_attachment_media_file);
+        final RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        presenter.getFiles();
+        attachmentsAdapter = new AttachmentsRecycleViewAdapter(this, this,
+                new MediaFileHandler(cacheWordDataSource), type);
+        attachmentsLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        attachmentsRecyclerView.setLayoutManager(attachmentsLayoutManager);
+        attachmentsRecyclerView.setAdapter(attachmentsAdapter);
+
+        (attachmentsRecyclerView.getItemAnimator()).setMoveDuration(120);
+        (attachmentsRecyclerView.getItemAnimator()).setRemoveDuration(120);
+
+        presenter.getFiles(filter, sort);
     }
 
     private void setupToolbar() {
@@ -162,6 +164,7 @@ public class GalleryActivity extends MetadataActivity implements
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.ra_gallery);
             if (animated) {
                 actionBar.setHomeAsUpIndicator(R.drawable.ic_close_white);
             }
@@ -176,12 +179,10 @@ public class GalleryActivity extends MetadataActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mode == Mode.GALLERY_VIEW_MEDIA && selectedNum > 0) {
+        if (selectedNum > 0) {
             getMenuInflater().inflate(R.menu.gallery_menu, menu);
-            return true;
         }
-
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -193,24 +194,26 @@ public class GalleryActivity extends MetadataActivity implements
             return true;
         }
 
-        if (id == R.id.menu_item_delete) {
-            showDeleteMediaDialog();
-            return true;
-        }
+        if (selectedNum > 0) {
+            if (id == R.id.menu_item_delete) {
+                showDeleteMediaDialog();
+                return true;
+            }
 
-        if (id == R.id.menu_item_share) {
-            shareMediaFiles();
-            return true;
-        }
+            if (id == R.id.menu_item_share) {
+                shareMediaFiles();
+                return true;
+            }
 
-        if (id == R.id.menu_item_export) {
-            showExportDialog();
-            return true;
-        }
+            if (id == R.id.menu_item_export) {
+                showExportDialog();
+                return true;
+            }
 
-        if (id == R.id.menu_item_report) {
-            shareMediaToReport();
-            return true;
+            if (id == R.id.menu_item_report) {
+                shareMediaToReport();
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -424,7 +427,7 @@ public class GalleryActivity extends MetadataActivity implements
 
             case C.CAMERA_CAPTURE:
             case C.RECORDED_AUDIO:
-                presenter.getFiles();
+                presenter.getFiles(filter, sort);
                 break;
         }
     }
@@ -439,6 +442,7 @@ public class GalleryActivity extends MetadataActivity implements
 
     @Override
     public void onGetFilesSuccess(List<MediaFile> files) {
+        blankGalleryInfo.setVisibility(files.isEmpty() ? View.VISIBLE : View.GONE);
         adapter.setFiles(files);
     }
 
@@ -472,7 +476,7 @@ public class GalleryActivity extends MetadataActivity implements
     @Override
     public void onMediaFilesAdded(MediaFile mediaFile) {
         showToast(R.string.ra_media_added_to_gallery);
-        presenter.getFiles();
+        presenter.getFiles(filter, sort);
     }
 
     @Override
@@ -483,7 +487,7 @@ public class GalleryActivity extends MetadataActivity implements
     @Override
     public void onMediaFilesDeleted(int num) {
         showToast(String.format(getString(R.string.ra_media_deleted_msg), num));
-        presenter.getFiles();
+        presenter.getFiles(filter, sort);
     }
 
     @Override
@@ -531,30 +535,26 @@ public class GalleryActivity extends MetadataActivity implements
 
     @Override
     public void playMedia(MediaFile mediaFile) {
-        String type = mediaFile.getPrimaryMimeType();
-
-        if ("image".equals(type)) {
+        if (mediaFile.getType() == MediaFile.Type.IMAGE) {
             Intent intent = new Intent(this, PhotoViewerActivity.class);
             intent.putExtra(PhotoViewerActivity.VIEW_PHOTO, mediaFile);
-            if (mode == Mode.GALLERY_SELECT_MEDIA) {
-                intent.putExtra(PhotoViewerActivity.NO_SHARE, mediaFile);
-            }
             startActivity(intent);
-        } else if ("audio".equals(type)) {
+        } else if (mediaFile.getType() == MediaFile.Type.AUDIO) {
             Intent intent = new Intent(this, AudioPlayActivity.class);
             intent.putExtra(AudioPlayActivity.PLAY_MEDIA_FILE_ID_KEY, mediaFile.getId());
-            if (mode == Mode.GALLERY_SELECT_MEDIA) {
-                intent.putExtra(AudioPlayActivity.NO_SHARE, mediaFile);
-            }
             startActivity(intent);
-        } else if ("video".equals(type)) {
+        } else if (mediaFile.getType() == MediaFile.Type.VIDEO) {
             Intent intent = new Intent(this, VideoViewerActivity.class);
             intent.putExtra(VideoViewerActivity.VIEW_VIDEO, mediaFile);
-            if (mode == Mode.GALLERY_SELECT_MEDIA) {
-                intent.putExtra(VideoViewerActivity.NO_SHARE, mediaFile);
-            }
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onRemoveAttachment(MediaFile mediaFile) {
+        adapter.deselectMediaFile(mediaFile);
+        onSelectionNumChange(attachmentsAdapter.getItemCount());
+        updateAttachmentsVisibility();
     }
 
     @Override
@@ -572,7 +572,6 @@ public class GalleryActivity extends MetadataActivity implements
 
         if (current != next) {
             invalidateOptionsMenu();
-            attachButton.setEnabled(next);
         }
     }
 
@@ -609,6 +608,8 @@ public class GalleryActivity extends MetadataActivity implements
         List<MediaFile> selected = adapter.getSelectedMediaFiles();
         adapter.clearSelected();
         presenter.deleteMediaFiles(selected);
+        attachmentsAdapter.clearAttachments();
+        updateAttachmentsVisibility();
     }
 
     private void shareMediaFiles() {
@@ -616,27 +617,16 @@ public class GalleryActivity extends MetadataActivity implements
         MediaFileHandler.startShareActivity(this, selected);
     }
 
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
-    private void setSelectedMediaResult() {
-        Intent data = new Intent();
+    @Override
+    public void onMediaSelected(MediaFile mediaFile) {
+        addAttachmentsAttachment(mediaFile);
+        updateAttachmentsVisibility();
+    }
 
-        if (mode == Mode.GALLERY_SELECT_MEDIA) {
-            List<MediaFile> selected = adapter.getSelectedMediaFiles();
-            adapter.clearSelected();
-
-            if (selected.size() > 0) {
-                long[] ids = new long[selected.size()];
-                int i = 0;
-
-                for (MediaFile mediaFile : selected) {
-                    ids[i++] = mediaFile.getId();
-                }
-
-                data.putExtra(SELECTED_MEDIA_FILES, ids);
-            }
-        }
-
-        setResult(RESULT_OK, data);
+    @Override
+    public void onMediaDeselected(MediaFile mediaFile) {
+        attachmentsAdapter.removeAttachment(mediaFile);
+        updateAttachmentsVisibility();
     }
 
     private void shareMediaToReport() {
@@ -670,5 +660,131 @@ public class GalleryActivity extends MetadataActivity implements
         fabMenu.findViewById(R.id.import_media_from_device).setVisibility(media ? View.VISIBLE : View.GONE);
 
         fabMenu.setClosedOnTouchOutside(true);
+    }
+
+    private void addAttachmentsAttachment(MediaFile mediaFile) {
+        if (sort == IMediaFileRecordRepository.Sort.NEWEST) {
+            attachmentsAdapter.prependAttachment(mediaFile);
+            attachmentsLayoutManager.scrollToPosition(0);
+        } else {
+            attachmentsAdapter.appendAttachment(mediaFile);
+            attachmentsLayoutManager.scrollToPosition(attachmentsAdapter.getItemCount());
+        }
+    }
+
+    private void updateAttachmentsVisibility() {
+        if (attachmentsAdapter.getItemCount() == 0) {
+            attachmentsToolbar.setVisibility(View.GONE);
+            attachmentsRecyclerView.setVisibility(View.GONE);
+        } else {
+            attachmentsToolbar.setVisibility(View.VISIBLE);
+            attachmentsRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @OnClick(R.id.popupMenu)
+    public void showPopupSort(View v) {
+        Context wrapper = new ContextThemeWrapper(this, R.style.GalerySortTextColor);
+        final PopupMenu popup = new PopupMenu(wrapper, v);
+        popup.inflate(R.menu.gallery_sort_menu);
+        popup.show();
+
+        setCheckedSort(sort, popup);
+        setCheckedFilter(filter, popup);
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                item.setChecked(true);
+
+                if (item.getGroupId() == R.id.sort) {
+                    sort = getGallerySort(item.getItemId());
+                } else {
+                    filter = getGalleryFilter(item.getItemId());
+                }
+
+                presenter.getFiles(filter, sort);
+                return true;
+            }
+        });
+    }
+
+    private void setCheckedSort(Sort checkedSort, PopupMenu popup) {
+        if (popup.getMenu().findItem(getSortId(checkedSort)) != null) {
+            popup.getMenu().findItem(getSortId(checkedSort)).setChecked(true);
+        }
+    }
+
+    private void setCheckedFilter(Filter checkedFilter, PopupMenu popup) {
+        if (popup.getMenu().findItem(getFilterId(checkedFilter)) != null) {
+            popup.getMenu().findItem(getFilterId(checkedFilter)).setChecked(true);
+        }
+    }
+
+    public Filter getGalleryFilter(final int id) {
+        switch (id) {
+            case R.id.photo:
+                return Filter.PHOTO;
+
+            case R.id.audio:
+                return Filter.AUDIO;
+
+            case R.id.video:
+                return Filter.VIDEO;
+
+            case R.id.files_with_metadata:
+                return Filter.WITH_METADATA;
+
+            case R.id.files_without_metadata:
+                return Filter.WITHOUT_METADATA;
+
+            default:
+                return Filter.ALL;
+        }
+
+    }
+
+    public Sort getGallerySort(final int id) {
+        switch (id) {
+            case R.id.oldest:
+                return Sort.OLDEST;
+
+            default:
+                return Sort.NEWEST;
+        }
+    }
+
+    @IdRes
+    public int getFilterId(Filter filter) {
+        switch (filter) {
+            case PHOTO:
+                return R.id.photo;
+
+            case AUDIO:
+                return R.id.audio;
+
+            case VIDEO:
+                return R.id.video;
+
+            case WITH_METADATA:
+                return R.id.files_with_metadata;
+
+            case WITHOUT_METADATA:
+                return R.id.files_without_metadata;
+
+            default:
+                return R.id.all;
+        }
+    }
+
+    @IdRes
+    public int getSortId(Sort sort) {
+        switch (sort) {
+            case OLDEST:
+                return R.id.oldest;
+
+            default:
+                return R.id.newest;
+        }
     }
 }

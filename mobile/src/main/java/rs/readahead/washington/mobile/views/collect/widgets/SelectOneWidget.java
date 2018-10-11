@@ -30,7 +30,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 import java.util.ArrayList;
 import java.util.List;
 
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 import rs.readahead.washington.mobile.util.StringUtils;
 
 
@@ -121,7 +121,7 @@ public class SelectOneWidget extends QuestionWidget implements
     @Override
     public void setFocus(Context context) {
         // Hide the soft keyboard if it's showing.
-        CommonUtils.hideKeyboard(context, this);
+        Util.hideKeyboard(context, this);
     }
 
     public int getCheckedId() {

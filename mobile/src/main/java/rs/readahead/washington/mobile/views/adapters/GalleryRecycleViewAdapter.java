@@ -2,6 +2,8 @@ package rs.readahead.washington.mobile.views.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,47 +27,51 @@ import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
 import rs.readahead.washington.mobile.media.MediaFileHandler;
 import rs.readahead.washington.mobile.media.MediaFileUrlLoader;
-import rs.readahead.washington.mobile.presentation.entity.EvidenceData;
 import rs.readahead.washington.mobile.presentation.entity.MediaFileLoaderModel;
-import rs.readahead.washington.mobile.presentation.entity.ReportViewType;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 import rs.readahead.washington.mobile.views.interfaces.IGalleryMediaHandler;
 
 
 public class GalleryRecycleViewAdapter extends RecyclerView.Adapter<GalleryRecycleViewAdapter.ViewHolder> {
-    private List<MediaFile> files = Collections.emptyList();
+    private List<MediaFile> files = new ArrayList<>();
     private MediaFileUrlLoader glideLoader;
     private IGalleryMediaHandler galleryMediaHandler;
     private Set<MediaFile> selected;
-    private ReportViewType type;
+    private int cardLayoutId;
+    private boolean selectable;
+
 
     public GalleryRecycleViewAdapter(Context context, IGalleryMediaHandler galleryMediaHandler,
-            MediaFileHandler mediaFileHandler, ReportViewType type) {
+                                     MediaFileHandler mediaFileHandler, @LayoutRes int cardLayoutId) {
+        this(context, galleryMediaHandler, mediaFileHandler, cardLayoutId, true);
+    }
+
+    public GalleryRecycleViewAdapter(Context context, IGalleryMediaHandler galleryMediaHandler,
+                                     MediaFileHandler mediaFileHandler, @LayoutRes int cardLayoutId, boolean selectable) {
         this.glideLoader = new MediaFileUrlLoader(context.getApplicationContext(), mediaFileHandler);
         this.galleryMediaHandler = galleryMediaHandler;
-        this.selected = new HashSet<>();
-        this.type = type;
+        this.selected = new LinkedHashSet<>();
+        this.cardLayoutId = cardLayoutId;
+        this.selectable = selectable;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_media_file, parent, false);
-        return new ViewHolder(v, type);
+        View v = LayoutInflater.from(parent.getContext()).inflate(cardLayoutId, parent,false);
+        return new ViewHolder(v, this.selectable);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final MediaFile mediaFile = files.get(position);
 
-        holder.setRemoveButton();
+        checkItemState(holder, mediaFile);
 
+        holder.maybeShowMetadataIcon(mediaFile);
 
-        checkItemState(holder,mediaFile);
-//        holder.checkBox.setChecked(selected.contains(mediaFile));
+        holder.setMetadataIcon(mediaFile);
 
-        String type = mediaFile.getPrimaryMimeType();
-
-        if ("image".equals(type)) {
+        if (mediaFile.getType() == MediaFile.Type.IMAGE) {
             holder.showImageInfo();
             Glide.with(holder.mediaView.getContext())
                     .using(glideLoader)
@@ -73,12 +79,12 @@ public class GalleryRecycleViewAdapter extends RecyclerView.Adapter<GalleryRecyc
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .into(holder.mediaView);
-        } else if ("audio".equals(type)) {
+        } else if (mediaFile.getType() == MediaFile.Type.AUDIO) {
             holder.showAudioInfo(mediaFile);
             Drawable drawable = VectorDrawableCompat.create(holder.itemView.getContext().getResources(),
-                    R.drawable.ic_mic_white, null);
+                    R.drawable.ic_mic_gray, null);
             holder.mediaView.setImageDrawable(drawable);
-        } else if ("video".equals(type)) {
+        } else if (mediaFile.getType() == MediaFile.Type.VIDEO) {
             holder.showVideoInfo(mediaFile);
             Glide.with(holder.mediaView.getContext())
                     .using(glideLoader)
@@ -101,14 +107,6 @@ public class GalleryRecycleViewAdapter extends RecyclerView.Adapter<GalleryRecyc
                 checkboxClickHandler(holder, mediaFile);
             }
         });
-
-        holder.removeFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selected.add(mediaFile);
-                galleryMediaHandler.onSelectionNumChange(selected.size());
-            }
-        });
     }
 
     @Override
@@ -128,36 +126,39 @@ public class GalleryRecycleViewAdapter extends RecyclerView.Adapter<GalleryRecyc
         return selectedList;
     }
 
-    public EvidenceData getEvidenceFiles() {
-        return new EvidenceData(files);
-    }
-
     public void clearSelected() {
         selected.clear();
         galleryMediaHandler.onSelectionNumChange(selected.size());
     }
 
-    public void clearSelectedEvidence() {
-        selected.clear();
+    public void deselectMediaFile(@NonNull MediaFile mediaFile) {
+        if (!selected.contains(mediaFile)) {
+            return;
+        }
+
+        selected.remove(mediaFile);
+        notifyItemChanged(files.indexOf(mediaFile));
     }
 
-    public void removeMediaFile(MediaFile mediaFile) {
-        int position = files.indexOf(mediaFile);
-
-        if (position != -1) {
-            files.remove(position);
-            notifyItemRemoved(position);
+    public void selectMediaFile(@NonNull MediaFile mediaFile) {
+        if (selected.contains(mediaFile)) {
+            return;
         }
+
+        selected.add(mediaFile);
+        notifyItemChanged(files.indexOf(mediaFile));
     }
 
     private void checkboxClickHandler(ViewHolder holder, MediaFile mediaFile) {
         if (selected.contains(mediaFile)) {
             selected.remove(mediaFile);
+            galleryMediaHandler.onMediaDeselected(mediaFile);
         } else {
             selected.add(mediaFile);
+            galleryMediaHandler.onMediaSelected(mediaFile);
         }
 
-        checkItemState(holder,mediaFile);
+        checkItemState(holder, mediaFile);
         galleryMediaHandler.onSelectionNumChange(selected.size());
     }
 
@@ -167,24 +168,36 @@ public class GalleryRecycleViewAdapter extends RecyclerView.Adapter<GalleryRecyc
         holder.checkBox.setImageResource(checked ? R.drawable.ic_check_box_on : R.drawable.ic_check_box_off);
     }
 
+    public void setSelectedMediaFiles(@NonNull List<MediaFile> selectedMediaFiles) {
+        selected.addAll(selectedMediaFiles);
+        notifyDataSetChanged();
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.mediaView) ImageView mediaView;
-        @BindView(R.id.checkBox) ImageView checkBox;
-        @BindView(R.id.videoInfo) ViewGroup videoInfo;
-        @BindView(R.id.videoDuration) TextView videoDuration;
-        @BindView(R.id.audioInfo) ViewGroup audioInfo;
-        @BindView(R.id.audioDuration) TextView audioDuration;
-        @BindView(R.id.selectionDimmer) View selectionDimmer;
-        @BindView(R.id.checkboxOuter) View checkboxOuter;
-        @BindView(R.id.remove_file) ImageView removeFile;
+        @BindView(R.id.mediaView)
+        ImageView mediaView;
+        @BindView(R.id.checkBox)
+        ImageView checkBox;
+        @BindView(R.id.videoInfo)
+        ViewGroup videoInfo;
+        @BindView(R.id.videoDuration)
+        TextView videoDuration;
+        @BindView(R.id.audioInfo)
+        ViewGroup audioInfo;
+        @BindView(R.id.audioDuration)
+        TextView audioDuration;
+        @BindView(R.id.selectionDimmer)
+        View selectionDimmer;
+        @BindView(R.id.checkboxOuter)
+        View checkboxOuter;
+        @BindView(R.id.metadata_icon)
+        ImageView metadataIcon;
 
-        private ReportViewType type;
 
-
-        public ViewHolder(View itemView, ReportViewType type) {
+        public ViewHolder(View itemView, boolean selectable) {
             super(itemView);
-            this.type = type;
             ButterKnife.bind(this, itemView);
+            maybeEnableCheckBox(selectable);
         }
 
         void showVideoInfo(MediaFile mediaFile) {
@@ -214,14 +227,28 @@ public class GalleryRecycleViewAdapter extends RecyclerView.Adapter<GalleryRecyc
             audioInfo.setVisibility(View.GONE);
         }
 
-        void setRemoveButton() {
-            if (type == null) return;
-            checkBox.setVisibility(View.GONE);
-            removeFile.setVisibility(type == ReportViewType.PREVIEW ? View.GONE : View.VISIBLE);
+        private String getDuration(MediaFile mediaFile) {
+            return Util.getVideoDuration((int) (mediaFile.getDuration() / 1000));
         }
 
-        private String getDuration(MediaFile mediaFile) {
-            return CommonUtils.getVideoDuration((int) (mediaFile.getDuration() / 1000));
+        void maybeShowMetadataIcon(MediaFile mediaFile) {
+            if (mediaFile.getMetadata() != null) {
+                metadataIcon.setVisibility(View.VISIBLE);
+            } else {
+                metadataIcon.setVisibility(View.GONE);
+            }
+        }
+
+        void maybeEnableCheckBox(boolean selectable) {
+            checkBox.setEnabled(selectable);
+        }
+
+        void setMetadataIcon(MediaFile mediaFile) {
+            if (mediaFile.getMetadata() != null) {
+                metadataIcon.setVisibility(View.VISIBLE);
+            } else {
+                metadataIcon.setVisibility(View.GONE);
+            }
         }
     }
 }

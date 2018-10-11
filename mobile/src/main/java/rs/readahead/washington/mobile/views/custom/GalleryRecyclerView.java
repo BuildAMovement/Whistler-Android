@@ -10,6 +10,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import rs.readahead.washington.mobile.MyApplication;
+import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.bus.event.GalleryFlingTopEvent;
 
 
@@ -17,6 +18,7 @@ public class GalleryRecyclerView extends RecyclerView implements
         GestureDetector.OnGestureListener {
     private GestureDetectorCompat detectorCompat;
     private int currentScrollPosition = 0;
+    private float shortFling;
 
 
     public GalleryRecyclerView(Context context) {
@@ -37,6 +39,7 @@ public class GalleryRecyclerView extends RecyclerView implements
                 currentScrollPosition += dy;
             }
         });
+        shortFling = (float) context.getResources().getInteger(R.integer.ra_config_short_fling);
     }
 
     @Override
@@ -76,7 +79,7 @@ public class GalleryRecyclerView extends RecyclerView implements
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if ((e1 == null || e1.getY() < e2.getY()) && currentScrollPosition == 0) {
+        if ((e1 == null || (e2.getY() - e1.getY() > shortFling)) && currentScrollPosition == 0) {
             MyApplication.bus().post(new GalleryFlingTopEvent());
         }
 

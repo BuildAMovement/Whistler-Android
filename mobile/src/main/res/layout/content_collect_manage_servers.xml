@@ -15,4 +15,12 @@
         android:paddingBottom="@dimen/fab_clear_padding">
     </ListView>
 
+    <TextView
+        android:id="@+id/collect_servers_blank_list_info"
+        style="@style/ExplanatoryEmptyMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:text="@string/collect_servers_empty_text"
+        android:visibility="gone"/>
 </FrameLayout>

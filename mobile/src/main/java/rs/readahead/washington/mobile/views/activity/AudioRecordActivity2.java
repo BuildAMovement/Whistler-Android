@@ -270,7 +270,7 @@ public class AudioRecordActivity2 extends MetadataActivity implements
     }
 
     @Override
-    public void onAddSuccess(long mediaFileId, String primaryMime) {
+    public void onAddSuccess(long mediaFileId) {
         attachMediaFileMetadata(mediaFileId, metadataAttacher);
     }
 

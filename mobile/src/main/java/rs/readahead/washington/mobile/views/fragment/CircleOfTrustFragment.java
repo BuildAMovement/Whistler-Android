@@ -4,6 +4,7 @@ package rs.readahead.washington.mobile.views.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 
@@ -33,8 +36,12 @@ import rs.readahead.washington.mobile.views.adapters.CircleOfTrustAdapter;
 
 public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonChangeListener {
 
-    @BindView(R.id.add_more) FloatingActionButton mAddMore;
-    @BindView(R.id.trusted_list) RecyclerView mList;
+    @BindView(R.id.add_more)
+    FloatingActionButton mAddMore;
+    @BindView(R.id.trusted_list)
+    RecyclerView mList;
+    @BindView(R.id.blank_circle_info)
+    TextView blankCircleInfo;
 
     private Unbinder unbinder;
     private DataSource dataSource;
@@ -61,7 +68,7 @@ public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonCh
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (! mCacheWord.isLocked()) {
+        if (!mCacheWord.isLocked()) {
             dataSource = DataSource.getInstance(getContext(), mCacheWord.getEncryptionKey());
         }
     }
@@ -76,6 +83,7 @@ public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonCh
         mList.setLayoutManager(mLayoutManager);
         mList.setItemAnimator(new DefaultItemAnimator());
         mList.setAdapter(adapter);
+        blankCircleInfo.setVisibility(mPersons.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void getAllTrustedContacts() {
@@ -98,7 +106,7 @@ public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonCh
     public void updateList() {
         getAllTrustedContacts();
         adapter.updateAdapter(mPersons);
-
+        blankCircleInfo.setVisibility(mPersons.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     public void createNewTrustedContactDialog() {
@@ -106,6 +114,7 @@ public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonCh
             @Override
             public void onTrustedPersonInteraction(TrustedPerson trustedPerson) {
                 dataSource.insertTrusted(trustedPerson);
+                showToast(R.string.added_trusted);
                 updateList();
             }
         });
@@ -115,11 +124,17 @@ public class CircleOfTrustFragment extends Fragment implements OnTrustedPersonCh
     @Override
     public void onContactEdited(TrustedPerson trustedPerson) {
         dataSource.updateTrusted(trustedPerson);
+        showToast(R.string.updated_trusted);
         updateList();
     }
 
     @Override
     public void onContactDeleted(int id) {
         dataSource.deleteTrusted(id);
+        showToast(R.string.removed_trusted);
+    }
+
+    private void showToast(@StringRes int resId) {
+        Toast.makeText(getContext(), getString(resId), Toast.LENGTH_SHORT).show();
     }
 }

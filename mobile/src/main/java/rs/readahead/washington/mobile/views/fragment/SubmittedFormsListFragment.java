@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class SubmittedFormsListFragment extends FormListFragment implements
 
     @BindView(R.id.submittFormInstances)
     RecyclerView recyclerView;
+    @BindView(R.id.blank_submitted_forms_info)
+    TextView blankFormsInfo;
 
     private Unbinder unbinder;
     private CollectSubmittedFormInstanceRecycleViewAdapter adapter;
@@ -83,6 +86,7 @@ public class SubmittedFormsListFragment extends FormListFragment implements
 
     @Override
     public void onFormInstanceListSuccess(List<CollectFormInstance> instances) {
+        blankFormsInfo.setVisibility(instances.isEmpty() ? View.VISIBLE : View.GONE);
         adapter.setInstances(instances);
     }
 

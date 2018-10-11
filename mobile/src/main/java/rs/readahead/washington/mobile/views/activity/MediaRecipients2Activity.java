@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -72,6 +73,7 @@ public class MediaRecipients2Activity extends BaseActivity implements
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.title_activity_recipients);
         }
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -117,13 +119,13 @@ public class MediaRecipients2Activity extends BaseActivity implements
 
     @Override
     public void onCacheWordUninitialized() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 
     @Override
     public void onCacheWordLocked() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 
@@ -263,6 +265,8 @@ public class MediaRecipients2Activity extends BaseActivity implements
     public static class RecipientsFragment extends Fragment {
         @BindView(R.id.recipients)
         ListView listView;
+        @BindView(R.id.blank_recipients_info)
+        TextView blankRecipientsInfo;
 
         private Unbinder unbinder;
         private IRecipientsHandler recipientsHandler;
@@ -290,24 +294,24 @@ public class MediaRecipients2Activity extends BaseActivity implements
                     initialize(event.getRecipientsHandler(), event.getMediaRecipients());
                 }
             })
-            .wire(MediaRecipientAddedEvent.class, new EventObserver<MediaRecipientAddedEvent>() {
-                @Override
-                public void onNext(MediaRecipientAddedEvent event) {
-                    addMediaRecipient(event.getMediaRecipient());
-                }
-            })
-            .wire(MediaRecipientUpdatedEvent.class, new EventObserver<MediaRecipientUpdatedEvent>() {
-                @Override
-                public void onNext(MediaRecipientUpdatedEvent event) {
-                    updateMediaRecipient();
-                }
-            })
-            .wire(MediaRecipientRemovedEvent.class, new EventObserver<MediaRecipientRemovedEvent>() {
-                @Override
-                public void onNext(MediaRecipientRemovedEvent event) {
-                    removeMediaRecipient(event.getMediaRecipient());
-                }
-            });
+                    .wire(MediaRecipientAddedEvent.class, new EventObserver<MediaRecipientAddedEvent>() {
+                        @Override
+                        public void onNext(MediaRecipientAddedEvent event) {
+                            addMediaRecipient(event.getMediaRecipient());
+                        }
+                    })
+                    .wire(MediaRecipientUpdatedEvent.class, new EventObserver<MediaRecipientUpdatedEvent>() {
+                        @Override
+                        public void onNext(MediaRecipientUpdatedEvent event) {
+                            updateMediaRecipient();
+                        }
+                    })
+                    .wire(MediaRecipientRemovedEvent.class, new EventObserver<MediaRecipientRemovedEvent>() {
+                        @Override
+                        public void onNext(MediaRecipientRemovedEvent event) {
+                            removeMediaRecipient(event.getMediaRecipient());
+                        }
+                    });
 
             return rootView;
         }
@@ -316,7 +320,7 @@ public class MediaRecipients2Activity extends BaseActivity implements
         public void onStart() {
             super.onStart();
 
-            if (! initialized) {
+            if (!initialized) {
                 ((MediaRecipients2Activity) getActivity()).sendMediaRecipientsReadyEvent();
             }
         }
@@ -325,7 +329,7 @@ public class MediaRecipients2Activity extends BaseActivity implements
         public void onDestroyView() {
             super.onDestroyView();
 
-            if (! disposables.isDisposed()) {
+            if (!disposables.isDisposed()) {
                 disposables.dispose();
             }
 
@@ -335,17 +339,24 @@ public class MediaRecipients2Activity extends BaseActivity implements
         void initialize(IRecipientsHandler recipientsHandler, List<MediaRecipient> mediaRecipients) {
             this.recipientsHandler = recipientsHandler;
             this.mediaRecipients = mediaRecipients;
+            setBlankRecipientsInfo();
             updateRecipientsLayout();
         }
 
         void removeMediaRecipient(MediaRecipient mediaRecipient) {
             getAdapter().remove(mediaRecipient);
             showToast(R.string.removed_recipient);
+            setBlankRecipientsInfo();
         }
 
         void addMediaRecipient(MediaRecipient mediaRecipient) {
             getAdapter().add(mediaRecipient);
             showToast(R.string.recipient_added);
+            setBlankRecipientsInfo();
+        }
+
+        private void setBlankRecipientsInfo() {
+            blankRecipientsInfo.setVisibility(mediaRecipients.isEmpty() ? View.VISIBLE : View.GONE);
         }
 
         void updateMediaRecipient() {
@@ -375,6 +386,8 @@ public class MediaRecipients2Activity extends BaseActivity implements
     public static class RecipientListsFragment extends Fragment {
         @BindView(R.id.recipient_lists)
         ListView listView;
+        @BindView(R.id.blank_recipient_lists_info)
+        TextView blankListsInfo;
 
         private Unbinder unbinder;
         private IRecipientListsHandler recipientListsHandler;
@@ -403,27 +416,27 @@ public class MediaRecipients2Activity extends BaseActivity implements
                     initialize(event.getRecipientListsHandler(), event.getMediaRecipientLists());
                 }
             })
-            .wire(MediaRecipientListAddedEvent.class, new EventObserver<MediaRecipientListAddedEvent>() {
-                @Override
-                public void onNext(MediaRecipientListAddedEvent event) {
-                    addMediaRecipientList(event.getMediaRecipientList());
-                    if (recipientListsHandler != null) {
-                        recipientListsHandler.updateMediaRecipientList(event.getMediaRecipientList());
-                    }
-                }
-            })
-            .wire(MediaRecipientListRemovedEvent.class, new EventObserver<MediaRecipientListRemovedEvent>() {
-                @Override
-                public void onNext(MediaRecipientListRemovedEvent event) {
-                    removeMediaRecipientList(event.getMediaRecipientList());
-                }
-            })
-            .wire(MediaRecipientListUpdatedEvent.class, new EventObserver<MediaRecipientListUpdatedEvent>() {
-                @Override
-                public void onNext(MediaRecipientListUpdatedEvent event) {
-                    updateMediaRecipientList(event.getMediaRecipientList());
-                }
-            });
+                    .wire(MediaRecipientListAddedEvent.class, new EventObserver<MediaRecipientListAddedEvent>() {
+                        @Override
+                        public void onNext(MediaRecipientListAddedEvent event) {
+                            addMediaRecipientList(event.getMediaRecipientList());
+                            if (recipientListsHandler != null) {
+                                recipientListsHandler.updateMediaRecipientList(event.getMediaRecipientList());
+                            }
+                        }
+                    })
+                    .wire(MediaRecipientListRemovedEvent.class, new EventObserver<MediaRecipientListRemovedEvent>() {
+                        @Override
+                        public void onNext(MediaRecipientListRemovedEvent event) {
+                            removeMediaRecipientList(event.getMediaRecipientList());
+                        }
+                    })
+                    .wire(MediaRecipientListUpdatedEvent.class, new EventObserver<MediaRecipientListUpdatedEvent>() {
+                        @Override
+                        public void onNext(MediaRecipientListUpdatedEvent event) {
+                            updateMediaRecipientList(event.getMediaRecipientList());
+                        }
+                    });
 
             return rootView;
         }
@@ -432,7 +445,7 @@ public class MediaRecipients2Activity extends BaseActivity implements
         public void onStart() {
             super.onStart();
 
-            if (! initialized) {
+            if (!initialized) {
                 ((MediaRecipients2Activity) getActivity()).sendMediaRecipientListsReadyEvent();
             } else {
                 getAdapter().notifyDataSetChanged();
@@ -443,7 +456,7 @@ public class MediaRecipients2Activity extends BaseActivity implements
         public void onDestroyView() {
             super.onDestroyView();
 
-            if (! disposables.isDisposed()) {
+            if (!disposables.isDisposed()) {
                 disposables.dispose();
             }
 
@@ -454,20 +467,23 @@ public class MediaRecipients2Activity extends BaseActivity implements
             this.recipientListsHandler = recipientListsHandler;
             this.mediaRecipientLists = mediaRecipientLists;
             updateRecipientListsLayout();
+            setBlankRecipientListInfo();
         }
 
         void removeMediaRecipientList(MediaRecipientList mediaRecipientList) {
-            getAdapter().remove(mediaRecipientList);
+             getAdapter().remove(mediaRecipientList);
             showToast(R.string.removed_recipient_list);
+            setBlankRecipientListInfo();
         }
 
         void addMediaRecipientList(MediaRecipientList mediaRecipientList) {
             getAdapter().add(mediaRecipientList);
             showToast(R.string.recipient_list_added);
+            setBlankRecipientListInfo();
         }
 
         void updateMediaRecipientList(MediaRecipientList mediaRecipientList) {
-            for(int i = 0, count = getAdapter().getCount(); i < count; i++) {
+            for (int i = 0, count = getAdapter().getCount(); i < count; i++) {
                 MediaRecipientList current = getAdapter().getItem(i);
 
                 // update object in adapter..
@@ -478,6 +494,10 @@ public class MediaRecipients2Activity extends BaseActivity implements
                     break;
                 }
             }
+        }
+
+        public void setBlankRecipientListInfo() {
+            blankListsInfo.setVisibility(mediaRecipientLists.isEmpty() ? View.VISIBLE : View.GONE);
         }
 
         private void updateRecipientListsLayout() {

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,8 @@ public class TrainingActivity extends CacheWordSubscriberBaseActivity implements
         ITrainListPresenterContract.IView {
     @BindView(R.id.trainings)
     RecyclerView recyclerView;
+    @BindView(R.id.blank_train_list_info)
+    TextView blankTrainListInfo;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.fab)
@@ -70,6 +73,7 @@ public class TrainingActivity extends CacheWordSubscriberBaseActivity implements
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.ra_train);
         }
 
         adapter = new TrainModuleAdapter(trainModules);
@@ -112,7 +116,11 @@ public class TrainingActivity extends CacheWordSubscriberBaseActivity implements
         });
 
         presenter = new TrainListPresenter(this);
-        presenter.listModules();
+        if (MyApplication.isConnectedToInternet(getContext())) {
+            presenter.getModules();
+        } else {
+            presenter.listModules();
+        }
     }
 
     @Override
@@ -164,6 +172,7 @@ public class TrainingActivity extends CacheWordSubscriberBaseActivity implements
                 presenter.searchModules(searchView.getQuery().toString());
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -185,6 +194,7 @@ public class TrainingActivity extends CacheWordSubscriberBaseActivity implements
     @Override
     public void onTrainModulesSuccess(List<TrainModule> modules) {
         adapter.updateAdapter(modules);
+        blankTrainListInfo.setVisibility(modules.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     @Override

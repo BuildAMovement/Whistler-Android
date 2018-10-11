@@ -13,11 +13,16 @@ import java.util.List;
 
 import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.presentation.entity.MediaRecipientSelection;
+import rs.readahead.washington.mobile.views.interfaces.IEditRecipientListHandler;
 
 
 public class MediaRecipientSelectorListAdapter extends ArrayAdapter<MediaRecipientSelection> {
-    public MediaRecipientSelectorListAdapter(Context context, List<MediaRecipientSelection> selections) {
+    private IEditRecipientListHandler editRecipientListHandler;
+
+
+    public MediaRecipientSelectorListAdapter(Context context, List<MediaRecipientSelection> selections, IEditRecipientListHandler editRecipientListHandler) {
         super(context, 0, selections);
+        this.editRecipientListHandler = editRecipientListHandler;
     }
 
     @NonNull
@@ -47,6 +52,8 @@ public class MediaRecipientSelectorListAdapter extends ArrayAdapter<MediaRecipie
                         cv.toggle();
                         s.setChecked(cv.isChecked());
                     }
+
+                    editRecipientListHandler.setSelectVisible(true);
                 }
             });
         }

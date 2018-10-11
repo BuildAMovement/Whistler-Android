@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true">
-
-    <!--<com.wonderkiln.camerakit.CameraView
-        xmlns:camerakit="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        camerakit:ckZoom="pinch"/>-->
 
     <rs.readahead.washington.mobile.views.custom.WaCameraView
         android:id="@+id/camera"
@@ -125,7 +116,7 @@
             android:foreground="?selectableItemBackgroundBorderless"
             android:padding="10dp"
             android:visibility="invisible"
-            app:srcCompat="@drawable/ic_expand"
+            android:src="@drawable/ic_expand"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 
@@ -136,7 +127,6 @@
         android:background="@color/wa_white"
         android:visibility="invisible">
 
-
         <ImageView
             android:id="@+id/confirmImageView"
             android:layout_width="match_parent"
@@ -145,5 +135,4 @@
             android:contentDescription="@null"
             android:scaleType="centerCrop"/>
     </FrameLayout>
-
 </FrameLayout>

@@ -1,10 +1,10 @@
 package rs.readahead.washington.mobile.views.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
 import info.guardianproject.cacheword.ICacheWordSubscriber;
+import rs.readahead.washington.mobile.MyApplication;
 import rs.readahead.washington.mobile.R;
 
 
@@ -27,7 +27,7 @@ public class SplashActivity extends CacheWordSubscriberBaseActivity implements I
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                MyApplication.startMainActivity(SplashActivity.this);
                 finish();
             }
         }, SPLASH_TIMEOUT_MS);

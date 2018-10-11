@@ -28,12 +28,13 @@ import rs.readahead.washington.mobile.domain.entity.MediaRecipient;
 import rs.readahead.washington.mobile.domain.entity.MediaRecipientList;
 import rs.readahead.washington.mobile.presentation.entity.MediaRecipientSelection;
 import rs.readahead.washington.mobile.presentation.entity.mapper.MediaRecipientMapper;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 import rs.readahead.washington.mobile.views.adapters.MediaRecipientSelectorListAdapter;
+import rs.readahead.washington.mobile.views.interfaces.IEditRecipientListHandler;
 
 
 public class EditMediaRecipientListActivity extends BaseActivity implements
-        ICacheWordSubscriber {
+        ICacheWordSubscriber, IEditRecipientListHandler{
     public static String RECIPIENT_LIST_ID = "recipient_list_id";
 
     @BindView(R.id.root)
@@ -47,6 +48,8 @@ public class EditMediaRecipientListActivity extends BaseActivity implements
 
     private DataSource dataSource;
     private CacheWordHandler cacheWord;
+
+    private MenuItem mSelectMenuItem;
 
 
     @Override
@@ -67,7 +70,7 @@ public class EditMediaRecipientListActivity extends BaseActivity implements
 
         cacheWord = new CacheWordHandler(this);
 
-        CommonUtils.hideKeyboard(this, rootView);
+        Util.hideKeyboard(this, rootView);
     }
 
     @Override
@@ -94,6 +97,19 @@ public class EditMediaRecipientListActivity extends BaseActivity implements
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mSelectMenuItem = menu.findItem(R.id.action_select);
+        setSelectVisible(false);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void setSelectVisible(boolean visible) {
+        mSelectMenuItem.setVisible(visible);
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
         cacheWord.connectToService();
@@ -107,13 +123,13 @@ public class EditMediaRecipientListActivity extends BaseActivity implements
 
     @Override
     public void onCacheWordUninitialized() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 
     @Override
     public void onCacheWordLocked() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 
@@ -136,6 +152,8 @@ public class EditMediaRecipientListActivity extends BaseActivity implements
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editListView, InputMethodManager.SHOW_IMPLICIT);
+
+        setSelectVisible(true);
     }
 
     private void saveMediaRecipientList() {
@@ -190,7 +208,7 @@ public class EditMediaRecipientListActivity extends BaseActivity implements
             }
         }
 
-        MediaRecipientSelectorListAdapter adapter = new MediaRecipientSelectorListAdapter(this, selections);
+        MediaRecipientSelectorListAdapter adapter = new MediaRecipientSelectorListAdapter(this, selections, this);
         recipientsListView.setAdapter(adapter);
     }
 }

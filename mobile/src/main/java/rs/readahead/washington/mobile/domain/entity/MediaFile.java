@@ -1,8 +1,5 @@
 package rs.readahead.washington.mobile.domain.entity;
 
-import android.support.annotation.Nullable;
-import android.webkit.MimeTypeMap;
-
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -12,30 +9,42 @@ import rs.readahead.washington.mobile.util.C;
 public class MediaFile extends RawMediaFile implements Serializable {
     public static final MediaFile NONE = new MediaFile(-1);
 
+    public enum Type {
+        UNKNOWN,
+        IMAGE,
+        AUDIO,
+        VIDEO
+    }
+
     private Metadata metadata;
     private long duration; // milliseconds
+    private Type type;
 
 
     public static MediaFile newJpeg() {
         String uid = UUID.randomUUID().toString();
-        return new MediaFile(C.MEDIA_DIR, uid, uid + ".jpg");
+        return new MediaFile(C.MEDIA_DIR, uid, uid + ".jpg", Type.IMAGE);
     }
 
     public static MediaFile newAac() {
         String uid = UUID.randomUUID().toString();
-        return new MediaFile(C.MEDIA_DIR, uid, uid + ".aac");
+        return new MediaFile(C.MEDIA_DIR, uid, uid + ".aac", Type.AUDIO);
     }
 
     public static MediaFile newMp4() {
         String uid = UUID.randomUUID().toString();
-        return new MediaFile(C.MEDIA_DIR, uid, uid + ".mp4");
+        return new MediaFile(C.MEDIA_DIR, uid, uid + ".mp4", Type.VIDEO);
     }
 
-    public MediaFile(String path, String uid, String filename) {
+    // todo: this should be private and DataSource should load type from storage
+    public MediaFile(String path, String uid, String filename, Type type) {
         this.uid = uid;
         this.path = path;
         this.fileName = filename;
+        this.type = type;
     }
+
+    private MediaFile() {}
 
     private MediaFile(long id) {
         setId(id);
@@ -57,26 +66,7 @@ public class MediaFile extends RawMediaFile implements Serializable {
         this.duration = duration;
     }
 
-    @Nullable
-    public String getMimeType() {
-        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                MimeTypeMap.getFileExtensionFromUrl(getFileName().toLowerCase())
-        );
-    }
-
-    @Nullable
-    public String getPrimaryMimeType() {
-        String mimeType = getMimeType();
-
-        if (mimeType == null) {
-            return null;
-        }
-
-        //noinspection LoopStatementThatDoesntLoop
-        for (String token: mimeType.split("/")) {
-            return token.toLowerCase();
-        }
-
-        return mimeType;
+    public Type getType() {
+        return type;
     }
 }

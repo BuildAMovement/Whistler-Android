@@ -91,7 +91,7 @@ class MediaFileUploader {
 
         // get decrypted bytes stream
         try {
-            inputStream = EncryptedFileProvider.getDecryptedInputStream(key, fis, file.getName());
+            inputStream = EncryptedFileProvider.getDecryptedInputStream(key, fis, file.getName()); // todo: move to limited variant
 
             long skipped = skipBytes(inputStream, usr.mediaFileInfo.getSize());
             if (skipped != usr.mediaFileInfo.getSize()) {

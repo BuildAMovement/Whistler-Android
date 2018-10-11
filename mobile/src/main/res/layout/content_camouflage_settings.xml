@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wa_white"
+    android:textDirection="locale"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="rs.readahead.washington.mobile.views.activity.CamouflageSettingsActivity"
+    tools:showIn="@layout/activity_camouflage_settings">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/camouflage_info"
+                style="@style/ClickableVerticalLinerLayout">
+
+                <TextView
+                    style="@style/CamouflageSettingsTextGray"
+                    android:text="@string/camouflage_explanatory_text" />
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/regular_appearance"
+                style="@style/SettingsClickableHorizontalLinerLayout">
+
+                <LinearLayout
+                    style="@style/CamouflageSettingsOptionSelection">
+
+                    <TextView
+                        style="@style/CamouflageSettingsTextBlack"
+                        android:text="@string/none" />
+
+                    <TextView
+                        style="@style/CamouflageSettingsTextGray"
+                        android:text="@string/keep_whistler_regular" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/default_check"
+                    style="@style/CamouflageSettingsOptionImage"
+                    android:src="@drawable/ic_check_black_24dp"
+                    android:visibility="invisible"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/camouflage_layout"
+                style="@style/SettingsClickableHorizontalLinerLayout">
+
+                <LinearLayout
+                    style="@style/CamouflageSettingsOptionSelection">
+
+                    <TextView
+                        style="@style/CamouflageSettingsTextBlack"
+                        android:text="@string/change_appearance" />
+
+                    <TextView
+                        style="@style/CamouflageSettingsTextGray"
+                        android:text="@string/select_name_and_logo" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/appearance_check"
+                    style="@style/CamouflageSettingsOptionImage"
+                    android:src="@drawable/ic_check_black_24dp"
+                    android:visibility="invisible"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout
+                android:id="@+id/enable_secret_mode"
+                style="@style/SettingsClickableHorizontalLinerLayout">
+
+                <LinearLayout
+                    style="@style/CamouflageSettingsOptionSelection">
+
+                    <TextView
+                        style="@style/CamouflageSettingsTextBlack"
+                        android:text="@string/make_invisible" />
+
+                    <TextView
+                        style="@style/CamouflageSettingsTextGray"
+                        android:text="@string/make_invisible_info" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/secret_check"
+                    style="@style/CamouflageSettingsOptionImage"
+                    android:src="@drawable/ic_check_black_24dp"
+                    android:visibility="invisible"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,8 +13,8 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
         android:layout_above="@+id/send_report"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
         <LinearLayout
@@ -25,12 +24,12 @@
 
             <LinearLayout
                 android:id="@+id/metadata_layout"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/wa_button_gray"
                 android:orientation="vertical"
-                android:paddingStart="20dp">
+                android:paddingStart="20dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     style="@style/ReportInfoContainerLayout"
@@ -39,41 +38,41 @@
                     <ImageView
                         style="@style/ReportInfoImageView"
                         android:src="@drawable/ic_warning_black"
-                        tools:ignore="ContentDescription"/>
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/metadata_text"
                         style="@style/ExplanatoryEmptyMessageLeft"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/no_metadata_description"/>
+                        android:text="@string/no_metadata_description"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <RelativeLayout
-                style="@style/HorizontalLayout">
+            <RelativeLayout style="@style/HorizontalLayout">
 
                 <LinearLayout
-                    android:layout_toStartOf="@+id/title_frame"
-                    style="@style/ReportSwitchLinearLayout">
+                    style="@style/ReportSwitchLinearLayout"
+                    android:layout_toStartOf="@+id/title_frame">
 
                     <TextView
                         android:id="@+id/title_hint"
                         style="@style/NewReportHint"
-                        android:text="@string/title_of_report"/>
+                        android:text="@string/title_of_report" />
 
                     <EditText
-                        android:imeOptions="actionDone"
                         android:id="@+id/title_text"
                         style="@style/NewReportTextView"
                         android:enabled="true"
+                        android:hint="@string/title_of_report"
+                        android:imeOptions="actionDone"
                         android:inputType="textCapSentences|textMultiLine"
                         android:paddingEnd="16dp"
                         android:paddingStart="0dp"
-                        android:textColorHint="@color/wa_black"
-                        android:hint="@string/title_of_report"/>
+                        android:textColorHint="@color/wa_black" />
                 </LinearLayout>
 
                 <FrameLayout
@@ -82,54 +81,54 @@
 
                     <TextView
                         android:id="@+id/title_indicator_text"
-                        style="@style/NewReportRequiredText"/>
+                        style="@style/NewReportRequiredText" />
 
                     <ImageView
                         android:id="@+id/title_completed"
                         style="@style/NewReportCompletedIndicator"
                         android:src="@drawable/ic_checked_green"
-                        tools:ignore="ContentDescription"/>
+                        tools:ignore="ContentDescription" />
                 </FrameLayout>
             </RelativeLayout>
 
-            <View style="@style/SettingsMainLine"/>
+            <View style="@style/SettingsMainLine" />
 
             <RelativeLayout
                 android:id="@+id/date_layout"
                 style="@style/ClickableHorizontalLinerLayout">
 
                 <LinearLayout
-                    android:layout_toStartOf="@+id/date_frame"
-                    style="@style/ReportSwitchLinearLayout">
+                    style="@style/ReportSwitchLinearLayout"
+                    android:layout_toStartOf="@+id/date_frame">
 
                     <TextView
                         android:id="@+id/date_hint"
                         style="@style/NewReportHint"
-                        android:text="@string/date"
-                        />
+                        android:text="@string/date" />
 
                     <TextView
                         android:id="@+id/date_text"
                         style="@style/NewReportTextView"
-                        android:text="@string/date"/>
+                        android:text="@string/date" />
                 </LinearLayout>
+
                 <FrameLayout
                     android:id="@+id/date_frame"
                     style="@style/NewReportFrame">
 
                     <TextView
                         android:id="@+id/date_indicator_text"
-                        style="@style/NewReportRequiredText"/>
+                        style="@style/NewReportRequiredText" />
 
                     <ImageView
                         android:id="@+id/date_completed"
                         style="@style/NewReportCompletedIndicator"
                         android:src="@drawable/ic_checked_green"
-                        tools:ignore="ContentDescription"/>
+                        tools:ignore="ContentDescription" />
                 </FrameLayout>
             </RelativeLayout>
 
-            <View style="@style/SettingsMainLine"/>
+            <View style="@style/SettingsMainLine" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -143,12 +142,12 @@
                     android:layout_alignParentTop="true">
 
                     <TextView
+                        android:id="@+id/description_hint"
+                        style="@style/NewReportHint"
                         android:paddingEnd="31dp"
                         android:paddingStart="31dp"
                         android:text="@string/description"
-                        android:id="@+id/description_hint"
-                        style="@style/NewReportHint"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/description_info"
@@ -159,7 +158,7 @@
                         android:paddingEnd="31dp"
                         android:paddingStart="31dp"
                         android:text="@string/description_info"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
                 </LinearLayout>
 
 
@@ -173,7 +172,7 @@
                     android:inputType="textCapSentences|textMultiLine"
                     android:paddingEnd="16dp"
                     android:paddingStart="31dp"
-                    android:textColorHint="@color/wa_black"/>
+                    android:textColorHint="@color/wa_black" />
 
                 <FrameLayout
                     android:id="@+id/description_frame"
@@ -183,35 +182,35 @@
 
                     <TextView
                         android:id="@+id/description_indicator_text"
-                        style="@style/NewReportRecommendedText"/>
+                        style="@style/NewReportRecommendedText" />
 
                     <ImageView
                         android:id="@+id/description_completed"
                         style="@style/NewReportCompletedIndicator"
                         android:src="@drawable/ic_checked_green"
-                        tools:ignore="ContentDescription"/>
-                    </FrameLayout>
+                        tools:ignore="ContentDescription" />
+                </FrameLayout>
             </RelativeLayout>
 
-            <View style="@style/SettingsMainLine"/>
+            <View style="@style/SettingsMainLine" />
 
             <RelativeLayout
                 android:id="@+id/evidence_layout"
                 style="@style/ClickableHorizontalLinerLayout">
 
                 <LinearLayout
-                    android:layout_toStartOf="@+id/evidence_frame"
-                    style="@style/ReportSwitchLinearLayout">
+                    style="@style/ReportSwitchLinearLayout"
+                    android:layout_toStartOf="@+id/evidence_frame">
 
                     <TextView
                         android:id="@+id/evidence_hint"
                         style="@style/NewReportHint"
-                        android:text="@string/evidence"/>
+                        android:text="@string/ra_attachments" />
 
                     <TextView
                         android:id="@+id/evidence_text"
                         style="@style/NewReportTextView"
-                        android:text="@string/evidence"/>
+                        android:text="@string/ra_attachments" />
                 </LinearLayout>
 
                 <FrameLayout
@@ -220,17 +219,17 @@
 
                     <TextView
                         android:id="@+id/evidence_indicator_text"
-                        style="@style/NewReportRequiredText"/>
+                        style="@style/NewReportRequiredText" />
 
                     <ImageView
                         android:id="@+id/evidence_completed"
                         style="@style/NewReportCompletedIndicator"
                         android:src="@drawable/ic_checked_green"
-                        tools:ignore="ContentDescription"/>
+                        tools:ignore="ContentDescription" />
                 </FrameLayout>
             </RelativeLayout>
 
-            <View style="@style/SettingsMainLine"/>
+            <View style="@style/SettingsMainLine" />
 
 
             <RelativeLayout
@@ -238,19 +237,18 @@
                 style="@style/ClickableHorizontalLinerLayout">
 
                 <LinearLayout
-                    android:layout_toStartOf="@+id/recipient_frame"
-                    style="@style/ReportSwitchLinearLayout">
+                    style="@style/ReportSwitchLinearLayout"
+                    android:layout_toStartOf="@+id/recipient_frame">
 
                     <TextView
                         android:id="@+id/recipient_hint"
                         style="@style/NewReportHint"
-                        android:text="@string/recipients"
-                        />
+                        android:text="@string/recipients" />
 
                     <TextView
                         android:id="@+id/recipient_text"
                         style="@style/NewReportTextView"
-                        android:text="@string/recipients"/>
+                        android:text="@string/recipients" />
                 </LinearLayout>
 
                 <FrameLayout
@@ -259,27 +257,26 @@
 
                     <TextView
                         android:id="@+id/recipient_indicator_text"
-                        style="@style/NewReportRequiredText"/>
+                        style="@style/NewReportRequiredText" />
 
                     <ImageView
                         android:id="@+id/recipient_completed"
                         style="@style/NewReportCompletedIndicator"
                         android:src="@drawable/ic_checked_green"
-                        tools:ignore="ContentDescription"/>
+                        tools:ignore="ContentDescription" />
                 </FrameLayout>
             </RelativeLayout>
 
-            <View style="@style/SettingsMainLine"/>
+            <View style="@style/SettingsMainLine" />
 
-            <LinearLayout
-                style="@style/VerticalLinearLayout">
+            <LinearLayout style="@style/VerticalLinearLayout">
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/anonymous_switch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/include_contact_information"
-                    android:theme="@style/TextViewBlack"/>
+                    android:theme="@style/TextViewBlack" />
 
                 <TextView
                     android:id="@+id/contact_text"
@@ -287,20 +284,19 @@
                     android:layout_height="wrap_content"
                     android:paddingEnd="15dp"
                     android:paddingStart="15dp"
-                    android:text="@string/contact_info"/>
+                    android:text="@string/contact_info" />
             </LinearLayout>
 
-            <View style="@style/SettingsMainLine"/>
+            <View style="@style/SettingsMainLine" />
 
-            <LinearLayout
-                style="@style/VerticalLinearLayout">
+            <LinearLayout style="@style/VerticalLinearLayout">
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/public_switch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/make_report_public"
-                    android:theme="@style/TextViewBlack"/>
+                    android:theme="@style/TextViewBlack" />
 
                 <TextView
                     android:id="@+id/public_text"
@@ -308,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:paddingEnd="15dp"
                     android:paddingStart="15dp"
-                    android:text="@string/make_report_public_desc"/>
+                    android:text="@string/make_report_public_desc" />
             </LinearLayout>
 
         </LinearLayout>
@@ -321,6 +317,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/send"/>
+        android:text="@string/send" />
 
 </RelativeLayout>

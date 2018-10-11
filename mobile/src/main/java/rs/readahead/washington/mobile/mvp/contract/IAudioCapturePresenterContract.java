@@ -9,7 +9,7 @@ public class IAudioCapturePresenterContract {
     public interface IView {
         void onAddingStart();
         void onAddingEnd();
-        void onAddSuccess(long mediaFileId, String primaryMime);
+        void onAddSuccess(long mediaFileId);
         void onAddError(Throwable error);
         Context getContext();
     }

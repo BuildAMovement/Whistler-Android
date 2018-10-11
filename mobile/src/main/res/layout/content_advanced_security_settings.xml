@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wa_white"
+    android:textDirection="locale"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="rs.readahead.washington.mobile.views.activity.SecuritySettingsActivity"
+    tools:showIn="@layout/activity_security_settings">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View style="@style/SettingsMainLine" />
+
+            <LinearLayout style="@style/VerticalLinearLayout">
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/enable_df"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/ra_prevent_blocking"
+                    android:theme="@style/SettingsTextViewBlack" />
+
+                <TextView
+                    style="@style/SettingsTextViewGray"
+                    android:text="@string/ra_prevent_blocking_desc" />
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

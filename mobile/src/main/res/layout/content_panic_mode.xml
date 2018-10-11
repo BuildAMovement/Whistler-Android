@@ -14,7 +14,8 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:ignore="UselessParent">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -24,6 +25,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <LinearLayout style="@style/VerticalLinearLayout">
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/uninstall_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="@string/ra_uninstall_settings_title"
+                        android:theme="@style/SettingsTextViewBlack" />
+
+                    <TextView
+                        style="@style/SettingsTextViewGray"
+                        android:text="@string/ra_uninstall_settings_desc" />
+                </LinearLayout>
+
+                <View style="@style/SettingsMainLine" />
 
                 <LinearLayout
                     android:id="@+id/panic_message"

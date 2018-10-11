@@ -4,21 +4,24 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.crashlytics.android.Crashlytics;
 import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Facing;
 import com.otaliastudios.cameraview.Flash;
@@ -31,6 +34,7 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.domain.entity.Metadata;
 import rs.readahead.washington.mobile.domain.entity.TempMediaFile;
@@ -60,10 +64,6 @@ public class CameraActivity extends MetadataActivity implements
     ViewGroup confirmLayout;
     @BindView(R.id.confirmImageView)
     ImageView confirmImageView;
-    @BindView(R.id.confirmRetry)
-    Button confirmRetry;
-    @BindView(R.id.confirmOK)
-    Button confirmOK;
     @BindView(R.id.switchButton)
     CameraSwitchButton switchButton;
     @BindView(R.id.flashButton)
@@ -74,17 +74,25 @@ public class CameraActivity extends MetadataActivity implements
     CameraDurationTextView durationView;
     @BindView(R.id.modeButton)
     CameraModeButton modeButton;
+    @BindView(R.id.camera_zoom)
+    SeekBar mSeekBar;
 
     private CameraCapturePresenter presenter;
     private MetadataAttacher metadataAttacher;
     private Mode mode;
     private boolean videoRecording;
     private ProgressDialog progressDialog;
+    private OrientationEventListener mOrientationEventListener;
+    private int zoomLevel = 0;
+    private Handler handler;
 
     public enum Mode {
         PHOTO,
         VIDEO
     }
+
+    private final static int CLICK_DELAY = 1200;
+    private long lastClickTime = System.currentTimeMillis();
 
 
     @Override
@@ -93,6 +101,8 @@ public class CameraActivity extends MetadataActivity implements
 
         setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
+
+        handler = new Handler();
 
         presenter = new CameraCapturePresenter(this);
         metadataAttacher = new MetadataAttacher(this);
@@ -105,30 +115,43 @@ public class CameraActivity extends MetadataActivity implements
         setupCameraView();
         setupCameraCaptureButton();
         setupCameraModeButton();
-        setupConfirmLayout();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        mOrientationEventListener.enable();
+
+        startLocationMetadataListening();
+
         cameraView.start();
+        mSeekBar.setProgress(zoomLevel);
+        setCameraZoom();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        startLocationMetadataListening();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+        stopLocationMetadataListening();
+
+        mOrientationEventListener.disable();
+
+        if (videoRecording) {
+            captureButton.performClick();
+        }
+
         cameraView.stop();
     }
 
     @Override
     protected void onStop() {
-        stopLocationMetadataListening();
         super.onStop();
     }
 
@@ -138,6 +161,12 @@ public class CameraActivity extends MetadataActivity implements
         stopPresenter();
         hideProgressDialog();
         cameraView.destroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (maybeStopVideoRecording()) return;
+        super.onBackPressed();
     }
 
     @Override
@@ -151,7 +180,7 @@ public class CameraActivity extends MetadataActivity implements
     }
 
     @Override
-    public void onAddSuccess(long mediaFileId, String primaryType) {
+    public void onAddSuccess(long mediaFileId) {
         attachMediaFileMetadata(mediaFileId, metadataAttacher);
     }
 
@@ -163,7 +192,7 @@ public class CameraActivity extends MetadataActivity implements
 
     @Override
     public void onVideoThumbSuccess(@NonNull Bitmap thumb) {
-        confirmImageView.setImageBitmap(thumb);
+        animateImagePreview(thumb, null);
     }
 
     @Override
@@ -177,6 +206,7 @@ public class CameraActivity extends MetadataActivity implements
         data.putExtra(C.CAPTURED_MEDIA_FILE_ID, mediaFileId);
 
         setResult(RESULT_OK, data);
+
         finish();
     }
 
@@ -186,8 +216,125 @@ public class CameraActivity extends MetadataActivity implements
     }
 
     @Override
+    public void rotateViews(int rotation) {
+        switchButton.rotateView(rotation);
+        flashButton.rotateView(rotation);
+        durationView.rotateView(rotation);
+        captureButton.rotateView(rotation);
+        modeButton.rotateView(rotation);
+    }
+
+    @Override
     public Context getContext() {
         return this;
+    }
+
+    @OnClick(R.id.captureButton)
+    void onCaptureClicked() {
+        if (cameraView.getSessionType() == SessionType.PICTURE) {
+            cameraView.capturePicture();
+        } else {
+
+            switchButton.setVisibility(videoRecording ? View.VISIBLE : View.GONE);
+            if (videoRecording) {
+                if (System.currentTimeMillis() - lastClickTime < CLICK_DELAY) {
+                    return;
+                } else {
+                    cameraView.stopCapturingVideo();
+                    videoRecording = false;
+                    switchButton.setVisibility(View.VISIBLE);
+                }
+            } else {
+                lastClickTime = System.currentTimeMillis();
+                TempMediaFile tmp = TempMediaFile.newMp4();
+                File file = MediaFileHandler.getTempFile(this, tmp);
+                cameraView.startCapturingVideo(file);
+                captureButton.displayStopVideo();
+                durationView.start();
+                videoRecording = true;
+                switchButton.setVisibility(View.GONE);
+            }
+        }
+    }
+
+
+    @OnClick(R.id.modeButton)
+    void onModeClicked() {
+        if (cameraView.getSessionType() == SessionType.PICTURE) {
+            cameraView.setSessionType(SessionType.VIDEO);
+            turnFlashDown();
+            modeButton.displayPhoto();
+            captureButton.displayStartVideo();
+            mode = CameraActivity.Mode.VIDEO;
+        } else {
+            mode = CameraActivity.Mode.PHOTO;
+            cameraView.setSessionType(SessionType.PICTURE);
+            if (cameraView.getFlash() == Flash.TORCH) {
+                cameraView.setFlash(Flash.AUTO);
+            }
+            modeButton.displayVideo();
+            captureButton.displayTakePhoto();
+        }
+
+        resetZoom();
+    }
+
+    @OnClick(R.id.switchButton)
+    void onSwitchClicked() {
+        if (cameraView.getFacing() == Facing.BACK) {
+            cameraView.setFacing(Facing.FRONT);
+            switchButton.displayFrontCamera();
+        } else {
+            cameraView.setFacing(Facing.BACK);
+            switchButton.displayBackCamera();
+        }
+    }
+
+    private void resetZoom() {
+        zoomLevel = 0;
+        mSeekBar.setProgress(0);
+        setCameraZoom();
+    }
+
+    private void setCameraZoom() {
+        cameraView.setZoom((float) zoomLevel / 100);
+    }
+
+    private void animateImagePreview(final Bitmap previewImage, final byte[] jpeg) {
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.preview_anim);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                confirmImageView.setImageBitmap(previewImage);
+                confirmLayout.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                confirmLayout.setVisibility(View.INVISIBLE);
+                confirmImageView.setImageBitmap(null);
+                // TODO CHECK THIS! decodeTakenPhoto method is not called because there is already bitmap thumbnail created for preview
+                // TODO check if size of the bitmap is too big and move decoding to separate thread in rx
+                if (mode == CameraActivity.Mode.PHOTO) {
+                    presenter.addJpegPhoto(jpeg, previewImage);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        confirmLayout.startAnimation(animation);
+    }
+
+    private boolean maybeStopVideoRecording() {
+        if (videoRecording) {
+            captureButton.performClick();
+            return true;
+        }
+
+        return false;
     }
 
     private void stopPresenter() {
@@ -197,41 +344,30 @@ public class CameraActivity extends MetadataActivity implements
         }
     }
 
-    private void showConfirmPhotoView(final byte[] jpeg) {
-        Glide.with(this)
-                .load(jpeg)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(confirmImageView);
+    private void showConfirmVideoView(final File video) {
+        captureButton.displayStartVideo();
+        durationView.stop();
 
-        confirmLayout.setVisibility(View.VISIBLE);
+        presenter.getVideoThumb(video);
+        presenter.addMp4Video(video);
+    }
 
-        confirmOK.setOnClickListener(new View.OnClickListener() {
+    private void showPreviewPhoto(final byte[] jpeg) {
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                CameraUtils.decodeBitmap(jpeg, 400, 400, new CameraUtils.BitmapCallback() { // todo: 200?
+            public void run() {
+                BitmapFactory.Options opt = new BitmapFactory.Options();
+                opt.inSampleSize = 8;
+                final Bitmap previewImage = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length, opt);
+
+                handler.post(new Runnable() {
                     @Override
-                    public void onBitmapReady(Bitmap bitmap) { // todo: reasoning?
-                        presenter.addJpegPhoto(jpeg, bitmap);
+                    public void run() {
+                        animateImagePreview(previewImage, jpeg);
                     }
                 });
             }
-        });
-    }
-
-    private void showConfirmVideoView(final File video) {
-        presenter.getVideoThumb(video);
-
-        captureButton.displayStartVideo();
-        durationView.stop();
-        confirmLayout.setVisibility(View.VISIBLE);
-
-        confirmOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.addMp4Video(video);
-            }
-        });
+        }).start();
     }
 
     private void setupCameraView() {
@@ -243,14 +379,15 @@ public class CameraActivity extends MetadataActivity implements
             modeButton.displayVideo();
         }
 
-        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
+        //cameraView.setEnabled(PermissionUtil.checkPermission(this, Manifest.permission.CAMERA));
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
-        //cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
+
+        setOrientationListener();
 
         cameraView.addCameraListener(new CameraListener() {
             @Override
             public void onPictureTaken(byte[] jpeg) {
-                showConfirmPhotoView(jpeg);
+                showPreviewPhoto(jpeg);
             }
 
             @Override
@@ -266,20 +403,36 @@ public class CameraActivity extends MetadataActivity implements
             @Override
             public void onCameraOpened(CameraOptions options) {
                 if (options.getSupportedFacing().size() < 2) {
-                    switchButton.setEnabled(false);
+                    switchButton.setVisibility(View.GONE);
                 } else {
-                    switchButton.setEnabled(true);
+                    switchButton.setVisibility(View.VISIBLE);
                     setupCameraSwitchButton();
                 }
 
                 if (options.getSupportedFlash().size() < 2) {
-                    flashButton.setEnabled(false);
+                    flashButton.setVisibility(View.GONE);
                 } else {
-                    flashButton.setEnabled(true);
+                    flashButton.setVisibility(View.VISIBLE);
                     setupCameraFlashButton(options.getSupportedFlash());
                 }
                 // options object has info
                 super.onCameraOpened(options);
+            }
+        });
+
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                zoomLevel = i;
+                setCameraZoom();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
     }
@@ -290,29 +443,6 @@ public class CameraActivity extends MetadataActivity implements
         } else {
             captureButton.displayStartVideo();
         }
-
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                modeButton.setVisibility(View.GONE);
-
-                if (cameraView.getSessionType() == SessionType.PICTURE) {
-                    cameraView.capturePicture();
-                } else {
-                    if (videoRecording) {
-                        cameraView.stopCapturingVideo();
-                        videoRecording = false;
-                    } else {
-                        TempMediaFile tmp = TempMediaFile.newMp4();
-                        File file = MediaFileHandler.getTempFile(CameraActivity.this, tmp);
-                        cameraView.startCapturingVideo(file);
-                        captureButton.displayStopVideo();
-                        durationView.start();
-                        videoRecording = true;
-                    }
-                }
-            }
-        });
     }
 
     private void setupCameraModeButton() {
@@ -321,25 +451,6 @@ public class CameraActivity extends MetadataActivity implements
         } else {
             modeButton.displayPhoto();
         }
-
-        modeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (cameraView.getSessionType() == SessionType.PICTURE) {
-                    cameraView.setSessionType(SessionType.VIDEO);
-                    turnFlashDown();
-                    modeButton.displayPhoto();
-                    captureButton.displayStartVideo();
-                } else {
-                    cameraView.setSessionType(SessionType.PICTURE);
-                    if (cameraView.getFlash() == Flash.TORCH) {
-                        cameraView.setFlash(Flash.AUTO);
-                    }
-                    modeButton.displayVideo();
-                    captureButton.displayTakePhoto();
-                }
-            }
-        });
     }
 
     private void setupCameraSwitchButton() {
@@ -348,19 +459,6 @@ public class CameraActivity extends MetadataActivity implements
         } else {
             switchButton.displayBackCamera();
         }
-
-        switchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (cameraView.getFacing() == Facing.BACK) {
-                    cameraView.setFacing(Facing.FRONT);
-                    switchButton.displayFrontCamera();
-                } else {
-                    cameraView.setFacing(Facing.BACK);
-                    switchButton.displayBackCamera();
-                }
-            }
-        });
     }
 
     private void setupCameraFlashButton(final Set<Flash> supported) {
@@ -375,7 +473,7 @@ public class CameraActivity extends MetadataActivity implements
         flashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cameraView.getSessionType() == SessionType.VIDEO){
+                if (cameraView.getSessionType() == SessionType.VIDEO) {
                     if (cameraView.getFlash() == Flash.OFF && supported.contains(Flash.TORCH)) {
                         flashButton.displayFlashOn();
                         cameraView.setFlash(Flash.TORCH);
@@ -397,18 +495,9 @@ public class CameraActivity extends MetadataActivity implements
         });
     }
 
-    private void turnFlashDown(){
+    private void turnFlashDown() {
         flashButton.displayFlashOff();
         cameraView.setFlash(Flash.OFF);
-    }
-
-    private void setupConfirmLayout() {
-        confirmRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeConfirmLayout();
-            }
-        });
     }
 
     private void closeConfirmLayout() {
@@ -422,5 +511,18 @@ public class CameraActivity extends MetadataActivity implements
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+
+    private void setOrientationListener() {
+        mOrientationEventListener = new OrientationEventListener(
+                this, SensorManager.SENSOR_DELAY_NORMAL) {
+
+            @Override
+            public void onOrientationChanged(int orientation) {
+                if (orientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+                    presenter.handleRotation(orientation);
+                }
+            }
+        };
     }
 }

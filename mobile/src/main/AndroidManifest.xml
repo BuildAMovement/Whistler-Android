@@ -58,12 +58,64 @@
         <activity
             android:name=".views.activity.SplashActivity"
             android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- activity aliases -->
+        <activity-alias
+            android:name=".views.activity.AliasCamera"
+            android:enabled="false"
+            android:label="@string/camera"
+            android:icon="@mipmap/ic_camera_3_round"
+            android:targetActivity=".views.activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".views.activity.AliasCameraPro"
+            android:enabled="false"
+            android:label="@string/camera_pro"
+            android:icon="@mipmap/ic_camera_2_round"
+            android:targetActivity=".views.activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".views.activity.AliasSuperCam"
+            android:enabled="false"
+            android:label="@string/super_cam"
+            android:icon="@mipmap/ic_camera_4_round"
+            android:targetActivity=".views.activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".views.activity.AliasEasyCam"
+            android:enabled="false"
+            android:label="@string/easy_cam"
+            android:icon="@mipmap/ic_camera_1_round"
+            android:targetActivity=".views.activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <!-- activity aliases end -->
+
         <activity
             android:name=".views.activity.MainActivity"
             android:label="@string/app_name"
@@ -96,7 +148,37 @@
         <activity
             android:name=".views.activity.PanicModeSettingsActivity"
             android:label="@string/title_activity_panic_mode"
-            android:parentActivityName=".views.activity.SettingsActivity"
+            android:parentActivityName=".views.activity.SecuritySettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="rs.readahead.washington.mobile.views.activity.SecuritySettingsActivity" />
+        </activity>
+        <activity
+            android:name=".views.activity.CamouflageSettingsActivity"
+            android:label="@string/camouflage"
+            android:parentActivityName=".views.activity.SecuritySettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="rs.readahead.washington.mobile.views.activity.SecuritySettingsActivity" />
+        </activity>
+        <activity
+            android:name=".views.activity.CamouflageAliasActivity"
+            android:label="@string/change_appearance"
+            android:parentActivityName=".views.activity.CamouflageSettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="rs.readahead.washington.mobile.views.activity.CamouflageSettingsActivity" />
+        </activity>
+        <activity
+            android:name=".views.activity.AdvancedSecuritySettingsActivity"
+            android:label="@string/advanced"
+            android:parentActivityName=".views.activity.SecuritySettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -194,6 +276,13 @@
                 android:value="rs.readahead.washington.mobile.views.activity.MainActivity" />
         </activity>
         <activity
+            android:name=".views.activity.CollectHelpActivity"
+            android:label="@string/collect_help"
+            android:parentActivityName=".views.activity.CollectMainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
             android:name=".views.activity.CollectManageServersActivity"
             android:label="@string/ra_title_activity_collect_settings"
             android:parentActivityName=".views.activity.SettingsActivity"
@@ -217,6 +306,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".views.activity.AttachmentsActivity"
+            android:label="@string/ra_attachments"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".views.activity.GalleryActivity"
             android:label="@string/ra_gallery"
             android:screenOrientation="portrait"
@@ -225,11 +319,6 @@
             android:name=".views.activity.PhotoViewerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/PhotoViewerTheme.NoActionBar"/>
-        <activity
-            android:name=".views.activity.CollectFormAttachmentsActivity"
-            android:label="@string/ra_attachments"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".views.activity.AudioPlayActivity"
             android:label="@string/ra_title_activity_audio_play"
@@ -281,6 +370,24 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="rs.readahead.washington.mobile.views.activity.MainActivity"/>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="open.report.activity"
+                    android:scheme="whistler_scheme"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".views.activity.ReportHelpActivity"
+            android:label="@string/report_help"
+            android:parentActivityName=".views.activity.ReportActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="rs.readahead.washington.mobile.views.activity.ReportActivity"/>
         </activity>
         <activity
             android:name=".views.activity.NewReportActivity"
@@ -298,14 +405,14 @@
                 android:value="rs.readahead.washington.mobile.views.activity.NewReportActivity"/>
         </activity>
         <activity
-            android:name=".views.activity.ReportEvidencesActivity"
-            android:label="@string/ra_evidences"
-            android:parentActivityName=".views.activity.NewReportActivity"
+            android:name=".views.activity.RecipientsHelpActivity"
+            android:label="@string/recipients_help"
+            android:parentActivityName=".views.activity.RecipientsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.readahead.washington.mobile.views.activity.NewReportActivity"/>
+                android:value="rs.readahead.washington.mobile.views.activity.RecipientsActivity"/>
         </activity>
         <activity
             android:name=".views.activity.ReportListActivity"
@@ -316,7 +423,19 @@
             android:label="@string/feedback"
             android:parentActivityName=".views.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="open.feedback.activity"
+                    android:scheme="whistler_scheme"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".views.activity.WhistlerIntroActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/PlayerTheme"/>
     </application>
-
 </manifest>

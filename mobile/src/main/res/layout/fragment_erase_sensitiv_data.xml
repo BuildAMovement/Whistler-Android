@@ -23,13 +23,13 @@
             android:textSize="14sp"/>
 
         <android.support.v7.widget.SwitchCompat
-            android:id="@+id/erase_database"
+            android:id="@+id/erase_everything"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/TextViewBlack"
             android:gravity="center_vertical"
             android:padding="10dp"
-            android:text="@string/erase_database"/>
+            android:text="@string/ra_everything"/>
 
         <View style="@style/SettingsMainLine"/>
 
@@ -42,8 +42,6 @@
             android:padding="10dp"
             android:text="@string/ra_whistler_gallery"/>
 
-        <View style="@style/SettingsMainLine"/>
-
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/erase_contacts"
             android:layout_width="match_parent"
@@ -52,8 +50,6 @@
             android:gravity="center_vertical"
             android:padding="10dp"
             android:text="@string/erase_contacts"/>
-
-        <View style="@style/SettingsMainLine"/>
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/erase_media_recipients"
@@ -64,8 +60,6 @@
             android:padding="10dp"
             android:text="@string/erase_recipients_and_lists"/>
 
-        <View style="@style/SettingsMainLine"/>
-
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/erase_materials"
             android:layout_width="match_parent"
@@ -75,7 +69,23 @@
             android:padding="10dp"
             android:text="@string/erase_materials"/>
 
-        <View style="@style/SettingsMainLine"/>
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/erase_reports"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextViewBlack"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:text="@string/ra_draft_and_sent_reports"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/erase_forms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextViewBlack"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:text="@string/ra_draft_and_submitted_collect_forms"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
 

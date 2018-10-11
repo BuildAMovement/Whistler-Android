@@ -30,7 +30,7 @@ import org.joda.time.DateTime;
 import java.util.Date;
 
 import rs.readahead.washington.mobile.R;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 
 
 /**
@@ -94,7 +94,7 @@ public class TimeWidget extends QuestionWidget {
 
     @Override
     public void setFocus(Context context) {
-        CommonUtils.hideKeyboard(context, this);
+        Util.hideKeyboard(context, this);
     }
 
     private void setWidgetTime() {

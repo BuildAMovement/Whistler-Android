@@ -14,7 +14,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.javarosa.core.model.FormDef;
@@ -42,6 +47,7 @@ import rs.readahead.washington.mobile.bus.event.ReSubmitFormInstanceEvent;
 import rs.readahead.washington.mobile.bus.event.ShowBlankFormEntryEvent;
 import rs.readahead.washington.mobile.bus.event.ShowFormInstanceEntryEvent;
 import rs.readahead.washington.mobile.bus.event.ToggleBlankFormFavoriteEvent;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.domain.entity.collect.CollectForm;
 import rs.readahead.washington.mobile.domain.entity.collect.CollectFormInstance;
 import rs.readahead.washington.mobile.domain.entity.collect.CollectFormInstanceStatus;
@@ -56,6 +62,7 @@ import rs.readahead.washington.mobile.mvp.presenter.CollectMainPresenter;
 import rs.readahead.washington.mobile.odk.FormController;
 import rs.readahead.washington.mobile.util.DialogsUtil;
 import rs.readahead.washington.mobile.util.PermissionUtil;
+import rs.readahead.washington.mobile.util.StringUtils;
 import rs.readahead.washington.mobile.views.adapters.ViewPagerAdapter;
 import rs.readahead.washington.mobile.views.fragment.BlankFormsListFragment;
 import rs.readahead.washington.mobile.views.fragment.DraftFormsListFragment;
@@ -77,6 +84,17 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.tabs)
+    TabLayout tabLayout;
+    @BindView(R.id.container)
+    View formsViewPager;
+    @BindView(R.id.blank_forms_layout)
+    View noServersView;
+    @BindView(R.id.blank_forms_text)
+    TextView blankFormsText;
+    @BindView(R.id.send_report_info)
+    TextView sendReportInfo;
+
 
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
@@ -103,6 +121,7 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
         }
 
         presenter = new CollectMainPresenter(this);
+        formReSubmitter = new FormReSubmitter(this);
 
         initViewPageAdapter();
         final int blankFragmentPosition = getFragmentPosition(FormListFragment.Type.BLANK);
@@ -137,6 +156,14 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        blankFormsText.setText(Html.fromHtml(getString(R.string.collect_servers_info)));
+        blankFormsText.setMovementMethod(LinkMovementMethod.getInstance());
+        StringUtils.stripUnderlines(blankFormsText);
+
+        sendReportInfo.setText(Html.fromHtml(getString(R.string.send_report_info)));
+        sendReportInfo.setMovementMethod(LinkMovementMethod.getInstance());
+        StringUtils.stripUnderlines(sendReportInfo);
 
         disposables = MyApplication.bus().createCompositeDisposable();
         disposables.wire(ShowBlankFormEntryEvent.class, new EventObserver<ShowBlankFormEntryEvent>() {
@@ -245,6 +272,26 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.collect_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.help_item) {
+            startCollectHelp();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         CollectMainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
@@ -273,7 +320,7 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
 
     @Override
     public void onFormControllerCreated(FormController formController) {
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             startCollectFormEntryActivity(); // no need to check for permissions, as location won't be turned on
         } else {
             CollectMainActivityPermissionsDispatcher.startCollectFormEntryActivityWithCheck(this);
@@ -355,7 +402,19 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
     @Override
     public void onCountCollectServersEnded(long num) {
         numOfCollectServers = num;
-        fab.setVisibility((numOfCollectServers < 1) ? View.GONE : View.VISIBLE);
+
+        if (numOfCollectServers < 1) {
+            tabLayout.setVisibility(View.GONE);
+            formsViewPager.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
+            noServersView.setVisibility(View.VISIBLE);
+
+        } else {
+            tabLayout.setVisibility(View.VISIBLE);
+            formsViewPager.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.VISIBLE);
+            noServersView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -390,7 +449,11 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private void downloadFormEntry(CollectForm form) {
-        startDownloadFormDefPresenter(form);
+        if (MyApplication.isConnectedToInternet(getContext())) {
+            startDownloadFormDefPresenter(form);
+        } else {
+            showToast(R.string.not_connected_message);
+        }
     }
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass")
@@ -543,4 +606,9 @@ public class CollectMainActivity extends CacheWordSubscriberBaseActivity impleme
     private void setPagerToSubmittedFragment() {
         mViewPager.setCurrentItem(getFragmentPosition(FormListFragment.Type.SUBMITTED));
     }
+
+    private void startCollectHelp() {
+        startActivity(new Intent(CollectMainActivity.this, CollectHelpActivity.class));
+    }
+
 }

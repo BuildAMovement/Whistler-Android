@@ -15,6 +15,15 @@
         android:scrollbarStyle="outsideOverlay"
         android:paddingBottom="@dimen/fab_clear_padding"/>
 
+    <TextView
+        android:id="@+id/blank_circle_info"
+        style="@style/ExplanatoryEmptyMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:text="@string/circle_of_trust_blank_text"
+        android:visibility="gone"/>
+
 
     <com.github.clans.fab.FloatingActionButton
         android:id="@+id/add_more"

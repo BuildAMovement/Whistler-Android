@@ -48,7 +48,7 @@ public class AudioCapturePresenter implements IAudioCapturePresenterContract.IPr
                 .subscribe(new Consumer<MediaFile>() {
                     @Override
                     public void accept(MediaFile mediaFile) throws Exception {
-                        view.onAddSuccess(mediaFile.getId(), mediaFile.getPrimaryMimeType());
+                        view.onAddSuccess(mediaFile.getId());
                     }
                 }, new Consumer<Throwable>() {
                     @Override

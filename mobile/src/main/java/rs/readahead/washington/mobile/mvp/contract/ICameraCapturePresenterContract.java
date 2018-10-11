@@ -6,17 +6,16 @@ import android.support.annotation.NonNull;
 
 import java.io.File;
 
-import rs.readahead.washington.mobile.presentation.entity.MediaFileThumbnailData;
-
 
 public class ICameraCapturePresenterContract {
     public interface IView {
         void onAddingStart();
         void onAddingEnd();
-        void onAddSuccess(long mediaFileId, String primaryMime);
+        void onAddSuccess(long mediaFileId);
         void onAddError(Throwable error);
         void onVideoThumbSuccess(@NonNull Bitmap thumb);
         void onVideoThumbError(Throwable throwable);
+        void rotateViews(int rotation);
         Context getContext();
     }
 
@@ -24,5 +23,6 @@ public class ICameraCapturePresenterContract {
         void addJpegPhoto(byte[] jpeg, Bitmap thumb);
         void addMp4Video(File file);
         void getVideoThumb(File file);
+        void handleRotation(int orientation);
     }
 }

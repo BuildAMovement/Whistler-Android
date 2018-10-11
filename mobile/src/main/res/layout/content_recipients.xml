@@ -20,15 +20,6 @@
             android:background="@android:color/white"
             android:padding="0dp">
 
-            <TextView
-                android:id="@+id/metadata_text"
-                style="@style/ExplanatoryEmptyMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:linksClickable="true"
-                android:background="@color/wa_button_gray"
-                android:text="@string/decide_recipient_info"/>
-
             <LinearLayout
                 android:id="@+id/button_bottom_layout"
                 android:layout_width="match_parent"

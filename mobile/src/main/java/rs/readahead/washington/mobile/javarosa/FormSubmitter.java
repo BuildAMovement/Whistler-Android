@@ -38,6 +38,7 @@ import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.data.repository.MediaFileRepository;
 import rs.readahead.washington.mobile.data.repository.OpenRosaRepository;
 import rs.readahead.washington.mobile.data.database.DataSource;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
 import rs.readahead.washington.mobile.domain.entity.collect.CollectFormInstance;
 import rs.readahead.washington.mobile.domain.entity.collect.CollectFormInstanceStatus;
@@ -121,7 +122,7 @@ public class FormSubmitter implements IFormSubmitterContract.IFormSubmitter,
                         if (hasAttachments(instance)) {
                             List<MediaFile> mediaFiles = instance.getMediaFiles();
 
-                            if (MyApplication.isAnonymousMode()) {
+                            if (Preferences.isAnonymousMode()) {
                                 for (MediaFile mediaFile: mediaFiles) {
                                     mediaFile.setMetadata(null);
                                 }

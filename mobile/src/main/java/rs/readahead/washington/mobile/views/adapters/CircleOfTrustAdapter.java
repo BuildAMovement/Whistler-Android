@@ -115,7 +115,7 @@ public class CircleOfTrustAdapter extends RecyclerView.Adapter<CircleOfTrustAdap
         mRecipients.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
-        Snackbar.make(delete, context.getString(R.string.removed_trusted), Snackbar.LENGTH_SHORT).show();
+        //Snackbar.make(delete, context.getString(R.string.removed_trusted), Snackbar.LENGTH_SHORT).show();
 
     }
 

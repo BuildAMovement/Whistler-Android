@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/test"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:id="@+id/test"
     android:textDirection="locale"
     tools:context=".views.activity.MainActivity">
 
-    <include layout="@layout/main_camera"/>
+    <include layout="@layout/main_camera" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -27,72 +26,137 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <rs.readahead.washington.mobile.views.custom.HomeScreenGradient
+        android:id="@+id/home_screen_gradient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/home_screen_gradient" />
+
     <include layout="@layout/content_main2" />
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/wa_red"
-        android:clickable="true"
         android:elevation="@dimen/z_bottom_sheet"
-        app:behavior_peekHeight="100dp"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-        android:focusable="true">
+        app:behavior_peekHeight="@dimen/home_collapsed_height"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <RelativeLayout
-            android:layout_height="100dp"
-            android:visibility="visible"
             android:id="@+id/collapsed_view"
             android:layout_width="match_parent"
-            android:gravity="center"
-            android:alpha="1">
+            android:layout_height="@dimen/home_collapsed_height"
+            android:alpha="1"
+            android:background="@android:color/transparent"
+            android:gravity="top">
 
-            <TextView
-                android:id="@+id/panic_button_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:text="@string/panic_button"
-                android:textAllCaps="true"
-                android:textColor="@color/wa_white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <View
+                style="@style/MainDividerLine"
+                android:layout_alignParentTop="true" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/panic_button_text"
-                android:layout_centerHorizontal="true"
-                android:text="@string/swipe_up_to_trigger"
-                android:textColor="@color/wa_white"
-                android:textSize="12sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:weightSum="5">
 
-            <ImageView
-                android:layout_width="30sp"
-                android:layout_height="30sp"
-                android:layout_toLeftOf="@id/panic_button_text"
-                android:layout_toStartOf="@id/panic_button_text"
-                android:src="@drawable/swipe_up"
-                android:contentDescription="@null"/>
+                <RelativeLayout
+                    android:id="@+id/tab_button_report"
+                    style="@style/NavigationTabLayout"
+                    android:background="@drawable/button_pressed_transparent">
 
-            <ImageView
-                android:layout_width="30sp"
-                android:layout_height="30sp"
-                android:layout_toEndOf="@id/panic_button_text"
-                android:src="@drawable/swipe_up"
-                android:contentDescription="@null"/>
+                    <ImageView
+                        android:id="@+id/report_image"
+                        style="@style/NavigationTabImage"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_prime_report_white" />
 
+                    <TextView
+                        style="@style/NavigationTabText"
+                        android:layout_below="@+id/report_image"
+                        android:text="@string/ra_report" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_button_collect"
+                    style="@style/NavigationTabLayout"
+                    android:background="@drawable/button_pressed_transparent">
+
+                    <ImageView
+                        android:id="@+id/collect_image"
+                        style="@style/NavigationTabImage"
+                        android:contentDescription="@null"
+                        android:src="@drawable/main_collect" />
+
+                    <TextView
+                        style="@style/NavigationTabText"
+                        android:layout_below="@+id/collect_image"
+                        android:text="@string/ra_collect" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/tab_button_gallery"
+                    style="@style/NavigationTabLayout"
+                    android:background="@drawable/button_pressed_transparent">
+
+                    <ImageView
+                        android:id="@+id/gallery_image"
+                        style="@style/NavigationTabImage"
+                        android:contentDescription="@null"
+                        android:src="@drawable/gallery_white" />
+
+                    <TextView
+                        style="@style/NavigationTabText"
+                        android:layout_below="@+id/gallery_image"
+                        android:text="@string/ra_gallery" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_button_training"
+                    style="@style/NavigationTabLayout"
+                    android:background="@drawable/button_pressed_transparent">
+
+                    <ImageView
+                        android:id="@+id/train_image"
+                        style="@style/NavigationTabImage"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_training_white" />
+
+                    <TextView
+                        style="@style/NavigationTabText"
+                        android:layout_below="@+id/train_image"
+                        android:text="@string/ra_train" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/tab_button_panic"
+                    style="@style/NavigationTabLayout"
+                    android:background="@color/wa_red">
+
+                    <rs.readahead.washington.mobile.views.custom.AnimatedArrowsView
+                        android:id="@+id/panic_button"
+                        style="@style/NavigationTabImage"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        style="@style/NavigationTabText"
+                        android:layout_below="@+id/panic_button"
+                        android:text="@string/ra_panic" />
+                </RelativeLayout>
+
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/panic_mode_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0">
+            android:alpha="0"
+            android:background="@color/wa_red"
+            android:clickable="false"
+            android:gravity="center_horizontal">
 
             <rs.readahead.washington.mobile.views.custom.CountdownImageView
                 android:id="@+id/countdown_timer"
@@ -104,27 +168,20 @@
                 android:src="@drawable/countdown_5" />
 
             <TextView
+                style="@style/PanicActiveText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/countdown_timer"
-                android:layout_centerInParent="true"
-                android:text="@string/panic_mode_activation"
-                android:textAllCaps="true"
-                android:textColor="@color/wa_white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_centerHorizontal="true"
+                android:text="@string/panic_mode_activation" />
 
             <TextView
+                style="@style/PanicActiveText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/countdown_timer"
-                android:layout_centerInParent="true"
-                android:text="@string/tap_anywhere_to_cancel"
-                android:textAllCaps="true"
-                android:textColor="@color/wa_white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_centerHorizontal="true"
+                android:text="@string/tap_anywhere_to_cancel" />
         </RelativeLayout>
-
-    </RelativeLayout>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -16,7 +16,6 @@ package rs.readahead.washington.mobile.views.collect.widgets;
 import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.method.LinkMovementMethod;
-import android.util.TypedValue;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
@@ -29,7 +28,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 import java.util.ArrayList;
 import java.util.List;
 
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 import rs.readahead.washington.mobile.util.StringUtils;
 
 
@@ -128,7 +127,7 @@ public class SelectMultiWidget extends QuestionWidget {
 
     @Override
     public void setFocus(Context context) {
-        CommonUtils.hideKeyboard(context, this);
+        Util.hideKeyboard(context, this);
     }
 
     @Override

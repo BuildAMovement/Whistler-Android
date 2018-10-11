@@ -20,7 +20,7 @@ import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.bus.event.DeleteFormInstanceEvent;
 import rs.readahead.washington.mobile.bus.event.ShowFormInstanceEntryEvent;
 import rs.readahead.washington.mobile.domain.entity.collect.CollectFormInstance;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 
 
 public class CollectDraftFormInstanceRecycleViewAdapter extends RecyclerView.Adapter<CollectDraftFormInstanceRecycleViewAdapter.ViewHolder> {
@@ -41,7 +41,7 @@ public class CollectDraftFormInstanceRecycleViewAdapter extends RecyclerView.Ada
         holder.name.setText(instance.getInstanceName());
         holder.organization.setText(instance.getServerName());
         holder.updated.setText(String.format(context.getString(R.string.ra_updated_with_param),
-                CommonUtils.getDateTimeString(instance.getUpdated())));
+                Util.getDateTimeString(instance.getUpdated())));
         holder.instanceRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

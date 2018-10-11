@@ -17,19 +17,16 @@
     <string name="ra_blank">Пустая</string>
 
     <!--C-->
-    <string name="close">ЗАКРЫТЬ </string>
     <string name="cancel">Отменить</string>
     <string name="circle_of_trust">Круг доверия</string>
     <string name="circle_of_trust_info">Управление доверенными контактами, которые получат уведомление при активации режима паники </string>
-    <string name="change_secret_moder_password">Изменить пароль для режима секретности</string>
+    <string name="change_secret_moder_passcode">Изменить пароль для режима секретности</string>
     <string name="change_panic_mode_password">Изменить пароль для режима паники</string>
-    <string name="create_new_secret_password">Создать пароль для режима секретности</string>
     <string name="create_new_panic_password">Создать новый пароль для режима паники</string>
-    <string name="change_secret_password">Изменить пароль для режима секретности</string>
     <string name="change_panic_password">Изменить пароль для режима паники </string>
     <string name="create_pass_info">Для обеспечения максимальной безопасности, пожалуйста, задайте графический ключ для защиты входа в приложение. Он будет использован для входа в приложение Whistler при каждом запуске, чтобы никто кроме вас не мог получить доступ к данным. Ключ должна соединять минимум 6 точек.  </string>
     <string name="contact_us">Свяжитесь с нами</string>
-    <string name="copyright">  © 2017 Build A Movement Все права защищены </string>
+    <string name="copyright">  © 2018 Build A Movement Все права защищены </string>
     <string name="ra_collect">Collect</string>
 
     <!--D-->
@@ -47,11 +44,8 @@
     <string name="error">Ошибка</string>
     <string name="empty_field_error">Это поле не должно оставаться незаполненным.</string>
     <string name="edit_recipient">Редактировать контактную информацию</string>
-    <string name="enable_secret_mode">Режим секретности</string>
     <string name="empty_list_archived">Ваш архив пуст.</string>
-    <string name="empty_list_drafts">Ваш список черновиков пуст. </string>
     <string name="erase_contacts">Круг доверенных лиц</string>
-    <string name="erase_database">База данных Whistler</string>
     <string name="erase_materials">Образовательные материалы</string>
     <string name="erase_instruction">При активации панической кнопки, Whistler может удалить конфиденциальную информацию,которую вы хотите защитить от доступа третьих лиц.(Выберите ту информацию, которую необходимо удалить здесь.)</string>
     <string name="erasing_data">Удаление конфиденциальной информации </string>
@@ -71,7 +65,6 @@
     <!--H-->
 
     <!--I-->
-    <string name="internet_error">Пожалуйста, проверьте ваше интернет соединение.</string>
     <string name="incorrect_password">Неверный пароль.</string>
     <string name="include_geolocation">Добавить геолокацию в SMS</string>
 
@@ -119,7 +112,6 @@
 
     <!--P-->
     <string name="panic_mode_activation">Активизация панической кнопки</string>
-    <string name="panic_button">Паническая кнопка</string>
     <string name="permission_call">Для доступа в приложение Whistler через секретный режим необходимо предоставить доступ к звонкам.</string>
     <string name="permission_sms">Чтобы проинформировать ваших друзей о нажатии панической кнопки, разрешите Whistler отправлять SMS.</string>
     <string name="permission_audio">Для записи аудио-файлы предоставьте доступ к микрофону.
@@ -167,13 +159,11 @@
     <string name="ra_report">Report</string>
 
     <!--S-->
-    <string name="swipe_up_to_trigger">Потяните вверх для запуска</string>
     <string name="settings">Настройки</string>
     <string name="settings_panic_mode">Режим паники</string>
     <string name="settings_panic_mode_info">Редактировать сообщение, рассылаемое при активации режима паники, круг доверенных контактов и данные для удаления.</string>
     <string name="send">Отправить</string>
     <string name="save">Сохранить</string>
-    <string name="secret_mode_text">Секретный режим скрывает Whistler на главном экране и в меню задач. Для открытия Whistler вам необходимо ввести пароль для секретного режима на клавиатуре для набора телефонных номеров и нажать кнопку вызова. Помните, секретный режим защищает вас только от поверхностного досмотра вашего устройства. Whistler останется видимым в разделах меню: Настройки>Приложения </string>
     <string name="secret_mode_on">Изменения сохранены. Приложение будет скрыто с главного экрана через нескольких секунд. .</string>
     <string name="secret_mode_off">Изменения сохранены. Приложение будет показано на главном экране через несколько секунд.</string>
     <string name="start_time">00 : 00</string>
@@ -182,7 +172,6 @@
     <string name="setting_data">Настройки данныхâ€¦</string>
     <string name="sensitive_data">Конфиденциальная информация</string>
     <string name="sensitive_data_info">Выбрать информацию для удаления при активации режима паники</string>
-    <string name="secret_mode_info">Секретный режим скрывает Whistler на главном экране и в меню задач. Для открытия Whistler вам необходимо ввести пароль для секретного режима на клавиатуре для набора телефонных номеров и нажать кнопку вызова. Помните, секретный режим защищает вас только от поверхностного досмотра вашего устройства. Whistler останется видимым в разделах меню: Настройки>Приложения</string>
     <string name="sending_report_progress">Отчет отправляется.</string>
     <string name="sending_report_error">Ошибка при попытке отправить отчет. Пожалуйста, повторите попытку или сохраните Отчет в черновиках для отправки позже.</string>
     <string name="sending_report_success">Отчет успешно отправлен.</string>
@@ -214,7 +203,6 @@
     <string name="title_not_included">Название не добавлено</string>
     <string name="title_activity_security">Заблокировать экран</string>
     <string name="title_activity_about_help">О приложении &amp; Справка</string>
-    <string name="title_activity_media_recipients2">Составление отчета</string>
     <string name="title_activity_edit_media_recipient_list">Редактировать список</string>
     <string name="title_activity_collect_main">Collect</string>
     <string name="ra_title_activity_collect_settings">Настройки Collect </string>
@@ -247,7 +235,6 @@
     <!-- ODK Collect -->
 
     <string name="ra_attachments">Вложения</string>
-    <string name="ra_media_attached_to_form">Медиа-файлы были прикреплены к форме</string>
     <string name="ra_draft_saved">Черновик успешно сохранен</string>
     <string name="ra_submitting_form">Отправка формы&#8230;</string>
     <string name="ra_error_submitting_form">Ошибка при отправлении формы</string>
@@ -265,7 +252,6 @@
     <string name="ra_getting_blank_forms">Загружаются пустые формы из сервера&#8230;</string>
     <string name="ra_error_getting_forms">При получении форм произошла ошибка </string>
     <string name="ra_form_parse_error">При обработке данной формы произошла ошибка</string>
-    <string name="ra_attach_media">Прикрепить медиа-файлы</string>
     <string name="ra_save_form">Сохранить форму</string>
 
     <!-- pattern lock library -->
@@ -302,16 +288,11 @@
     <string name="title_activity_language_settings">Выбор языка</string>
     <string name="ra_share">Поделиться</string>
     <string name="ra_unauthorized">Неавторизованно</string>
-    <string name="ra_select_from_gallery">Выбрать из галереи приложения Whistler</string>
     <string name="ra_select_photo_from_device">Импортировать фото из галереи устройства</string>
     <string name="ra_import_media_error">Произошла ошибка при импорте мультимедиа файла</string>
     <string name="ra_import_video_from_device">Импортировать видео из галереи устройства</string>
     <string name="ra_go_back_and_edit">вернуться и отредактировать</string>
     <string name="ra_reached_the_end">Вы достигли окончания формы</string>
-    <string name="ra_multimedia_attached_to_form">Эти мультимедиа файлы уже присоединены к форме. Вы можете удалить вложения или присоединить новые файлы к форме нажав +</string>
-    <string name="ra_no_multimedia_attached_to_this_form">К этой форме не присоединены мультимедиа файлы. Нажмите + чтобы добавить.</string>
-    <string name="ra_remove_gallery_att_dialog_title">Удалить вложения?</string>
-    <string name="ra_remove_gallery_att_dialog_message">Обратите внимание, копия файлов останется в галерее приложения Whistler.</string>
     <string name="ra_form_send_submission_pending">Форма не отправлена, так как отсутствует подключение. Форма будет отправлена как только появится подключение к Интернету.</string>
     <string name="ra_cancel_pending_form_msg">Отложенная отправка формы будет отменена.</string>
     <string name="discard">Отменить</string>
@@ -332,12 +313,9 @@
     <string name="ra_saving_outside_whistler_message">Сохранение данного мультимедиа файла в хранилище устройства сделает его доступным извне приложения Whistler, для других приложений в вашей галерее.</string>
     <string name="ra_import_media_progress">Идет шифрование мультимедиа файлов…</string>
     <string name="ra_export_media_progress">Идет расшифровка мультимедиа файлов…</string>
-    <string name="ra_record_video">Идет запись видео</string>
-    <string name="ra_video_record_rationale">Для записи видео приложению требуется доступ к внешнему хранилищу устройства.</string>
     <string name="ra_import_from_device">Импортировать из устройства</string>
     <string name="ra_error_opening_phone_gallery">Ошибка при открытии галереи устройства для импорта</string>
     <string name="ra_camera_rationale">Для получения мультимедиа файлов приложению требуется доступ к вашей камере и аудио.</string>
-    <string name="ra_retry">Retry</string>
     <string name="ra_capture_error">Ошибка при записи мультимедиа файла</string>
     <string name="ra_media_form_attach_error">Ошибка при присоединении мультимедиа файла</string>
     <string name="ra_camera_capture">Записать через камеру</string>
@@ -348,8 +326,6 @@
     <string name="ra_camera_preview">Для предварительного просмотра приложению требуется доступ к вашей камере.</string>
     <string name="ra_enable_camera_preview">Разрешить предварительный просмотр через камеру</string>
     <string name="ra_capture_verifiable_photo_video">Создать верифицируемые фото и видео</string>
-    <string name="ra_anonymous_mode">Без метаданных</string>
-    <string name="ra_anonymous_mode_desc">Whistler не сохраняет метаданные через которые можно идентифицировать вашу личность, но собирает анонимные метаданные позволяющие верифицировать ваши доказательства (геолокация, высота над уровнем моря и т.п.). Если это может представлять для вас угрозу, активируйте настройку “Без метаданных” для удаления всех метаданных. </string>
     <string name="ra_out_of_disk">Недостаточно места на диске</string>
     <string name="ra_zip_corrupted">Zip-файл поврежден</string>
     <string name="ra_train_dwownload_error">Ошибка при скачивании train модуля</string>
@@ -381,7 +357,6 @@
     <string name="sent">Отправить</string>
     <string name="drafts_info">Отредактировать и отправить отчет, который уже был начат</string>
     <string name="sent_info">Просмотр и повторная отправка уже отправленных отчетов</string>
-    <string name="include_geolocation_automatically"><![CDATA[Whistler автоматически собирает метаданные о местоположении пользователя и включает их в отправленные данные для упрощения верификации. Если это представляет для вас угрозу, активируйте настройку “Без метаданных” в <a href="whistler_scheme://open.general.settings.activity">настройки</a> для удаления всех метаданных]]></string>
     <string name="required">Обязательно</string>
     <string name="recommended">Рекомендуется</string>
     <string name="date">Дата</string>
@@ -389,22 +364,13 @@
     <string name="include_contact_information">Добавить контактную информацию</string>
     <string name="contact_info">Для получателей, желающих задать вам дополнительные вопросы перед использованием или публикацией ваших доказательств</string>
     <string name="description_info">Укажите тут любую информацию, которая может помочь получателям лучше понять ваш отчет (кто запечатлен на вашем видео, что именно произошло, каков контекст происшествия и т.п.).</string>
-    <string name="select">Выбрать</string>
     <string name="decide_recipient_info">Решите, кто получит ваши отчеты</string>
-    <string name="ra_evidences">Доказательства</string>
-    <string name="ra_multimedia_attached_to_evidence">Данные мультимедиа файлы будут прикреплены к отчету после нажатия на √. Вы можете удалить их из отчета или прикрепить больше нажав +</string>
-    <string name="ra_no_multimedia_attached_to_this_report">К отчету не прикреплено ни одного мультимедиа файла. Нажмите + чтобы прикрепить файл.</string>
-    <string name="ra_remove_evidence_att_dialog_title">Удалить доказательства?</string>
-    <string name="ra_remove_evidence_att_dialog_message">Обратите внимание, что копия файла сохранится в галерее Whistler.</string>
     <string name="ra_media_attached_to_report">Мультимедиа присоединены к отчету</string>
     <string name="ra_report_send_validation_msg">Обязательные поля не заполнены</string>
     <string name="sent_reports">Отправить отчеты</string>
     <string name="delete_sent_report">Удалить отправленный отчет?</string>
-    <string name="sent_reports_empty">У вас нет ни одного отправленного отчета, который был сохранен.</string>
     <string name="edit_report">Редактировать отчет</string>
     <string name="contact_info_disabled"><![CDATA[Для получателей, желающих задать вам дополнительные вопросы перед использованием или публикацией ваших доказательств, необходимо сначала указать свои контактные данные <a href="whistler_scheme://open.contact_settings.activity">здесь</a>.]]></string>
-    <string name="ra_multimedia_attached_to_evidence_preview">Эти мультимедиа файлы прикреплены к отчету. Вы можете удалить их из данного отчета или прикрепить больше файлов войдя в режим редактирования отчета.</string>
-    <string name="ra_no_multimedia_attached_to_this_report_preview">К отчету не прикреплено ни одного мультимедиа файла. Вы можете прикрепить файлы войдя в режим редактирования отчета.</string>
     <string name="recipients_preview_mode">Вы можете изменить получателей своих отчетов войдя в режим редактирования отчета.</string>
 
     <!--TODO CHECK MISSING QUANTITY-->
@@ -430,7 +396,6 @@
     <string name="title_activity_archive">Архив</string>
     <string name="ra_contact_info">Для получателей, желающих задать вам дополнительные вопросы перед использованием или публикацией ваших доказательств, укажите предпочтительный способ с вами. \n\nПеред отправкой отчета вы сможете выбрать, включать ли в него данную контактную информацию. \n\nЧтобы лучше защитить себя, рассмотрите возможность указания безопасного инструмента коммуникации (Signal, Wickr, ProtonMail, и др.) или специального email адреса.</string>
     <string name="ra_preferred_method">Предпочтительный метод</string>
-    <string name="ra_unspecified">Неуточнено</string>
     <string name="ra_recommended">Реомендовано</string>
     <string name="ra_other">Другое</string>
     <string name="ra_select_preferred_method_of_contact">Выберите предпочтительный способ связи с вами</string>
@@ -456,9 +421,7 @@
     <string name="ra_contact_other_hint">Ваши контактные данные</string>
     <string name="ra_train_module_downloaded">Тренинговый модуль скачан</string>
     <string name="report_sent_when_online">Если вы не подключены к интернету, ваш отчет будет отправлен как только подключение возобновится.</string>
-    <string name="collect_explanatory_text"><![CDATA[Collect позволяет вам заполнять формы и безопасно передавать данные. Для получения и отправки форм вы должны сначала подключиться к совместимому серверу. Для управления серверами перейдите в <a href="whistler_scheme://open.collect.manage.servers.activity">настройки</a>.]]></string>
     <string name="ra_server_remove_confirmation_text">Если вы удалите данный сервер, то все черновики и отправленные формы также будут удалены с вашего устройства. Удалить в любом случае?</string>
-    <string name="edit">Изменить</string>
     <string name="make_report_public_disabled_desc">Ваш отчет не может быть публичным если вы включили в него контактную информацию.</string>
     <string name="erase_recipients_and_lists">Report recipients and lists</string>
     <string name="tell_us">Поделитесь с нами своими мыслями</string>
@@ -474,11 +437,127 @@
     <string name="your_draft_will_be_lost">Ваш черновик не будет сохранен.</string>
     <string name="save_and_exit">СОХРАНИТЬ И ВЫЙТИ</string>
     <string name="exit_anyway">ВЫЙТИ ВСЕ РАВНО </string>
-    <string name="no_metadata_description"><![CDATA[Настройка “Без метаданных” активирована. Метаданные будут удалены со всех отчетов и сделает их неверифицируемыми.<br><a href="whistler_scheme://open.general.settings.activity">Отключите здесь</a> чтобы сделать верифицирование возможным.]]></string>
     <string name="date_not_included">Дата не добавлена</string>
     <string name="share_in_report">Поделиться в Report</string>
-    <string name="share_in_collect">Поделиться в форме Collect</string>
     <string name="ra_single_media_deleted_msg">Мультимедиа удален</string>
     <string name="ra_no_connection_available">No connection available</string>
     <string name="not_web_url_field_error">Field is not valid web URL</string>
+    <string name="ra_panic">Panic</string>
+    <string name="sort_by">Sort by</string>
+    <string name="show">Show</string>
+    <string name="newest_to_oldest">Newest to oldest</string>
+    <string name="oldest_to_newest">Oldest to newest</string>
+    <string name="all">All</string>
+    <string name="photo">Photo</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="files_with_metadata">With metadata</string>
+    <string name="files_without_metadata">Without metadata</string>
+    <string name="attached_files">Attached files</string>
+    <string name="ra_secret_mode_exit_msg">To apply those changes, the app needs to be exited.</string>
+    <string name="ra_exit">Exit</string>
+    <string name="ra_uninstall_settings_title">Delete Whistler from device</string>
+    <string name="ra_uninstall_settings_desc">After the Panic countdown expires, your device will ask you \"Do you want to uninstall this app?\". Unless you confirm, Whistler will not be deleted from your device.</string>
+    <string name="ra_save_anyway">Save anyway</string>
+    <string name="ra_collect_server_wrong_credentials">Wrong credentials, please check username and password</string>
+    <string name="ra_unknown_host">No address associated with hostname</string>
+    <string name="ra_collect_server_connection_error">There was an error trying to connect to the server</string>
+    <string name="ra_collect_server_no_connection">Whistler was unable to connect to the internet and to the server</string>
+    <string name="ra_try_again">Try again</string>
+    <string name="camouflage">Camouflage</string>
+    <string name="advanced">Advanced</string>
+    <string name="camouflage_settings_info">Hide Whistler on your device</string>
+    <string name="ra_skip_intro">Skip intro</string>
+    <string name="ra_start">Start</string>
+    <string name="ra_intro_title1">Documentation and protection</string>
+    <string name="ra_intro_text1">Whistler enables anyone to document human right abuses, violence and corruption without putting themselves in danger.</string>
+    <string name="ra_intro_link1">Learn more about Whistler</string>
+    <string name="ra_intro_title2">Protection against device searches</string>
+    <string name="ra_intro_text2">Whistler can be hidden on your device and all photo, video and audio files captured in Whistler or imported are automatically encrypted and stored in hidden gallery.</string>
+    <string name="ra_intro_link2">Hide Whistler on your device</string>
+    <string name="ra_intro_title3">Verifiable evidence</string>
+    <string name="ra_intro_text3">Geolocation information is automatically attached to multimedia so that recipients can use them more reliably in the media, for advocacy or in court cases. Reports can be shared anonymously or not.</string>
+    <string name="ra_intro_link3">Set up Report</string>
+    <string name="ra_intro_title4">Easy data collection</string>
+    <string name="ra_intro_text4">Online or offline, fill forms and surveys directly from your device. You must be linked to a sponsor organization who created the forms and manages the data collection process.</string>
+    <string name="ra_intro_link4">Set up Collect to fill forms</string>
+    <string name="ra_intro_title5">Emergency alert</string>
+    <string name="ra_intro_text5">In emergency situations, alert a network of trusted contacts and delete sensitive information from Whistler in just a few seconds.</string>
+    <string name="ra_intro_link5">Set up your Panic Button</string>
+    <string name="ra_grant_permissions">Grant permissions</string>
+    <string name="ra_tutorial_and_setup"><![CDATA[Tutorial & Set up]]></string>
+    <string name="ra_intro_permission_rationale">In order to function properly, you need to grant Whistler the required permissions.</string>
+    <string name="ra_one_last_thing">One last thing…</string>
+    <string name="ra_intro_authorize_whistler_to">In order to function properly, you need to authorize Whistler to:</string>
+    <string name="ra_intro_permission_text">• send SMS (to alert your trusted contacts when you trigger the Panic Button)\n• make phone calls and access your call history (to open Whistler in Secret Mode)\n• access your device storage (to export multimedia files from Whistler to your device)\n• access your camera (to capture photos and videos)\n• access your microphone (to record audio)\n• access your GPS (to determine your geolocation when you capture data or multimedia, to make them verifiable)</string>
+    <string name="ra_everything">Everything</string>
+    <string name="selected_files">Selected files</string>
+    <string name="change_icon">Change icon</string>
+    <string name="select_app_icon">Select app icon</string>
+    <string name="camouflage_info">Select a custom icon and name to better hide Whistler on the device. Note that the Whistler icon will remain visible from the Android settings menu.</string>
+    <string name="camera">Camera</string>
+    <string name="camera_pro">CameraPro</string>
+    <string name="super_cam">SuperCam</string>
+    <string name="easy_cam">EasyCam</string>
+    <string name="save_to_device">Save to device</string>
+    <string name="ra_draft_and_sent_reports">Draft and sent Reports</string>
+    <string name="ra_draft_and_submitted_collect_forms">Draft and submitted Collect forms</string>
+    <string name="ra_anonymous_mode">Enable metadata</string>
+    <string name="ra_anonymous_mode_desc">Whistler does not store metadata that might identify you, but embeds anonymized metadata to help authenticate your evidence (geolocation, altitude, etc). If this puts you in danger, disable to strip all metadata.</string>
+    <string name="easy_data_collection">Easy data collection</string>
+    <string name="collect_servers_info"><![CDATA[To receive forms and submit data, you must first connect to a compatible server. Ask your sponsor organization for the server information and <a href="whistler_scheme://open.collect.manage.servers.activity">set up the server here</a>.]]></string>
+    <string name="send_report_info"><![CDATA[If you are not working with an organization, you can still <a href="whistler_scheme://open.report.activity">send a Report here</a>.]]></string>
+    <string name="sent_reports_empty">There are no sent Reports to show</string>
+    <string name="empty_list_drafts">There are no draft Reports to show</string>
+    <string name="collect_draft_empty_text">There are no draft forms to show</string>
+    <string name="collect_submitted_empty_text">There are no submitted forms to show</string>
+    <string name="collect_servers_empty_text">There are no servers to show. Tap the + button to add a server</string>
+    <string name="blank_recipient_lists_text">There are no lists to show. Tap the + button to create lists</string>
+    <string name="blank_recipients_text">There are no recipients to show. Tap the + button to add recipients</string>
+    <string name="circle_of_trust_blank_text">There are no contacts in your Circle of Trust. Tap the + button to add contacts</string>
+    <string name="train_list_blank_text">There are no training modules to show. Tap the refresh button while connected to the internet to see available modules</string>
+    <string name="collect_explanatory_text">There are no blank forms to show. Tap the refresh button to check if there are blank forms available from the servers you\'re connected to.</string>
+    <string name="report_help">Report Help</string>
+    <string name="report_info">A Report is a quick, easy and secure way to share events you witness</string>
+    <string name="report_recipients_info">Decide who receives your report by adding recipients and creating lists</string>
+    <string name="contact_help_info">Include your contact information or keep the Reports anonymous</string>
+    <string name="metadata_help_info">Automatically include geolocation metadata to make your Report verifiable</string>
+    <string name="no_metadata_description"><![CDATA[Metadata is disabled. This means that in the Report, your multimedia files, even those that were captured with metadata, will not be verifiable. <a href="whistler_scheme://open.general.settings.activity">Turn off here</a> to enable metadata and make the Report verifiable.]]></string>
+    <string name="camouflage_explanatory_text">Camouflage enables you to hide Whistler on your device, so that anyone searching it will not be able to see that you have Whistler. Remember that the name "Whistler" and the original logo will remain visible in your device\'s settings, so an in-depth search may expose you.</string>
+    <string name="none">None</string>
+    <string name="keep_whistler_regular">Keep Whistler\'s regular appearance</string>
+    <string name="change_appearance">Change appearance</string>
+    <string name="select_name_and_logo">Select a different name and logo</string>
+    <string name="make_invisible">Make invisible</string>
+    <string name="make_invisible_info">Whistler will disappear from your list of apps. To open it, dial and call your secret code from your regular calling app. Tap here to create or edit your secret code</string>
+    <string name="gallery_empty_text">There are no files to show. Tap the + button to capture or import multimedia</string>
+    <string name="exit_now">EXIT NOW</string>
+    <string name="whistler_will_now_close">Whistler will now close to apply changes</string>
+    <string name="create_new_secret_passcode">Create passcode</string>
+    <string name="old_passcode">Old passcode</string>
+    <string name="new_passcode">New passcode</string>
+    <string name="change_secret_password">Change secret mode passcode</string>
+    <string name="confirm_passcode">Confirm_passcode</string>
+    <string name="passcode">Passcode</string>
+    <string name="added_trusted">Contact is successfully added.</string>
+    <string name="updated_trusted">Contact is successfully updated.</string>
+    <string name="collect_help">Collect Help</string>
+    <string name="collect_help_info">Collect is a tool to collect data by filling forms and surveys directly on your device</string>
+    <string name="collect_help_server_info"><![CDATA[To receive forms and submit data, you must first connect to a server. Ask you sponsor organization for the server information and <a href="whistler_scheme://open.collect.manage.servers.activity">set up the server here.</a>]]></string>
+    <string name="collect_help_odk"><![CDATA[If you would like to create your own forms, <a href="whistler_scheme://open.feedback.activity">contact us</a> or use <a href="https://opendatakit.org/help/help-for-hire/">any service based on the Open Data Kit (ODK)</a>]]></string>
+    <string name="collect_help_connectivity">If you are not connected to the Internet, you can still fill forms. The data will be submitted as soon as you get online.</string>
+    <string name="default_panic_message">Help me I\'m in trouble</string>
+    <string name="recipients_help">Recipients Help</string>
+    <string name="recipients_help_text"><![CDATA[Decide who will receive your report.<br><br/>Your recipients will receive an email with a link leading to your report. The email will be sent from<br><a href=\"mailto:report@whistlerapp.org\">report@whistlerapp.org</a><br><br/>To save time when sending your report to many recipients, you can create lists of recipients. Just select the list, and all recipients included will receive the report]]></string>
+    <string name="not_connected_message">You’re not connected to the internet. Try again when connected.</string>
+    <string name="crash_reports_submit">Opt-out from crash reports</string>
+    <string name="crash_reports_submit_desc">In order to improve the app, reports about crashes are automatically sent to the Whistler team. The reports include data such as device model, android version, etc.</string>
+    <string name="enable_camera_preview">Enable camera preview on homescreen</string>
+    <string name="enable_camera_preview_desc">In some contexts, the camera preview may attract the attention of people around you. Disable if this presents a risk.</string>
+    <string name="ra_add_group_dialog_positive">Add group</string>
+    <string name="ra_leaving_repeat_ask">Add One More Group?</string>
+    <string name="ra_entering_repeat_ask">Add New Group?</string>
+    <string name="ra_add_another_repeat">Add another \"%s\" group?</string>
+    <string name="ra_add_repeat">Add a new \"%s\" group?</string>
+    <string name="ra_do_not_add_group">Do not add</string>
 </resources>

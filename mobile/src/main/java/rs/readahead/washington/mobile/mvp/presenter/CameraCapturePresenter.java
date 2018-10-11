@@ -21,7 +21,6 @@ import rs.readahead.washington.mobile.domain.entity.MediaFile;
 import rs.readahead.washington.mobile.media.MediaFileBundle;
 import rs.readahead.washington.mobile.media.MediaFileHandler;
 import rs.readahead.washington.mobile.mvp.contract.ICameraCapturePresenterContract;
-import rs.readahead.washington.mobile.presentation.entity.MediaFileThumbnailData;
 
 
 public class CameraCapturePresenter implements ICameraCapturePresenterContract.IPresenter {
@@ -29,6 +28,7 @@ public class CameraCapturePresenter implements ICameraCapturePresenterContract.I
     private CompositeDisposable disposables = new CompositeDisposable();
     private CacheWordDataSource cacheWordDataSource;
     private MediaFileHandler mediaFileHandler;
+    private int currentRotation = 0;
 
 
     public CameraCapturePresenter(ICameraCapturePresenterContract.IView view) {
@@ -69,7 +69,7 @@ public class CameraCapturePresenter implements ICameraCapturePresenterContract.I
                 .subscribe(new Consumer<MediaFile>() {
                     @Override
                     public void accept(MediaFile mediaFile) throws Exception {
-                        view.onAddSuccess(mediaFile.getId(), mediaFile.getPrimaryMimeType());
+                        view.onAddSuccess(mediaFile.getId());
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -113,7 +113,7 @@ public class CameraCapturePresenter implements ICameraCapturePresenterContract.I
                 .subscribe(new Consumer<MediaFile>() {
                     @Override
                     public void accept(MediaFile mediaFile) throws Exception {
-                        view.onAddSuccess(mediaFile.getId(), mediaFile.getPrimaryMimeType());
+                        view.onAddSuccess(mediaFile.getId());
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -148,6 +148,33 @@ public class CameraCapturePresenter implements ICameraCapturePresenterContract.I
                     }
                 })
         );
+    }
+
+    @Override
+    public void handleRotation(int orientation) {
+        int degrees = 270;
+
+        if (orientation < 45 || orientation > 315) {
+            degrees = 0;
+        } else if (orientation < 135) {
+            degrees = 90;
+        } else if (orientation < 225) {
+            degrees = 180;
+        }
+
+        int rotation = (360 - degrees) % 360;
+
+        if (rotation == 270) {
+            rotation = -90;
+        }
+
+        if (currentRotation == rotation || rotation == 180/*IGNORING THIS ANGLE*/) {
+            return;
+        }
+
+        currentRotation = rotation;
+
+        view.rotateViews(rotation);
     }
 
     @Override

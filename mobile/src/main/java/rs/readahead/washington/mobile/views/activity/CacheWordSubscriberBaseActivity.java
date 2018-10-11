@@ -35,13 +35,13 @@ public abstract class CacheWordSubscriberBaseActivity extends BaseActivity imple
 
     @Override
     public void onCacheWordUninitialized() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 
     @Override
     public void onCacheWordLocked() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 

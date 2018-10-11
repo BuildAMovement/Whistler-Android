@@ -20,7 +20,9 @@ public class IReportRecipientsPresenterContract {
         void onAddMediaRecipientError(Throwable throwable);
         void onAddMediaRecipientList(MediaRecipientList mediaRecipientList);
         void onAddMediaRecipientListError(Throwable throwable);
+        void onSelectMediaRecipientsFromListError(Throwable throwable);
         void onPreviewMode();
+        void checkRecipientsFromList(List<MediaRecipient> mediaRecipientList, boolean check);
         Context getContext();
     }
 
@@ -33,13 +35,11 @@ public class IReportRecipientsPresenterContract {
         boolean ifRecipientIsSelected(MediaRecipient mediaRecipient);
         boolean ifRecipientListIsSelected(MediaRecipientList mediaRecipientList);
         ReportRecipientData getRecipientsData();
-        void addRecipientToReport(MediaRecipient mediaRecipient);
-        void removeRecipientFromReport(MediaRecipient mediaRecipient);
-        void addRecipientListToReport(MediaRecipientList mediaRecipientList);
-        void removeRecipientListFromReport(MediaRecipientList mediaRecipientList);
-//        boolean checkSelectMenuItemStatus();
+        void setReportRecipientLists(List<MediaRecipientList> lists);
+        void setReportRecipients(List<MediaRecipient> recipients);
+        void selectDifferentMediaRecipientsFromList(MediaRecipientList mediaRecipientList, List<MediaRecipientList> recipientLists, boolean check);
         void setReportType(ReportViewType type);
-        ReportViewType getReportType();
+        //ReportViewType getReportType();
         boolean isInPreviewMode();
     }
 }

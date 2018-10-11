@@ -57,6 +57,7 @@ import rs.readahead.washington.mobile.bus.EventCompositeDisposable;
 import rs.readahead.washington.mobile.bus.EventObserver;
 import rs.readahead.washington.mobile.bus.event.CameraFlingUpEvent;
 import rs.readahead.washington.mobile.bus.event.LocaleChangedEvent;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.domain.entity.Metadata;
 import rs.readahead.washington.mobile.domain.entity.TempMediaFile;
 import rs.readahead.washington.mobile.media.MediaFileHandler;
@@ -73,8 +74,11 @@ import rs.readahead.washington.mobile.views.custom.CameraCaptureButton;
 import rs.readahead.washington.mobile.views.custom.CameraDurationTextView;
 import rs.readahead.washington.mobile.views.custom.CameraFlashButton;
 import rs.readahead.washington.mobile.views.custom.CameraModeButton;
+import rs.readahead.washington.mobile.views.custom.CameraPreviewAnonymousButton;
 import rs.readahead.washington.mobile.views.custom.CameraSwitchButton;
 import rs.readahead.washington.mobile.views.custom.CountdownImageView;
+import rs.readahead.washington.mobile.views.custom.AnimatedArrowsView;
+import rs.readahead.washington.mobile.views.custom.HomeScreenGradient;
 import rs.readahead.washington.mobile.views.custom.WaCameraView;
 import timber.log.Timber;
 
@@ -105,8 +109,6 @@ public class MainActivity extends MetadataActivity implements
     View cameraOverlay;
     @BindView(R.id.microphone)
     View microphone;
-    @BindView(R.id.bottom_layout)
-    View mButtonsLayout;
     @BindView(R.id.top_layout)
     View mTopLayout;
     @BindView(R.id.app_bar)
@@ -137,6 +139,13 @@ public class MainActivity extends MetadataActivity implements
     SeekBar mSeekBar;
     @BindView(R.id.gallery_shortcut)
     ImageView mGalleryShortcut;
+    @BindView(R.id.home_screen_gradient)
+    HomeScreenGradient homeScreenGradient;
+    @BindView(R.id.anonymous)
+    CameraPreviewAnonymousButton anonymousButton;
+    @BindView(R.id.panic_button)
+    AnimatedArrowsView panicButton;
+
 
     private BottomSheetBehavior mBottomSheetBehavior;
     private boolean mExit = false;
@@ -151,9 +160,12 @@ public class MainActivity extends MetadataActivity implements
     private CameraActivity.Mode mode = CameraActivity.Mode.PHOTO;
     private boolean videoRecording;
     private ProgressDialog progressDialog;
-    private int currentRotation = 0;
     private OrientationEventListener mOrientationEventListener;
     private int zoomLevel = 0;
+
+
+    private final static int CLICK_DELAY = 1200;
+    private long lastClickTime = System.currentTimeMillis();
 
 
     @Override
@@ -168,16 +180,11 @@ public class MainActivity extends MetadataActivity implements
 
         presenter = new CameraCapturePresenter(this);
         metadataAttacher = new MetadataAttacher(this);
-        homeScreenPresenter = new HomeScreenPresenter(this);
+        homeScreenPresenter = new HomeScreenPresenter(this, getCacheWordHandler());
 
         panicActivated = false;
 
         initSetup();
-
-        // prepare camera preview..
-        cameraView.setSessionType(SessionType.PICTURE);
-        cameraView.setEnabled(PermissionUtil.checkPermission(this, Manifest.permission.CAMERA));
-        setOrientationListener();
     }
 
     private void initSetup() {
@@ -185,7 +192,6 @@ public class MainActivity extends MetadataActivity implements
         setupCameraView();
         setupCameraCaptureButton();
         setupCameraModeButton();
-        setupConfirmLayout();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -196,7 +202,7 @@ public class MainActivity extends MetadataActivity implements
 
         mTopCameraLayout.setVisibility(View.GONE);
         mTopCameraLayout.setPadding(0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()),
-                0,0);
+                0, 0);
         mBottomCameraLayout.setVisibility(View.GONE);
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -212,16 +218,37 @@ public class MainActivity extends MetadataActivity implements
         disposables.wire(CameraFlingUpEvent.class, new EventObserver<CameraFlingUpEvent>() {
             @Override
             public void onNext(CameraFlingUpEvent event) {
-                onGalleryShortcutClicked();
+                if (!videoRecording) {
+                    onGalleryShortcutClicked();
+                }
             }
         });
-
         //setMarginsAndPadding();
     }
 
-    @OnClick(R.id.collect)
-    void onCollectClicked() {
-        startActivity(new Intent(this, CollectMainActivity.class));
+    @OnClick({R.id.tab_button_report, R.id.tab_button_collect, R.id.tab_button_gallery, R.id.tab_button_training})
+    void onBottomNavigationTabClick(View view) {
+        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
+            return;
+        }
+
+        switch (view.getId()) {
+            case R.id.tab_button_report:
+                startReportActivity();
+                break;
+
+            case R.id.tab_button_collect:
+                startCollectActivity();
+                break;
+
+            case R.id.tab_button_gallery:
+                showGallery(false);
+                break;
+
+            case R.id.tab_button_training:
+                startTrainActivity();
+                break;
+        }
     }
 
     @OnClick(R.id.gallery_shortcut)
@@ -229,21 +256,18 @@ public class MainActivity extends MetadataActivity implements
         showGallery(true);
     }
 
-    @OnClick(R.id.gallery)
-    void onGalleryClicked() {
-        showGallery(false);
-    }
-
-    @OnClick(R.id.panic_mode_view)
-    void onPanicModeClicked() {
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    @OnClick(R.id.bottom_sheet)
+    void onBottomSheetClicked() {
+        if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
     }
 
     @OnClick(R.id.container)
     void onContainerClicked() {
         if (PermissionUtil.checkPermission(this, Manifest.permission.CAMERA)) {
             if (!isInCameraMode) {
-                if (MyApplication.isAnonymousMode()) {
+                if (Preferences.isAnonymousMode()) {
                     MainActivityPermissionsDispatcher.switchToCameraModeAnonymousWithCheck(this);
                 } else {
                     MainActivityPermissionsDispatcher.switchToCameraModeLocationWithCheck(this);
@@ -256,7 +280,7 @@ public class MainActivity extends MetadataActivity implements
 
     @OnClick(R.id.microphone)
     void onMicrophoneClicked() {
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             startAudioRecorderActivityAnonymous();
         } else {
             MainActivityPermissionsDispatcher.startAudioRecorderActivityLocationWithCheck(this);
@@ -368,11 +392,11 @@ public class MainActivity extends MetadataActivity implements
 
         switch (id) {
             case R.id.nav_collect:
-                startActivity(new Intent(MainActivity.this, CollectMainActivity.class));
+                startCollectActivity();
                 break;
 
             case R.id.nav_reporting:
-                startActivity(new Intent(MainActivity.this, ReportActivity.class));
+                startReportActivity();
                 break;
 
             case R.id.nav_gallery:
@@ -380,11 +404,11 @@ public class MainActivity extends MetadataActivity implements
                 break;
 
             case R.id.nav_settings:
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                startSettingsActivity();
                 break;
 
             case R.id.nav_feedback:
-                startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
+                startFeedbackActivity();
                 break;
 
             case R.id.nav_about_n_help:
@@ -392,11 +416,11 @@ public class MainActivity extends MetadataActivity implements
                 break;
 
             case R.id.nav_log_out:
-                finish();
+                closeApp();
                 break;
 
             case R.id.nav_training_room:
-                startActivity(new Intent(MainActivity.this, TrainingActivity.class));
+                startTrainActivity();
                 break;
 
             default:
@@ -407,8 +431,28 @@ public class MainActivity extends MetadataActivity implements
         return true;
     }
 
+    private void startReportActivity() {
+        startActivity(new Intent(MainActivity.this, ReportActivity.class));
+    }
+
+    private void startCollectActivity() {
+        startActivity(new Intent(MainActivity.this, CollectMainActivity.class));
+    }
+
+    private void startSettingsActivity() {
+        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+    }
+
+    private void startTrainActivity() {
+        startActivity(new Intent(MainActivity.this, TrainingActivity.class));
+    }
+
+    private void startFeedbackActivity() {
+        startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
+    }
+
     private void showGallery(boolean animated) {
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             startGalleryActivity(animated);
         } else {
             MainActivityPermissionsDispatcher.startGalleryActivityWithCheck(this, animated);
@@ -418,7 +462,6 @@ public class MainActivity extends MetadataActivity implements
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     public void startGalleryActivity(boolean animated) {
         startActivity(new Intent(MainActivity.this, GalleryActivity.class)
-                .putExtra(GalleryActivity.GALLERY_MODE, GalleryActivity.Mode.GALLERY_VIEW_MEDIA.name())
                 .putExtra(GalleryActivity.GALLERY_ANIMATED, animated));
     }
 
@@ -579,6 +622,8 @@ public class MainActivity extends MetadataActivity implements
     protected void onResume() {
         super.onResume();
 
+        anonymousButton.displayDrawable();
+
         //registerReceiver(torStatusReceiver, new IntentFilter(OrbotHelper.ACTION_STATUS));
 
         startLocationMetadataListening();
@@ -593,6 +638,12 @@ public class MainActivity extends MetadataActivity implements
         cameraView.start();
         mSeekBar.setProgress(zoomLevel);
         setCameraZoom();
+
+        if (!Preferences.isCameraPreviewEnabled()) {
+            cameraView.setVisibility(View.GONE);
+        } else {
+            cameraView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -676,7 +727,7 @@ public class MainActivity extends MetadataActivity implements
     void executePanicMode() {
         try {
             if (homeScreenPresenter != null) {
-                homeScreenPresenter.executePanicMode(getCacheWordHandler());
+                homeScreenPresenter.executePanicMode();
             }
         } catch (Throwable ignored) {
             panicActivated = true;
@@ -694,7 +745,7 @@ public class MainActivity extends MetadataActivity implements
     }
 
     @Override
-    public void onAddSuccess(long mediaFileId, String primaryType) {
+    public void onAddSuccess(long mediaFileId) {
         attachMediaFileMetadata(mediaFileId, metadataAttacher);
     }
 
@@ -776,7 +827,7 @@ public class MainActivity extends MetadataActivity implements
     }
 
     private void animateImagePreview(final Bitmap previewImage, final byte[] jpeg) {
-        Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.preview_anim);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.preview_anim);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -804,7 +855,6 @@ public class MainActivity extends MetadataActivity implements
         confirmLayout.startAnimation(animation);
     }
 
-
     private void showConfirmVideoView(final File video) {
         captureButton.displayStartVideo();
         durationView.stop();
@@ -814,17 +864,11 @@ public class MainActivity extends MetadataActivity implements
     }
 
     private void setupCameraView() {
-        if (mode == CameraActivity.Mode.PHOTO) {
-            cameraView.setSessionType(SessionType.PICTURE);
-            modeButton.displayPhoto();
-        } else {
-            cameraView.setSessionType(SessionType.VIDEO);
-            modeButton.displayVideo();
-        }
-
-        //cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM);
+        cameraView.setSessionType(SessionType.PICTURE);
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
-        //cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE);
+        cameraView.setEnabled(PermissionUtil.checkPermission(this, Manifest.permission.CAMERA));
+
+        setOrientationListener();
 
         cameraView.addCameraListener(new CameraListener() {
             @Override
@@ -885,14 +929,20 @@ public class MainActivity extends MetadataActivity implements
             showGalleryShortcut(false);
             cameraView.capturePicture();
         } else {
+
             switchButton.setVisibility(videoRecording ? View.VISIBLE : View.GONE);
             if (videoRecording) {
-                cameraView.stopCapturingVideo();
-                videoRecording = false;
-                switchButton.setVisibility(View.VISIBLE);
+                if (System.currentTimeMillis() - lastClickTime < CLICK_DELAY) {
+                    return;
+                } else {
+                    cameraView.stopCapturingVideo();
+                    videoRecording = false;
+                    switchButton.setVisibility(View.VISIBLE);
+                }
             } else {
+                lastClickTime = System.currentTimeMillis();
                 TempMediaFile tmp = TempMediaFile.newMp4();
-                File file = MediaFileHandler.getTempFile(MainActivity.this, tmp);
+                File file = MediaFileHandler.getTempFile(this, tmp);
                 cameraView.startCapturingVideo(file);
                 captureButton.displayStopVideo();
                 durationView.start();
@@ -920,6 +970,14 @@ public class MainActivity extends MetadataActivity implements
             modeButton.displayVideo();
             captureButton.displayTakePhoto();
         }
+
+        resetZoom();
+    }
+
+    private void resetZoom() {
+        zoomLevel = 0;
+        mSeekBar.setProgress(0);
+        setCameraZoom();
     }
 
     private void setCameraZoom() {
@@ -1000,15 +1058,6 @@ public class MainActivity extends MetadataActivity implements
         cameraView.setFlash(Flash.OFF);
     }
 
-    private void setupConfirmLayout() {
-//        confirmRetry.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                closeConfirmLayout();
-//            }
-//        });
-    }
-
     private void closeConfirmLayout() {
         confirmImageView.setImageDrawable(null);
         confirmLayout.setVisibility(View.GONE);
@@ -1023,12 +1072,18 @@ public class MainActivity extends MetadataActivity implements
     }
 
     private void switchToCameraMode() {
+        if (cameraView.getVisibility() == View.GONE) {
+            cameraView.setVisibility(View.VISIBLE);
+        }
         hideMainViews();
         showCameraLayouts();
         isInCameraMode = true;
     }
 
     private void switchToMainMode() {
+        if (!Preferences.isCameraPreviewEnabled()) {
+            cameraView.setVisibility(View.GONE);
+        }
         showMainViews();
         hideCameraLayouts();
         isInCameraMode = false;
@@ -1049,19 +1104,21 @@ public class MainActivity extends MetadataActivity implements
     private void hideMainViews() {
         enableDrawer(false);
         bottomSheet.startAnimation(getExitAnimation(bottomSheet, true));
-        mButtonsLayout.startAnimation(getExitAnimation(mButtonsLayout, true));
+        cameraOverlay.startAnimation(getExitAnimation(cameraOverlay, true));
         mTopLayout.startAnimation(getExitAnimation(mTopLayout, false));
         mAppBar.startAnimation(getExitAnimation(mAppBar, false));
-        mContainer.setVisibility(View.GONE);
+        mContainer.setVisibility(View.GONE); // todo: fix this with hiding on animation end
+        homeScreenGradient.animateFadeOut();
     }
 
     private void showMainViews() {
         enableDrawer(true);
         bottomSheet.startAnimation(getEnterAnimation(bottomSheet, true));
         mTopLayout.startAnimation(getEnterAnimation(mTopLayout, false));
-        mButtonsLayout.startAnimation(getEnterAnimation(mButtonsLayout, true));
+        cameraOverlay.startAnimation(getEnterAnimation(cameraOverlay, true));
         mAppBar.startAnimation(getEnterAnimation(mAppBar, false));
         mContainer.setVisibility(View.VISIBLE);
+        homeScreenGradient.animateFadeIn();
     }
 
     private void showGalleryShortcut(boolean show) {
@@ -1125,39 +1182,21 @@ public class MainActivity extends MetadataActivity implements
                 if (!isInCameraMode) return;
                 if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
 
-                int rotation = calculateRotation(orientation);
-
-                if (currentRotation == rotation || rotation == 180/*IGNORING THIS ANGLE*/) return;
-                currentRotation = rotation;
-                rotateCameraViews();
+                presenter.handleRotation(orientation);
             }
         };
     }
 
-    private int calculateRotation(int orientation) {
-        int degrees = 270;
-        if (orientation < 45 || orientation > 315)
-            degrees = 0;
-        else if (orientation < 135)
-            degrees = 90;
-        else if (orientation < 225)
-            degrees = 180;
-
-        int rotation = (360 - degrees) % 360;
-        if (rotation == 270) {
-            rotation = -90;
-        }
-
-        return rotation;
+    @Override
+    public void rotateViews(int rotation) {
+        switchButton.rotateView(rotation);
+        flashButton.rotateView(rotation);
+        durationView.rotateView(rotation);
+        captureButton.rotateView(rotation);
+        modeButton.rotateView(rotation);
     }
 
-    private void rotateCameraViews() {
-        switchButton.rotateView(currentRotation);
-        flashButton.rotateView(currentRotation);
-        durationView.rotateView(currentRotation);
-        captureButton.rotateView(currentRotation);
-        modeButton.rotateView(currentRotation);
-    }
+
 
     /*private void setMarginsAndPadding() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

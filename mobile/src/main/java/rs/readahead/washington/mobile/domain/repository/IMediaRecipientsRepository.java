@@ -10,6 +10,7 @@ import rs.readahead.washington.mobile.domain.entity.MediaRecipientList;
 
 public interface IMediaRecipientsRepository {
     Single<List<MediaRecipient>> listMediaRecipients();
+    Single<List<MediaRecipient>> getDifferentMediaRecipientsFromRecipientList(MediaRecipientList mediaRecipientList, List<MediaRecipientList> lists);
     Single<List<MediaRecipientList>> listNonEmptyMediaRecipientLists();
     Single<MediaRecipient> addMediaRecipient(MediaRecipient mediaRecipient);
     Single<MediaRecipientList> addMediaRecipientList(MediaRecipientList mediaRecipientList);

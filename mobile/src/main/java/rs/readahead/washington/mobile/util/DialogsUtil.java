@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +17,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import rs.readahead.washington.mobile.R;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.data.sharedpref.SharedPrefs;
 import rs.readahead.washington.mobile.domain.entity.TrustedPerson;
 import rs.readahead.washington.mobile.domain.entity.collect.CollectFormInstanceStatus;
 import rs.readahead.washington.mobile.views.activity.OnPasswordCreateListener;
 import rs.readahead.washington.mobile.views.activity.OnTrustedPersonInteractionListener;
+import rs.readahead.washington.mobile.views.custom.CameraPreviewAnonymousButton;
 
 
 public class DialogsUtil {
@@ -79,7 +82,7 @@ public class DialogsUtil {
     }
 
     public static AlertDialog showMessageOKCancelWithTitle(Context context, String message, String title, String positiveButton, String negativeButton,
-                                                    DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
+                                                           DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
         return new AlertDialog.Builder(context)
                 .setMessage(message)
                 .setTitle(title)
@@ -182,8 +185,8 @@ public class DialogsUtil {
                         }
                         if (caller == 1) {
                             if (!newPasswordText.equals(SharedPrefs.getInstance().getPanicPassword())) {
-                                if (SharedPrefs.getInstance().getSecretPassword().equals(oldPasswordText)) {
-                                    SharedPrefs.getInstance().setSecretPassword(confirmText);
+                                if (Preferences.getSecretPassword().equals(oldPasswordText)) {
+                                    Preferences.setSecretPassword(confirmText);
                                     Snackbar.make(view, R.string.password_changed, Snackbar.LENGTH_SHORT).show();
                                     alertDialog.dismiss();
                                 } else {
@@ -198,7 +201,7 @@ public class DialogsUtil {
                                 confirmLayout.setError(null);
                             }
                         } else {
-                            if (!newPasswordText.equals(SharedPrefs.getInstance().getSecretPassword())) {
+                            if (!newPasswordText.equals(Preferences.getSecretPassword())) {
                                 if (SharedPrefs.getInstance().getPanicPassword().equals(oldPasswordText)) {
                                     SharedPrefs.getInstance().setPanicPassword(confirmText);
                                     Snackbar.make(view, R.string.password_changed, Snackbar.LENGTH_SHORT).show();
@@ -224,12 +227,45 @@ public class DialogsUtil {
 
     }
 
+    public static AlertDialog showMetadataSwitchDialog(final Context context, final CameraPreviewAnonymousButton metadataCameraButton) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        @SuppressLint("InflateParams")
+        View view = inflater.inflate(R.layout.enable_metadata_dialog_layout, null);
+        builder.setView(view);
+
+        final SwitchCompat metadataSwitch = view.findViewById(R.id.anonymous_switch);
+        metadataSwitch.setChecked(!Preferences.isAnonymousMode());
+
+        builder.setView(view)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Preferences.setAnonymousMode(!metadataSwitch.isChecked());
+                        metadataCameraButton.displayDrawable();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .setCancelable(true);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        return alertDialog;
+    }
+
     public static void showNewPasswordDialog(final int caller, final Context context, final OnPasswordCreateListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         @SuppressLint("InflateParams") View dialogView = inflater.inflate(R.layout.create_password_dialog_layout, null);
-        builder.setTitle(caller == 1 ? context.getString(R.string.create_new_secret_password) : context.getString(R.string.create_new_panic_password))
+        builder.setTitle(caller == 1 ? context.getString(R.string.create_new_secret_passcode) : context.getString(R.string.create_new_panic_password))
                 .setPositiveButton(R.string.save, null)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
                 .setView(dialogView);
 
         final TextInputLayout passwordLayout = dialogView.findViewById(R.id.password_layout);
@@ -283,7 +319,7 @@ public class DialogsUtil {
 
                         if (!passwordText.equals(SharedPrefs.getInstance().getPanicPassword())) {
                             if (caller == 1) {
-                                SharedPrefs.getInstance().setSecretPassword(passwordText);
+                                Preferences.setSecretPassword(passwordText);
                             } else {
                                 SharedPrefs.getInstance().setPanicPassword(passwordText);
                             }

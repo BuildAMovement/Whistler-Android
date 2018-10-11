@@ -1,7 +1,9 @@
 package rs.readahead.washington.mobile.util;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import java.io.Closeable;
 import java.io.File;
@@ -10,6 +12,7 @@ import java.util.concurrent.Callable;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
+import rs.readahead.washington.mobile.domain.entity.MediaFile;
 import timber.log.Timber;
 
 
@@ -59,6 +62,32 @@ public class FileUtil {
         }
 
         return null;
+    }
+
+    @Nullable
+    public static String getMimeType(@NonNull String filename) {
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                MimeTypeMap.getFileExtensionFromUrl(filename.toLowerCase())
+        );
+    }
+
+    public static MediaFile.Type getMediaFileType(@NonNull String filename) {
+        String mimeType = getMimeType(filename);
+        String primaryType = getPrimaryMime(mimeType);
+
+        if ("image".equals(primaryType)) {
+            return MediaFile.Type.IMAGE;
+        }
+
+        if ("audio".equals(primaryType)) {
+            return MediaFile.Type.AUDIO;
+        }
+
+        if ("video".equals(primaryType)) {
+            return MediaFile.Type.VIDEO;
+        }
+
+        return MediaFile.Type.UNKNOWN;
     }
 
     public static boolean mkdirs(File path) {

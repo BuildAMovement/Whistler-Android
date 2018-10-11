@@ -12,8 +12,8 @@ import rs.readahead.washington.mobile.data.database.CacheWordDataSource;
 import rs.readahead.washington.mobile.data.database.DataSource;
 import rs.readahead.washington.mobile.domain.entity.MediaRecipient;
 import rs.readahead.washington.mobile.domain.entity.MediaRecipientList;
-import rs.readahead.washington.mobile.presentation.entity.ReportRecipientData;
 import rs.readahead.washington.mobile.mvp.contract.IReportRecipientsPresenterContract;
+import rs.readahead.washington.mobile.presentation.entity.ReportRecipientData;
 import rs.readahead.washington.mobile.presentation.entity.ReportViewType;
 
 
@@ -23,7 +23,6 @@ public class ReportRecipientPresenter implements IReportRecipientsPresenterContr
     private CompositeDisposable disposable;
     private ReportRecipientData reportRecipientData = new ReportRecipientData();
     private ReportViewType type;
-
 
     public ReportRecipientPresenter(IReportRecipientsPresenterContract.IView view) {
         this.view = view;
@@ -52,6 +51,34 @@ public class ReportRecipientPresenter implements IReportRecipientsPresenterContr
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         view.onAllRecipientError(throwable);
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void selectDifferentMediaRecipientsFromList(final MediaRecipientList mediaRecipientList,
+                                                       final List<MediaRecipientList> otherCheckedLists,
+                                                       final boolean check) {
+        disposable.add(cacheWordDataSource.getDataSource()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMapSingle(new Function<DataSource, SingleSource<List<MediaRecipient>>>() {
+                    @Override
+                    public SingleSource<List<MediaRecipient>> apply(DataSource dataSource) throws Exception {
+                        return dataSource.getDifferentMediaRecipientsFromRecipientList(
+                                mediaRecipientList, otherCheckedLists);
+                    }
+                })
+                .subscribe(new Consumer<List<MediaRecipient>>() {
+                    @Override
+                    public void accept(List<MediaRecipient> mediaRecipients) throws Exception {
+                        view.checkRecipientsFromList(mediaRecipients, check);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        view.onSelectMediaRecipientsFromListError(throwable);
                     }
                 })
         );
@@ -165,35 +192,15 @@ public class ReportRecipientPresenter implements IReportRecipientsPresenterContr
     }
 
     @Override
-    public void addRecipientToReport(MediaRecipient mediaRecipient) {
-        reportRecipientData.getMediaRecipients().add(mediaRecipient);
+    public void setReportRecipientLists(List<MediaRecipientList> lists) {
+        reportRecipientData.getMediaRecipientLists().clear();
+        reportRecipientData.getMediaRecipientLists().addAll(lists);
     }
 
     @Override
-    public void removeRecipientFromReport(MediaRecipient mediaRecipient) {
-        reportRecipientData.getMediaRecipients().remove(mediaRecipient);
-    }
-
-    @Override
-    public void addRecipientListToReport(MediaRecipientList mediaRecipientList) {
-        reportRecipientData.getMediaRecipientLists().add(mediaRecipientList);
-    }
-
-    @Override
-    public void removeRecipientListFromReport(MediaRecipientList mediaRecipientList) {
-        reportRecipientData.getMediaRecipientLists().remove(mediaRecipientList);
-    }
-
-//    @Override
-//    public boolean checkSelectMenuItemStatus() {
-//        return !reportRecipientData.getMediaRecipientLists().isEmpty() || !reportRecipientData.getMediaRecipients().isEmpty();
-//    }
-
-    @Override
-    public void destroy() {
-        view = null;
-        disposable.dispose();
-        cacheWordDataSource.dispose();
+    public void setReportRecipients(List<MediaRecipient> recipients) {
+        reportRecipientData.getMediaRecipients().clear();
+        reportRecipientData.getMediaRecipients().addAll(recipients);
     }
 
     @Override
@@ -201,13 +208,20 @@ public class ReportRecipientPresenter implements IReportRecipientsPresenterContr
         this.type = type;
     }
 
-    @Override
+    /*@Override
     public ReportViewType getReportType() {
         return type;
-    }
+    }*/
 
     @Override
     public boolean isInPreviewMode() {
         return type == ReportViewType.PREVIEW;
+    }
+
+    @Override
+    public void destroy() {
+        view = null;
+        disposable.dispose();
+        cacheWordDataSource.dispose();
     }
 }

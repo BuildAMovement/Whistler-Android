@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import butterknife.BindView;
@@ -31,6 +33,29 @@ public class ReportSettingsActivity extends CacheWordSubscriberBaseActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_report_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.help_item) {
+            startReportHelp();
+            return true;
+        }
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @OnClick({R.id.recipients_settings, R.id.contact_settings})
     public void startActivity(View view) {
         switch (view.getId()) {
@@ -41,5 +66,9 @@ public class ReportSettingsActivity extends CacheWordSubscriberBaseActivity {
                 startActivity(new Intent(this, ContactSettingsActivity.class));
                 break;
         }
+    }
+
+    private void startReportHelp() {
+        startActivity(new Intent(ReportSettingsActivity.this, ReportHelpActivity.class));
     }
 }

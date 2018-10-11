@@ -42,7 +42,10 @@ import rs.readahead.washington.mobile.javarosa.FormUtils;
 import rs.readahead.washington.mobile.javarosa.IFormParserContract;
 import rs.readahead.washington.mobile.javarosa.IFormSaverContract;
 import rs.readahead.washington.mobile.javarosa.IFormSubmitterContract;
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.odk.FormController;
+import rs.readahead.washington.mobile.presentation.entity.EvidenceData;
+import rs.readahead.washington.mobile.util.C;
+import rs.readahead.washington.mobile.util.Util;
 import rs.readahead.washington.mobile.util.DialogsUtil;
 import rs.readahead.washington.mobile.views.collect.CollectFormEndView;
 import rs.readahead.washington.mobile.views.collect.CollectFormView;
@@ -118,7 +121,7 @@ public class CollectFormEntryActivity extends MetadataActivity implements
             @Override
             public void onClick(View v) {
                 if (formSubmitter != null) {
-                    formSubmitter.submitActiveFormInstance(formTitle + " " + CommonUtils.getDateTimeString());
+                    formSubmitter.submitActiveFormInstance(formTitle + " " + Util.getDateTimeString());
                 }
             }
         });
@@ -208,7 +211,21 @@ public class CollectFormEntryActivity extends MetadataActivity implements
     }
 
     private void showAttachmentsActivity() {
-        startActivity(new Intent(this, CollectFormAttachmentsActivity.class));
+        EvidenceData data = new EvidenceData(FormController.getActive().getCollectFormInstance().getMediaFiles());
+        startActivityForResult(new Intent(this, AttachmentsActivity.class)
+                .putExtra(AttachmentsActivity.MEDIA_FILES_KEY, data), C.EVIDENCE_IDS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == C.EVIDENCE_IDS) {
+            EvidenceData evidenceData = (EvidenceData) data.getSerializableExtra((AttachmentsActivity.MEDIA_FILES_KEY));
+            FormController.getActive().getCollectFormInstance().setMediaFiles(evidenceData.getEvidences());
+        }
     }
 
     private void deleteFormInstance() {
@@ -304,7 +321,7 @@ public class CollectFormEntryActivity extends MetadataActivity implements
 
     @Override
     public void formEnd(String title) {
-        CommonUtils.hideKeyboard(this, endView);
+        Util.hideKeyboard(this, endView);
         showFormEndView();
         hideSectionButtons();
     }
@@ -328,8 +345,8 @@ public class CollectFormEntryActivity extends MetadataActivity implements
     }
 
     @Override
-    public void formPromptNewRepeat() {
-        setSectionButtons();
+    public void formPromptNewRepeat(int lastRepeatCount, String groupText) {
+        createPromptDialog(lastRepeatCount, groupText);
     }
 
     @Override
@@ -467,6 +484,38 @@ public class CollectFormEntryActivity extends MetadataActivity implements
         return this;
     }
 
+    private void createPromptDialog(int lastRepeatCount, String groupText) {
+        if (alertDialog != null && alertDialog.isShowing()) {
+            return;
+        }
+
+        alertDialog = new AlertDialog.Builder(this)
+                .setPositiveButton(R.string.ra_add_group_dialog_positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        formParser.executeRepeat();
+                    }
+                })
+                .setNegativeButton(R.string.ra_do_not_add_group, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        formParser.cancelRepeat();
+                    }
+                })
+                .setCancelable(false)
+                .create();
+
+        if (lastRepeatCount > 0) {
+            alertDialog.setTitle(getString(R.string.ra_leaving_repeat_ask));
+            alertDialog.setMessage(getString(R.string.ra_add_another_repeat, groupText));
+        } else {
+            alertDialog.setTitle(getString(R.string.ra_entering_repeat_ask));
+            alertDialog.setMessage(getString(R.string.ra_add_repeat, groupText));
+        }
+
+        alertDialog.show();
+    }
+
     @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private void formAttachmentsChanged() {
         invalidateOptionsMenu();
@@ -524,7 +573,7 @@ public class CollectFormEntryActivity extends MetadataActivity implements
     private void hideKeyboard() {
         View v = getCurrentFocus();
         if (v != null) {
-            CommonUtils.hideKeyboard(this, v);
+            Util.hideKeyboard(this, v);
         }
     }
 
@@ -556,7 +605,7 @@ public class CollectFormEntryActivity extends MetadataActivity implements
         }
     }
 
-    // todo: this bottom buttons on/off thing looks stupid :)
+    // this bottom buttons on/off thing looks stupid :)
     private void setFirstSectionButtons() {
         hideSubmitButtons();
         hidePrevSectionButton();
@@ -565,14 +614,15 @@ public class CollectFormEntryActivity extends MetadataActivity implements
     private void setSectionButtons() {
         buttonBottomLayout.setVisibility(View.VISIBLE);
 
+        showNextSectionButton();
+
         if (formParser.isFirstScreen()) {
             setFirstSectionButtons();
             return;
         }
+
         prevSectionButton.setEnabled(true);
         prevSectionButton.setVisibility(View.VISIBLE);
-        nextSectionButton.setEnabled(true);
-        nextSectionButton.setVisibility(View.VISIBLE);
     }
 
     private void showFormEndButtons() {
@@ -598,6 +648,11 @@ public class CollectFormEntryActivity extends MetadataActivity implements
         submitButton.setVisibility(View.GONE);
         goBackButton.setEnabled(false);
         goBackButton.setVisibility(View.GONE);
+    }
+
+    private void showNextSectionButton() {
+        nextSectionButton.setEnabled(true);
+        nextSectionButton.setVisibility(View.VISIBLE);
     }
 
     private void showFormChangedDialog() {

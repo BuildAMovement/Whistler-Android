@@ -141,7 +141,7 @@ public class CollectSubmittedFormInstanceRecycleViewAdapter extends RecyclerView
         void setDates(long timestamp) {
             Date date = new Date(timestamp);
 
-            String month = StringUtils.first(new SimpleDateFormat("MMMM", Locale.getDefault()).format(date), 4);
+            String month = StringUtils.first(new SimpleDateFormat("MMM", Locale.getDefault()).format(date), 3);
             String day = new SimpleDateFormat("dd", Locale.US).format(date);
             String year = new SimpleDateFormat("yyyy", Locale.US).format(date);
 

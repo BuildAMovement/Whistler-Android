@@ -44,12 +44,12 @@ public class GalleryPresenter implements IGalleryPresenterContract.IPresenter {
     }
 
     @Override
-    public void getFiles() {
+    public void getFiles(final IMediaFileRecordRepository.Filter filter, final IMediaFileRecordRepository.Sort sort) {
         disposables.add(
                 cacheWordDataSource.getDataSource().flatMapSingle(new Function<DataSource, SingleSource<List<MediaFile>>>() {
                     @Override
                     public SingleSource<List<MediaFile>> apply(@NonNull DataSource dataSource) throws Exception {
-                        return dataSource.listMediaFiles();
+                        return dataSource.listMediaFiles(filter, sort);
                     }
                 })
                 .subscribeOn(Schedulers.io())

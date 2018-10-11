@@ -1,9 +1,12 @@
 package rs.readahead.washington.mobile.domain.entity;
 
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 
-public class RawMediaFile implements Serializable {
+public class RawMediaFile implements Serializable, Comparable {
     private long id;
     protected String uid;
     protected String path;
@@ -11,6 +14,8 @@ public class RawMediaFile implements Serializable {
     private long created;
     private boolean anonymous;
 
+    RawMediaFile() {
+    }
 
     public long getId() {
         return id;
@@ -70,12 +75,30 @@ public class RawMediaFile implements Serializable {
             return true;
         }
 
-        if (! (obj instanceof RawMediaFile)) {
+        if (!(obj instanceof RawMediaFile)) {
             return false;
         }
 
         final RawMediaFile that = (RawMediaFile) obj;
 
-        return this.getId() == that.getId();
+        return TextUtils.equals(this.uid, that.uid);
+    }
+
+    @Override
+    public int hashCode() {
+        if (uid != null) {
+            return uid.hashCode();
+        }
+
+        return super.hashCode();
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        if (!(o instanceof RawMediaFile)) {
+            return 0;
+        } else {
+            return (int) (this.created - ((RawMediaFile) o).created);
+        }
     }
 }

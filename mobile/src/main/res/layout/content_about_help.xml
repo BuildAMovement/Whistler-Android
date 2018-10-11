@@ -20,7 +20,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
             android:text="@string/app_name"
             android:textStyle="bold"
             android:textColor="@color/wa_black"
@@ -49,6 +48,13 @@
             android:text="@string/copyright"
             android:textSize="16sp"
             android:textColor="@color/wa_dialog_gray"/>
+
+        <View style="@style/AboutTextSeparator"/>
+
+        <TextView
+            android:id="@+id/setup"
+            style="@style/AboutText"
+            android:text="@string/ra_tutorial_and_setup"/>
 
         <View style="@style/AboutTextSeparator"/>
 

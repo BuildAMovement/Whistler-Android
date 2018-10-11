@@ -26,6 +26,7 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
+import rs.readahead.washington.mobile.util.FileUtil;
 
 
 /**
@@ -183,9 +184,8 @@ public class MediaFileHttpServer implements Runnable {
         }
 
         protected void execute() throws IOException {
+            long fileSize = MediaFileHandler.getSize(context, mediaFile);
             InputStream inputStream = MediaFileHandler.getStream(context, mediaFile);
-            //long        fileSize    = mediaFile.getSize(context);
-            long fileSize = MediaFileHandler.getSize(context, mediaFile); // todo: idiotic, fix it..
 
             if (inputStream == null) {
                 throw new IOException();
@@ -195,7 +195,7 @@ public class MediaFileHttpServer implements Runnable {
             if (cbSkip > 0) {// It is a seek or skip request if there's a Range
                 // header
                 headers += "HTTP/1.1 206 Partial Content\r\n";
-                headers += "Content-Type: " + mediaFile.getMimeType() + "\r\n";
+                headers += "Content-Type: " + FileUtil.getMimeType(mediaFile.getFileName()) + "\r\n";
                 headers += "Accept-Ranges: bytes\r\n";
                 headers += "Content-Length: " + (fileSize - cbSkip) + "\r\n";
                 headers += "Content-Range: bytes " + cbSkip + "-" + (fileSize - 1) + "/" + fileSize + "\r\n";
@@ -203,7 +203,7 @@ public class MediaFileHttpServer implements Runnable {
                 headers += "\r\n";
             } else {
                 headers += "HTTP/1.1 200 OK\r\n";
-                headers += "Content-Type: " + mediaFile.getMimeType() + "\r\n";
+                headers += "Content-Type: " + FileUtil.getMimeType(mediaFile.getFileName()) + "\r\n";
                 headers += "Accept-Ranges: bytes\r\n";
                 headers += "Content-Length: " + fileSize + "\r\n";
                 headers += "Connection: Keep-Alive\r\n";

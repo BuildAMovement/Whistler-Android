@@ -11,6 +11,6 @@ public class IHomeScreenPresenterContract {
     }
 
     public interface IPresenter extends IBasePresenter {
-        void executePanicMode(CacheWordHandler cacheWordHandler);
+        void executePanicMode();
     }
 }

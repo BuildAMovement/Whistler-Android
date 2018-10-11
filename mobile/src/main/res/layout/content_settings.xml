@@ -25,7 +25,7 @@
                 style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_general_black_24px" />
 
@@ -49,7 +49,7 @@
                 style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_collect_menu" />
 
@@ -73,9 +73,9 @@
                 style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_report_menu" />
+                    android:src="@drawable/ic_prime_report" />
 
                 <LinearLayout style="@style/VerticalLinearLayout">
 
@@ -112,7 +112,7 @@
                 style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_security_black_24px" />
 
@@ -136,7 +136,7 @@
                 style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/whistler_logo_black" />
 

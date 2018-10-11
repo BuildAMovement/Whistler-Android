@@ -55,7 +55,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.subjects.BehaviorSubject;
-import rs.readahead.washington.mobile.MyApplication;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.domain.entity.EvidenceLocation;
 import rs.readahead.washington.mobile.domain.entity.Metadata;
 import rs.readahead.washington.mobile.mvp.contract.IMetadataAttachPresenterContract;
@@ -143,7 +143,7 @@ public abstract class MetadataActivity extends CacheWordSubscriberBaseActivity i
     }
 
     protected void startSensorListening() {
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             return;
         }
 
@@ -153,7 +153,7 @@ public abstract class MetadataActivity extends CacheWordSubscriberBaseActivity i
     }
 
     protected void startLocationMetadataListening() {
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             return;
         }
 
@@ -177,7 +177,7 @@ public abstract class MetadataActivity extends CacheWordSubscriberBaseActivity i
 
     @SuppressWarnings("MissingPermission") // we have check
     private void getLastLocation() {
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             return;
         }
 
@@ -216,7 +216,7 @@ public abstract class MetadataActivity extends CacheWordSubscriberBaseActivity i
     }
 
     protected synchronized void startWifiScan() {
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             return;
         }
 
@@ -427,7 +427,7 @@ public abstract class MetadataActivity extends CacheWordSubscriberBaseActivity i
     // UI stuff
     protected void attachMediaFileMetadata(final long mediaFileId, final IMetadataAttachPresenterContract.IPresenter metadataAttacher) {
         // skip metadata if anonymous mode..
-        if (MyApplication.isAnonymousMode()) {
+        if (Preferences.isAnonymousMode()) {
             metadataAttacher.attachMetadata(mediaFileId, null);
             return;
         }

@@ -262,7 +262,7 @@ public class VideoViewerActivity extends CacheWordSubscriberBaseActivity impleme
                 }
             }
 
-            MediaFileDataSourceFactory mediaFileDataSourceFactory = new MediaFileDataSourceFactory(this, mediaFile);
+            MediaFileDataSourceFactory mediaFileDataSourceFactory = new MediaFileDataSourceFactory(this, mediaFile, null);
             MediaSource mediaSource = new ExtractorMediaSource(
                     MediaFileHandler.getEncryptedUri(this, mediaFile),
                     mediaFileDataSourceFactory,

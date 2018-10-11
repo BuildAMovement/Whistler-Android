@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class DraftFormsListFragment extends FormListFragment implements
         ICollectFormInstanceListPresenterContract.IView {
     @BindView(R.id.draftFormInstances)
     RecyclerView recyclerView;
+    @BindView(R.id.blank_draft_forms_info)
+    TextView blankFormsInfo;
 
     private Unbinder unbinder;
     private CollectDraftFormInstanceRecycleViewAdapter adapter;
@@ -82,6 +85,7 @@ public class DraftFormsListFragment extends FormListFragment implements
 
     @Override
     public void onFormInstanceListSuccess(List<CollectFormInstance> instances) {
+        blankFormsInfo.setVisibility(instances.isEmpty() ? View.VISIBLE : View.GONE);
         adapter.setInstances(instances);
     }
 

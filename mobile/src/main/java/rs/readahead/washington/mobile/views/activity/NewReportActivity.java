@@ -139,6 +139,7 @@ public class NewReportActivity extends CacheWordSubscriberBaseActivity implement
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.new_report);
         }
     }
 
@@ -226,9 +227,9 @@ public class NewReportActivity extends CacheWordSubscriberBaseActivity implement
     void onEvidenceClicked() {
         clearFocus();
         setEvidenceIndicatorColor(Color.GRAY);
-        startActivityForResult(new Intent(this, ReportEvidencesActivity.class)
+        startActivityForResult(new Intent(this, AttachmentsActivity.class)
                 .putExtra(REPORT_VIEW_TYPE, presenter.getReportType())
-                .putExtra(ReportEvidencesActivity.MEDIA_FILES_KEY, presenter.getEvidenceData()), C.EVIDENCE_IDS);
+                .putExtra(AttachmentsActivity.MEDIA_FILES_KEY, presenter.getEvidenceData()), C.EVIDENCE_IDS);
     }
 
     @OnClick(R.id.send_report)
@@ -243,7 +244,6 @@ public class NewReportActivity extends CacheWordSubscriberBaseActivity implement
         setRecipientsIndicatorColor(Color.GRAY);
         startActivityForResult(new Intent(this, RecipientsActivity.class)
                 .putExtra(REPORT_VIEW_TYPE, presenter.getReportType())
-
                 .putExtra(RECIPIENTS_ID_KEY, presenter.getRecipientData()), C.RECIPIENT_IDS);
     }
 

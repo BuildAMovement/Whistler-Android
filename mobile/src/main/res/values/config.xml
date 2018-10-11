@@ -19,4 +19,5 @@
         <item>ru</item>
     </string-array>
     <string name="ra_server_prefix" translatable="false">https://</string>
+    <integer name="ra_config_short_fling">300</integer>
 </resources>

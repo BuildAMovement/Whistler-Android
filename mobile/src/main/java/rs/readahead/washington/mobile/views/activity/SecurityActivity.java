@@ -1,7 +1,7 @@
 package rs.readahead.washington.mobile.views.activity;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +14,10 @@ import info.guardianproject.cacheword.ICacheWordSubscriber;
 import me.zhanghai.android.patternlock.ConfirmPatternActivity;
 import me.zhanghai.android.patternlock.PatternUtils;
 import me.zhanghai.android.patternlock.PatternView;
+import rs.readahead.washington.mobile.MyApplication;
 import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.util.DialogsUtil;
+import rs.readahead.washington.mobile.util.LocaleManager;
 import timber.log.Timber;
 
 
@@ -24,8 +26,14 @@ public class SecurityActivity extends ConfirmPatternActivity implements ICacheWo
     private ProgressDialog dialog;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleManager.getInstance().getLocalizedContext(base));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mCacheWord = new CacheWordHandler(this);
 
         Button button = findViewById(R.id.pl_right_button);
@@ -57,10 +65,10 @@ public class SecurityActivity extends ConfirmPatternActivity implements ICacheWo
     @Override
     public void onCacheWordOpened() {
         dismissDialog();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+
+        MyApplication.startMainActivity(this);
         finish();
+
         overridePendingTransition(0, 0);
     }
 

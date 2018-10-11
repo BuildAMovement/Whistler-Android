@@ -1,5 +1,6 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="home_collapsed_height">64dp</dimen>
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">180dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
@@ -10,6 +11,15 @@
     <dimen name="fab_clear_padding">88dp</dimen> <!-- bottom padding for lists with fab -->
     <dimen name="z_bottom_sheet">4dp</dimen>
     <dimen name="gallery_checkbox_margin">8dp</dimen>
-    <dimen name="gallery_strip_height">18dp</dimen>
-    <dimen name="gallery_checkbox_extender">30dp</dimen>
+    <dimen name="gallery_strip_height">16dp</dimen>
+    <dimen name="gallery_checkbox_extender">10dp</dimen>
+    <dimen name="gallery_card_padding">1dp</dimen>
+    <dimen name="gallery_strip_padding">3dp</dimen>
+    <dimen name="intro_header_text_size">28sp</dimen>
+    <dimen name="intro_title_text_size">20sp</dimen>
+    <dimen name="intro_text_size">14sp</dimen>
+    <dimen name="intro_link_text_size">16sp</dimen>
+    <dimen name="gallery_video_duration_text_size">12sp</dimen>
+    <dimen name="navigation_tab_bar_text_size">13sp</dimen>
+    <dimen name="navigation_tab_bar_padding">2dp</dimen>
 </resources>

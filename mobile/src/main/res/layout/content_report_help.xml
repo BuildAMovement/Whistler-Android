@@ -1,0 +1,124 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.activity.ReportHelpActivity"
+    tools:showIn="@layout/activity_report_help">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp">
+
+            <TextView
+                style="@style/ReportHelpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:text="@string/report_info" />
+
+            <LinearLayout
+                android:id="@+id/recipients_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewStyle"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_people_black_24px" />
+
+                <TextView
+                    style="@style/ReportHelpMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/report_recipients_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/anonymous_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewStyle"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_anonymous" />
+
+                <TextView
+                    style="@style/ReportHelpMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_help_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/metadata_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewStyle"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_gps_not_fixed_black_24dp" />
+
+                <TextView
+                    style="@style/ReportHelpMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/metadata_help_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/connected_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewStyle"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_signal_cellular_black_24dp" />
+
+                <TextView
+                    style="@style/ReportHelpMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/report_sent_when_online" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/save_data_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewStyle"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_settings_black" />
+
+                <TextView
+                    android:id="@+id/data_help"
+                    style="@style/ReportHelpMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save_data" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>
+

@@ -2,9 +2,11 @@ package rs.readahead.washington.mobile.views.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import butterknife.BindView;
@@ -14,12 +16,15 @@ import info.guardianproject.cacheword.CacheWordHandler;
 import info.guardianproject.cacheword.ICacheWordSubscriber;
 import rs.readahead.washington.mobile.MyApplication;
 import rs.readahead.washington.mobile.R;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.views.fragment.CircleOfTrustFragment;
 import rs.readahead.washington.mobile.views.fragment.EraseSensitiveDataFragment;
 import rs.readahead.washington.mobile.views.fragment.PanicMessageFragment;
 
 
-public class PanicModeSettingsActivity extends BaseActivity implements ICacheWordSubscriber {
+public class PanicModeSettingsActivity extends BaseActivity implements
+        ICacheWordSubscriber,
+        CompoundButton.OnCheckedChangeListener {
     @BindView(R.id.panic_message)
     LinearLayout mPanicMessage;
     @BindView(R.id.circle_of_trust)
@@ -28,6 +33,8 @@ public class PanicModeSettingsActivity extends BaseActivity implements ICacheWor
     LinearLayout mSensitiveData;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.uninstall_switch)
+    SwitchCompat uninstallSwitch;
 
     private CacheWordHandler mCacheWord;
 
@@ -41,9 +48,12 @@ public class PanicModeSettingsActivity extends BaseActivity implements ICacheWor
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.title_activity_panic_mode);
         }
 
         mCacheWord = new CacheWordHandler(this);
+
+        setupSwitches();
     }
 
     @OnClick({R.id.panic_message, R.id.circle_of_trust, R.id.sensitive_data})
@@ -72,6 +82,16 @@ public class PanicModeSettingsActivity extends BaseActivity implements ICacheWor
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
+        switch (v.getId()) {
+            case R.id.uninstall_switch:
+                Preferences.setUninstallOnPanic(isChecked);
+                uninstallSwitch.setChecked(isChecked);
+                break;
+        }
     }
 
     private void addFragment(Fragment fragment, String title) {
@@ -111,17 +131,22 @@ public class PanicModeSettingsActivity extends BaseActivity implements ICacheWor
 
     @Override
     public void onCacheWordUninitialized() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 
     @Override
     public void onCacheWordLocked() {
-        MyApplication.showLockScreen(this);
+        MyApplication.startLockScreenActivity(this);
         finish();
     }
 
     @Override
     public void onCacheWordOpened() {
+    }
+
+    private void setupSwitches() {
+        uninstallSwitch.setOnCheckedChangeListener(this);
+        uninstallSwitch.setChecked(Preferences.isUninstallOnPanic());
     }
 }

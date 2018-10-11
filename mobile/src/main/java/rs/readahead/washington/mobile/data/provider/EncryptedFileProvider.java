@@ -5,6 +5,7 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,17 +32,19 @@ import javax.crypto.spec.SecretKeySpec;
 import rs.readahead.washington.mobile.BuildConfig;
 import rs.readahead.washington.mobile.MyApplication;
 import rs.readahead.washington.mobile.domain.entity.KeyBundle;
+import rs.readahead.washington.mobile.util.LimitedInputStream;
+import rs.readahead.washington.mobile.util.Util;
 import timber.log.Timber;
 
 
 public class EncryptedFileProvider extends FileProvider {
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + "." + "EncryptedFileProvider";
+    public static final int IV_SIZE = 16;
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final String transformation2 = "AES/CTR/NoPadding";
     private static final int HASH_BYTE_SIZE = 128;
     private static final int PBKDF2_ITERATIONS = 1000;
-    private static final int IV_SIZE = 16;
 
 
     @Override
@@ -105,7 +108,7 @@ public class EncryptedFileProvider extends FileProvider {
                     throw new SecurityException();
                 }
 
-                cipherInputStream = getDecryptedInputStream(key, in, filename);
+                cipherInputStream = getDecryptedInputStream(key, in, filename); // todo: move to limited variant
 
                 while ((len = cipherInputStream.read(buf)) >= 0) {
                     out.write(buf, 0, len);
@@ -123,6 +126,21 @@ public class EncryptedFileProvider extends FileProvider {
                     Timber.e(e, getClass().getSimpleName());
                 }
             }
+        }
+    }
+
+    public static InputStream getDecryptedLimitedInputStream(byte[] key, InputStream in, File file) throws IOException {
+        try {
+            IvParameterSpec iv = readIV(IV_SIZE, in);
+
+            SecretKeySpec sks = createSecretKey(key, file.getName());
+            Cipher cipher = Cipher.getInstance(transformation2);
+            cipher.init(Cipher.DECRYPT_MODE, sks, iv);
+            return new CipherInputStreamWrapper(new LimitedInputStream(in, file.length() - IV_SIZE), cipher);
+
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException |
+                InvalidKeySpecException | InvalidAlgorithmParameterException e) {
+            throw new IOException(e);
         }
     }
 
@@ -238,5 +256,45 @@ public class EncryptedFileProvider extends FileProvider {
         byte[] ivBytes = new byte[IV_SIZE];
         secureRandom.nextBytes(ivBytes);
         return ivBytes;
+    }
+
+    private static class CipherInputStreamWrapper extends CipherInputStream {
+        CipherInputStreamWrapper(InputStream is, Cipher c) {
+            super(is, c);
+        }
+
+        @Override
+        public void close() throws IOException {
+            try {
+                super.close();
+            } catch (Throwable t) {
+                Timber.w(t);
+            }
+        }
+
+        @Override
+        public long skip(long skipAmount)
+                throws IOException
+        {
+            long remaining = skipAmount;
+
+            if (skipAmount <= 0) {
+                return 0;
+            }
+
+            byte[] skipBuffer = new byte[4092];
+
+            while (remaining > 0) {
+                int read = super.read(skipBuffer, 0, Util.toIntExact(Math.min(skipBuffer.length, remaining)));
+
+                if (read < 0) {
+                    break;
+                }
+
+                remaining -= read;
+            }
+
+            return skipAmount - remaining;
+        }
     }
 }

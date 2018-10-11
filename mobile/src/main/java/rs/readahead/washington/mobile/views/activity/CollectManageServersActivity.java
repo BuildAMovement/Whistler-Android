@@ -2,16 +2,20 @@ package rs.readahead.washington.mobile.views.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,6 +37,8 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
     ListView listView;
     @BindView(R.id.fab)
     FloatingActionButton fabAdd;
+    @BindView(R.id.collect_servers_blank_list_info)
+    TextView blankFormsInfo;
 
     private CollectServersPresenter presenter;
     List<CollectServer> servers;
@@ -52,6 +58,7 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.ra_title_activity_collect_settings);
         }
 
         fabAdd.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +68,7 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
             }
         });
 
-        servers = Collections.emptyList();
+        servers = new ArrayList<>();
 
         presenter = new CollectServersPresenter(this);
         presenter.getServers();
@@ -79,6 +86,25 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_collect_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.help_item) {
+            startCollectHelp();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void showLoading() {
     }
 
@@ -88,6 +114,7 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
 
     @Override
     public void onServersLoaded(List<CollectServer> servers) {
+        blankFormsInfo.setVisibility(servers.isEmpty() ? View.VISIBLE : View.GONE);
         this.servers = servers;
         listView.setAdapter(new CollectServersAdapter(this, this, this.servers));
     }
@@ -105,6 +132,7 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
             adapter.notifyDataSetChanged();
             showToast(R.string.ra_server_created);
         }
+        blankFormsInfo.setVisibility(servers.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -117,7 +145,7 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
         CollectServersAdapter adapter = getAdapter();
         int i = servers.indexOf(server);
 
-        if (adapter != null && i != -1)  {
+        if (adapter != null && i != -1) {
             servers.set(i, server);
             adapter.notifyDataSetChanged();
             showToast(R.string.ra_server_updated);
@@ -137,6 +165,7 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
             adapter.notifyDataSetChanged();
             showToast(R.string.ra_server_removed);
         }
+        blankFormsInfo.setVisibility(servers.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -194,5 +223,9 @@ public class CollectManageServersActivity extends CacheWordSubscriberBaseActivit
     @Nullable
     private CollectServersAdapter getAdapter() {
         return (CollectServersAdapter) listView.getAdapter();
+    }
+
+    private void startCollectHelp() {
+        startActivity(new Intent(CollectManageServersActivity.this, CollectHelpActivity.class));
     }
 }

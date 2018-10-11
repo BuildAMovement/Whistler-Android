@@ -1,6 +1,5 @@
 package rs.readahead.washington.mobile;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -11,24 +10,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.evernote.android.job.JobManager;
 import com.google.gson.Gson;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Callable;
 
 import info.guardianproject.cacheword.CacheWordHandler;
 import info.guardianproject.cacheword.ICacheWordSubscriber;
 import info.guardianproject.cacheword.ICachedSecrets;
 import io.fabric.sdk.android.Fabric;
-import io.reactivex.Completable;
-import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
-import io.reactivex.schedulers.Schedulers;
 import rs.readahead.washington.mobile.bus.WhistlerBus;
 import rs.readahead.washington.mobile.data.rest.BaseApi;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.data.sharedpref.SharedPrefs;
 import rs.readahead.washington.mobile.domain.entity.KeyBundle;
 import rs.readahead.washington.mobile.javarosa.JavaRosa;
@@ -45,6 +42,8 @@ import rs.readahead.washington.mobile.util.jobs.TrainModuleDownloadJob;
 import rs.readahead.washington.mobile.util.jobs.WhistlerJobCreator;
 import rs.readahead.washington.mobile.views.activity.ExitActivity;
 import rs.readahead.washington.mobile.views.activity.LockScreenActivity;
+import rs.readahead.washington.mobile.views.activity.MainActivity;
+import rs.readahead.washington.mobile.views.activity.WhistlerIntroActivity;
 import timber.log.Timber;
 
 
@@ -77,11 +76,14 @@ public class MyApplication extends /*MultiDexApplication*/ Application implement
         LeakCanary.install(this);
 
         if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog()/*.penaltyDeath()*/.build()); // todo: catch those..
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll().penaltyLog()/*.penaltyDeath()*/.build()); // todo: catch those..
         }
         // todo: implement dagger2
 
-        Fabric.with(this, new Crashlytics());
+        SharedPrefs.getInstance().init(this);
+
+        configureCrashlytics();
 
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override
@@ -90,8 +92,6 @@ public class MyApplication extends /*MultiDexApplication*/ Application implement
                 Crashlytics.logException(throwable);
             }
         });
-
-        SharedPrefs.getInstance().init(this);
 
         bus = WhistlerBus.create();
 
@@ -122,6 +122,26 @@ public class MyApplication extends /*MultiDexApplication*/ Application implement
         // Collect
         PropertyManager mgr = new PropertyManager();
         JavaRosa.initializeJavaRosa(mgr);
+    }
+
+    public static void startMainActivity(@NonNull Context context) {
+        Intent intent;
+
+        if (Preferences.isFirstStart()) {
+            intent = new Intent(context, WhistlerIntroActivity.class);
+        } else {
+            intent = new Intent(context, MainActivity.class);
+        }
+
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        maybeExcludeIntentFromRecents(intent);
+        context.startActivity(intent);
+    }
+
+    public static void startLockScreenActivity(@NonNull Context context) {
+        Intent intent = new Intent(context, LockScreenActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
     }
 
     @NonNull
@@ -202,57 +222,12 @@ public class MyApplication extends /*MultiDexApplication*/ Application implement
         }
     }
 
-    public static boolean isAnonymousMode() {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return SharedPrefs.getInstance().isAnonymousMode();
-            }
-        }).subscribeOn(Schedulers.io()).blockingGet();
-    }
-
-    public static void setAnonymousMode(final boolean anonymousMode) {
-        Completable.fromCallable(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                SharedPrefs.getInstance().setAnonymousMode(anonymousMode);
-                return null;
-            }
-        }).subscribeOn(Schedulers.io()).subscribe();
-    }
-
-    public static boolean isDomainFronting() {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return SharedPrefs.getInstance().isDomainFronting();
-            }
-        }).subscribeOn(Schedulers.io()).blockingGet();
-    }
-
-    public static void setDomainFronting(final boolean domainFronting) {
-        Completable.fromCallable(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                SharedPrefs.getInstance().setDomainFronting(domainFronting);
-                return null;
-            }
-        }).subscribeOn(Schedulers.io()).subscribe();
-    }
-
     public static boolean isConnectedToInternet(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) return false;
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
-    }
-
-    public static void showLockScreen(Context context) {
-        Activity activity = (Activity) context;
-        Intent intent = new Intent(activity, LockScreenActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        intent.putExtra("originalIntent", activity.getComponentName());
-        context.startActivity(intent);
     }
 
     public static void exit(Context context) {
@@ -271,5 +246,18 @@ public class MyApplication extends /*MultiDexApplication*/ Application implement
             cacheWordHandler.detach();
             detached = true;
         }
+    }
+
+    private static void maybeExcludeIntentFromRecents(Intent intent) {
+        if (Preferences.isSecretModeActive()) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS/* |
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK*/);
+        }
+    }
+
+    private void configureCrashlytics(){
+        CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(Preferences.isSubmitingCrashReports()).build();
+        Fabric.with(this, new Crashlytics.Builder().core(core).build());
     }
 }

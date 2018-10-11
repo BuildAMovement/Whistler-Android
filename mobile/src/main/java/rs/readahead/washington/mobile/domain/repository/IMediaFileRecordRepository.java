@@ -14,9 +14,30 @@ public interface IMediaFileRecordRepository {
     }
 
     Single<MediaFile> registerMediaFile(MediaFile mediaFile, MediaFileThumbnailData thumbnailData);
-    Single<List<MediaFile>> listMediaFiles();
+
+    Single<List<MediaFile>> listMediaFiles(Filter filter, Sort sort);
+
     Maybe<MediaFileThumbnailData> getMediaFileThumbnail(long id);
+
     Single<MediaFileThumbnailData> updateMediaFileThumbnail(long id, MediaFileThumbnailData data);
+
     Single<List<MediaFile>> getMediaFiles(long[] ids);
+
+    Single<MediaFile> getMediaFile(long id);
+
     Single<MediaFile> deleteMediaFile(MediaFile mediaFile, IMediaFileDeleter deleter);
+
+    enum Filter {
+        ALL,
+        PHOTO,
+        VIDEO,
+        AUDIO,
+        WITH_METADATA,
+        WITHOUT_METADATA
+    }
+
+    enum Sort {
+        NEWEST,
+        OLDEST
+    }
 }

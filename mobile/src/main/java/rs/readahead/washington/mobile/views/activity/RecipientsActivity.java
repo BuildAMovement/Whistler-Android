@@ -15,7 +15,10 @@ import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,13 +52,12 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
     LinearLayout mListLayout;
     @BindView(R.id.recipient_list)
     LinearLayout mRecipientLayout;
-    @BindView(R.id.metadata_text)
-    TextView mInfoTextView;
 
     private MenuItem mSelectMenuItem;
     private ReportRecipientPresenter presenter;
     private TextView mEmptyRecipientView;
-
+    List<MediaRecipientList> checkedRecipientsLists = new ArrayList<>();
+    Set<MediaRecipient> checkedRecipients = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white);
+            getSupportActionBar().setTitle(R.string.title_activity_recipients);
         }
     }
 
@@ -118,6 +121,12 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
             return true;
         }
 
+
+        if (id == R.id.help_item) {
+            startRecipientsHelp();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -126,6 +135,8 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
     }
 
     private void onRecipientsSelected() {
+        addCheckedRecipientListsToReport();
+        addCheckedRecipientsToReport();
         setResult(Activity.RESULT_OK, new Intent().putExtra(RECIPIENTS_ID_KEY, presenter.getRecipientsData()));
         finish();
     }
@@ -143,7 +154,7 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
         }
     }
 
-    private void getRecipientDataFromDB(){
+    private void getRecipientDataFromDB() {
         presenter.listNonEmptyRecipientLists();
         presenter.listAllRecipients();
     }
@@ -190,7 +201,6 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
 
             mRecipientLayout.addView(item);
         }
-
     }
 
     private TextView createNotAvailableText(LayoutInflater inflater, LinearLayout linearLayout, @StringRes int resId) {
@@ -248,7 +258,6 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
 
             mListLayout.addView(item);
         }
-
     }
 
     @Override
@@ -282,10 +291,14 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
     }
 
     @Override
+    public void onSelectMediaRecipientsFromListError(Throwable throwable) {
+        Timber.d(throwable, getClass().getName());
+    }
+
+    @Override
     public void onPreviewMode() {
         mNewListButton.setVisibility(View.GONE);
         mNewRecipientButton.setVisibility(View.GONE);
-        mInfoTextView.setText(getString(R.string.recipients_preview_mode));
     }
 
     @Override
@@ -301,7 +314,6 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
 
     @Override
     public void onClick(View view) {
-
         if (!(view instanceof CheckedTextView)) return;
 
         Object tag = view.getTag();
@@ -313,24 +325,74 @@ public class RecipientsActivity extends CacheWordSubscriberBaseActivity implemen
             MediaRecipient mediaRecipient = (MediaRecipient) tag;
 
             if (checkedTextView.isChecked()) {
-                presenter.addRecipientToReport(mediaRecipient);
+                checkedRecipients.add(mediaRecipient);
             } else {
-                presenter.removeRecipientFromReport(mediaRecipient);
+                checkedRecipients.remove(mediaRecipient);
             }
         } else if (tag instanceof MediaRecipientList) {
             MediaRecipientList mediaRecipientList = (MediaRecipientList) tag;
 
             if (checkedTextView.isChecked()) {
-                presenter.addRecipientListToReport(mediaRecipientList);
+                checkedRecipientsLists.add(mediaRecipientList);
+                presenter.selectDifferentMediaRecipientsFromList(mediaRecipientList, checkedRecipientsLists, true);
             } else {
-                presenter.removeRecipientListFromReport(mediaRecipientList);
+                checkedRecipientsLists.remove(mediaRecipientList);
+                presenter.selectDifferentMediaRecipientsFromList(mediaRecipientList, checkedRecipientsLists, false);
             }
         }
         setSelectVisible(true);
     }
 
-//    private void checkSelectMenuItemStatus() {
-//        setSelectVisible(presenter.checkSelectMenuItemStatus());
-//    }
+    @Override
+    public void checkRecipientsFromList(List<MediaRecipient> mediaRecipientList, boolean check) {
+        for (MediaRecipient recipient : mediaRecipientList) {
+            CheckedTextView item = mRecipientLayout.findViewWithTag(recipient);
+            if (!checkedRecipients.contains(recipient)) {
+                item.setChecked(check);
+            }
+        }
+    }
+
+    private void addCheckedRecipientsToReport() {
+        List<MediaRecipient> checkedRecipients = new ArrayList<>();
+
+        for (int i = 0; i < mRecipientLayout.getChildCount(); i++) {
+            View view = mRecipientLayout.getChildAt(i);
+            if (!(view instanceof CheckedTextView)) {
+                continue;
+            }
+
+            CheckedTextView item = (CheckedTextView) view;
+            if (item.isChecked() && item.getTag() instanceof MediaRecipient) {
+                MediaRecipient recipient = (MediaRecipient) item.getTag();
+                checkedRecipients.add(recipient);
+            }
+        }
+
+        presenter.setReportRecipients(checkedRecipients);
+    }
+
+    private void addCheckedRecipientListsToReport() {
+        List<MediaRecipientList> checkedRecipientLists = new ArrayList<>();
+
+        for (int i = 0; i < mListLayout.getChildCount(); i++) {
+            View view = mListLayout.getChildAt(i);
+            if (!(view instanceof CheckedTextView)) {
+                continue;
+            }
+
+            CheckedTextView item = (CheckedTextView) view;
+            if (item.isChecked() && item.getTag() instanceof MediaRecipientList) {
+                MediaRecipientList list = (MediaRecipientList) item.getTag();
+                checkedRecipientLists.add(list);
+            }
+        }
+
+        presenter.setReportRecipientLists(checkedRecipientLists);
+    }
+
+    private void startRecipientsHelp() {
+        startActivity(new Intent(RecipientsActivity.this, RecipientsHelpActivity.class));
+    }
 
 }

@@ -6,6 +6,7 @@ import android.net.Uri;
 import java.util.List;
 
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
+import rs.readahead.washington.mobile.domain.repository.IMediaFileRecordRepository;
 import rs.readahead.washington.mobile.presentation.entity.MediaFileThumbnailData;
 
 
@@ -33,7 +34,7 @@ public class IGalleryPresenterContract {
     }
 
     public interface IPresenter extends IBasePresenter {
-        void getFiles();
+        void getFiles(IMediaFileRecordRepository.Filter filter, IMediaFileRecordRepository.Sort sort);
         void importImage(Uri uri);
         void importVideo(Uri uri);
         void addNewMediaFile(MediaFile mediaFile, MediaFileThumbnailData thumbnailData);

@@ -3,35 +3,48 @@ package rs.readahead.washington.mobile.data.sharedpref;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+
+import java.util.concurrent.Callable;
+
+import io.reactivex.Completable;
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class SharedPrefs {
+    public static final String NONE = "";
+
     private static final String SHARED_PREFS_NAME = "washington_shared_prefs";
 
-    private static final String SECRET_PASSWORD = "secret_password";
-    private static final String SECRET_MODE_ENABLED = "secret_password_enabled";
-    private static final String TOR_MODE_ENABLED = "tor_password_enabled";
-    private static final String ASK_FOR_TOR = "ask_for_tor";
+    static final String SECRET_PASSWORD = "secret_password";
+    //private static final String TOR_MODE_ENABLED = "tor_password_enabled";
+    //private static final String ASK_FOR_TOR = "ask_for_tor";
     private static final String PANIC_PASSWORD = "panic_password";
     private static final String PANIC_MESSAGE = "panic_message";
-    private static final String PANIC_GEOLOCATION = "panic_geolocation";
-    private static final String ERASE_DATABASE = "erase_database";
+    static final String PANIC_GEOLOCATION = "panic_geolocation";
+    static final String ERASE_EVERYTHING = "erase_everything";
     private static final String ERASE_GALLERY = "erase_gallery";
     private static final String ERASE_CONTACTS = "erase_contacts";
     private static final String ERASE_MEDIA_RECIPIENTS = "erase_media";
     private static final String ERASE_MATERIALS = "erase_materials";
-    private static final String ANONYMOUS_MODE = "anonymous_mode";
-    private static final String AUTO_SAVE_DRAFT_FORM = "auto_save_draft_form";
+    static final String ERASE_REPORTS = "erase_reports";
+    static final String ERASE_FORMS = "erase_forms";
+    //private static final String AUTO_SAVE_DRAFT_FORM = "auto_save_draft_form";
     private static final String LANGUAGE = "language";
-    private static final String DOMAIN_FRONTING = "df";
     private static final String WIFI_ATTACHMENTS = "wifi_attachments";
+    static final String SECRET_MODE_ENABLED = "secret_password_enabled";
+    static final String DOMAIN_FRONTING = "df";
+    static final String ANONYMOUS_MODE = "anonymous_mode";
+    static final String UNINSTALL_ON_PANIC = "uninstall_on_panic";
+    static final String APP_FIRST_START = "app_first_start";
+    static final String APP_ALIAS_NAME = "app_alias_name";
+    static final String SUBMIT_CRASH_REPORTS = "submit_crash_reports";
+    static final String ENABLE_CAMERA_PREVIEW = "enable_camera_preview";
 
     private static SharedPrefs instance;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-
-    // small cache
-    private Boolean df = null;
 
 
     public static SharedPrefs getInstance() {
@@ -54,24 +67,6 @@ public class SharedPrefs {
         editor = pref.edit();
     }
 
-    public boolean isSecretModeActive() {
-        return pref.getBoolean(SECRET_MODE_ENABLED, false);
-    }
-
-    public void setSecretModeActive(boolean activated) {
-        editor.putBoolean(SECRET_MODE_ENABLED, activated);
-        editor.apply();
-    }
-
-    public void setSecretPassword(String password) {
-        editor.putString(SECRET_PASSWORD, password);
-        editor.apply();
-    }
-
-    public String getSecretPassword() {
-        return pref.getString(SECRET_PASSWORD, "");
-    }
-
     public void setPanicPassword(String password) {
         editor.putString(PANIC_PASSWORD, password);
         editor.apply();
@@ -81,23 +76,23 @@ public class SharedPrefs {
         return pref.getString(PANIC_PASSWORD, "");
     }
 
-    public boolean isTorModeActive() {
+    /*public boolean isTorModeActive() {
         return pref.getBoolean(TOR_MODE_ENABLED, false);
     }
 
     public void setToreModeActive(boolean activated) {
         editor.putBoolean(TOR_MODE_ENABLED, activated);
         editor.apply();
-    }
+    }*/
 
-    public boolean askForTorOnStart() {
+    /*public boolean askForTorOnStart() {
         return pref.getBoolean(ASK_FOR_TOR, true);
     }
 
     public void setAskForTorOnStart(boolean activated) {
         editor.putBoolean(ASK_FOR_TOR, activated);
         editor.apply();
-    }
+    }*/
 
     public void setPanicMessage(String message) {
         editor.putString(PANIC_MESSAGE, message);
@@ -106,24 +101,6 @@ public class SharedPrefs {
 
     public String getPanicMessage() {
         return pref.getString(PANIC_MESSAGE, "");
-    }
-
-    public boolean isPanicGeolocationActive() {
-        return pref.getBoolean(PANIC_GEOLOCATION, false);
-    }
-
-    public void setPanicGeolocationActive(boolean activated) {
-        editor.putBoolean(PANIC_GEOLOCATION, activated);
-        editor.apply();
-    }
-
-    public boolean isEraseDatabaseActive() {
-        return pref.getBoolean(ERASE_DATABASE, true);
-    }
-
-    public void setEraseDatabaseActive(boolean activated) {
-        editor.putBoolean(ERASE_DATABASE, activated);
-        editor.apply();
     }
 
     public boolean isEraseGalleryActive() {
@@ -162,16 +139,7 @@ public class SharedPrefs {
         editor.apply();
     }
 
-    public boolean isAnonymousMode() {
-        return pref.getBoolean(ANONYMOUS_MODE, false);
-    }
-
-    public void setAnonymousMode(boolean anonymousMode) {
-        editor.putBoolean(ANONYMOUS_MODE, anonymousMode);
-        editor.apply();
-    }
-
-    public boolean isAutoSaveDrafts() {
+    /*public boolean isAutoSaveDrafts() {
         //return pref.getBoolean(AUTO_SAVE_DRAFT_FORM, false);
         return true; // for now this is default, no settings..
     }
@@ -179,7 +147,7 @@ public class SharedPrefs {
     public void setAutoSaveDrafts(boolean autoSaveDrafts) {
         //editor.putBoolean(AUTO_SAVE_DRAFT_FORM, autoSaveDrafts);
         //editor.apply();
-    }
+    }*/
 
     public void setAppLanguage(String language) {
         editor.putString(LANGUAGE, language);
@@ -188,14 +156,6 @@ public class SharedPrefs {
 
     public String getAppLanguage() {
         return pref.getString(LANGUAGE, null);
-    }
-
-    public boolean isDomainFronting() {
-        if (df == null) {
-            return df = pref.getBoolean(DOMAIN_FRONTING, false);
-        }
-
-        return df;
     }
 
     public boolean isWiFiAttachments() {
@@ -207,10 +167,46 @@ public class SharedPrefs {
         editor.apply();
     }
 
-    public void setDomainFronting(boolean domainFronting) {
-        editor.putBoolean(DOMAIN_FRONTING, domainFronting);
-        editor.apply();
-        df = null;
+    boolean getBoolean(final String name, final boolean def) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return pref.getBoolean(name, def);
+            }
+        }).subscribeOn(Schedulers.io()).blockingGet();
+    }
+
+    boolean setBoolean(final String name, final boolean value) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                editor.putBoolean(name, value);
+                editor.apply();
+                return value;
+            }
+        }).subscribeOn(Schedulers.io()).blockingGet();
+    }
+
+    @NonNull
+    String getString(@NonNull final String name, final String def) {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                String str = pref.getString(name, def);
+                return str != null ? str : NONE;
+            }
+        }).subscribeOn(Schedulers.io()).blockingGet();
+    }
+
+    void setString(@NonNull final String name, final String value) {
+        Completable.fromCallable(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                editor.putString(name, value);
+                editor.apply();
+                return null;
+            }
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 
     private SharedPrefs() {

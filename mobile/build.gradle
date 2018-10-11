@@ -18,8 +18,8 @@ android {
         applicationId "org.buildamovement.whistler"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 111
-        versionName "1.0.8"
+        versionCode 120
+        versionName "1.1.1"
         //vectorDrawables.useSupportLibrary = true // don't care about apk size, care about crashes
     }
 
@@ -101,7 +101,7 @@ dependencies {
     compile "commons-io:commons-io:2.4"
 
     // exo
-    compile 'com.google.android.exoplayer:exoplayer:r2.4.4'
+    compile 'com.google.android.exoplayer:exoplayer:r2.5.4'
 
     // camera
     //compile 'com.wonderkiln:camerakit:0.12.0'
@@ -109,6 +109,8 @@ dependencies {
         exclude module: "exifinterface"
         exclude module: "animated-vector-drawble"
     }
+
+    compile 'com.github.apl-devs:appintro:v4.2.3'
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"

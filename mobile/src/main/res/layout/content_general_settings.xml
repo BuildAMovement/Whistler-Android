@@ -21,9 +21,9 @@
             <LinearLayout style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_no_metadata_black_24px" />
+                    android:src="@drawable/ic_gps_not_fixed_black_24dp" />
 
                 <LinearLayout style="@style/VerticalLinearLayout">
 
@@ -46,7 +46,7 @@
             <LinearLayout style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_wifi_black_24px" />
 
@@ -72,7 +72,7 @@
             <LinearLayout style="@style/SettingsClickableHorizontalLinerLayout">
 
                 <android.support.v7.widget.AppCompatImageView
-                    style="@style/SettingsImageViewSize"
+                    style="@style/SettingsImageViewStyle"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_languages" />
 
@@ -91,6 +91,33 @@
             </LinearLayout>
 
             <View style="@style/SettingsMainLine" />
+
+            <LinearLayout style="@style/SettingsClickableHorizontalLinerLayout">
+
+                <android.support.v7.widget.AppCompatImageView
+                    style="@style/SettingsImageViewStyle"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_bug_report_black_24dp" />
+
+                <LinearLayout style="@style/VerticalLinearLayout">
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/crash_report_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+
+                        android:text="@string/crash_reports_submit"
+                        android:theme="@style/SettingsTextViewBlack" />
+
+                    <TextView
+                        style="@style/SettingsTextViewGray"
+                        android:text="@string/crash_reports_submit_desc" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/SettingsMainLine" />
+
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

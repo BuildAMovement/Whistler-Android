@@ -1,6 +1,5 @@
 package rs.readahead.washington.mobile.views.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +25,7 @@ public class LockScreenActivity extends AppCompatActivity implements ICacheWordS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock_screen);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mCacheWord = new CacheWordHandler(this);

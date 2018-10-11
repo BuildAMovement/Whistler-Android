@@ -31,6 +31,12 @@ public class FormParser implements IFormParserContract.IFormParser {
 
     private String startHash;
 
+    private enum Direction {
+        PREVIOUS,
+        CURRENT,
+        NEXT
+    }
+
 
     public FormParser(IFormParserContract.IView suppliedView) {
         this.view = suppliedView;
@@ -41,29 +47,17 @@ public class FormParser implements IFormParserContract.IFormParser {
     @Override
     public void parseForm() {
         init();
-        parse(0);
+        parse(Direction.CURRENT);
     }
 
     @Override
     public void stepToNextScreen() {
-        try {
-            formController.stepToNextScreenEvent();
-        } catch (JavaRosaException e) {
-            viewFormParseError(e);
-        }
-
-        parse(1);
+        parse(Direction.NEXT);
     }
 
     @Override
     public void stepToPrevScreen() {
-        try {
-            formController.stepToPreviousScreenEvent();
-        } catch (JavaRosaException e) {
-            viewFormParseError(e);
-        }
-
-        parse(-1);
+        parse(Direction.PREVIOUS);
     }
 
     @Override
@@ -105,6 +99,27 @@ public class FormParser implements IFormParserContract.IFormParser {
     }
 
     @Override
+    public void executeRepeat() {
+        try {
+            formController.newRepeat();
+        } catch (Exception e) {
+            view.formParseError(e);
+            return;
+        }
+
+        if (!formController.indexIsInFieldList()) {
+            stepToNextScreen();
+        } else {
+            parse(Direction.CURRENT);
+        }
+    }
+
+    @Override
+    public void cancelRepeat() {
+        stepToNextScreen();
+    }
+
+    @Override
     public void destroy() {
         view = null;
     }
@@ -132,9 +147,22 @@ public class FormParser implements IFormParserContract.IFormParser {
         view.formPropertiesChecked(enableAttachments, enableDelete);
     }
 
-    private void parse(int direction) {
+    private void parse(Direction direction) {
         try {
-            int event = formController.getEvent();
+            int event;
+
+            switch (direction) {
+                case PREVIOUS:
+                    event = formController.stepToPreviousScreenEvent();
+                    break;
+
+                case NEXT:
+                    event = formController.stepToNextScreenEvent();
+                    break;
+
+                default:
+                    event = formController.getEvent();
+            }
 
             switch (event) {
                 case FormEntryController.EVENT_BEGINNING_OF_FORM:
@@ -147,29 +175,27 @@ public class FormParser implements IFormParserContract.IFormParser {
 
                 case FormEntryController.EVENT_QUESTION:
                     getViewParameters();
-                    if (! skipWhistlerAttachmentFiled(prompts, direction)) {
+                    if (!skipWhistlerAttachmentField(prompts, direction)) {
                         view.formQuestion(prompts, groups);
                     }
                     break;
 
                 case FormEntryController.EVENT_GROUP:
                     getViewParameters();
-                    if (! skipWhistlerAttachmentFiled(prompts, direction)) {
+                    if (!skipWhistlerAttachmentField(prompts, direction)) {
                         view.formGroup(prompts, groups);
                     }
                     break;
 
                 case FormEntryController.EVENT_REPEAT:
                     getViewParameters();
-                    if (! skipWhistlerAttachmentFiled(prompts, direction)) {
+                    if (!skipWhistlerAttachmentField(prompts, direction)) {
                         view.formRepeat(prompts, groups);
                     }
                     break;
 
                 case FormEntryController.EVENT_PROMPT_NEW_REPEAT:
-                    if (! skipWhistlerAttachmentFiled(prompts, direction)) { // todo: check this
-                        view.formPromptNewRepeat();
-                    }
+                    view.formPromptNewRepeat(formController.getLastRepeatCount(), formController.getLastGroupText());
                     break;
             }
         } catch (Exception e) {
@@ -201,9 +227,9 @@ public class FormParser implements IFormParserContract.IFormParser {
         return skip;
     }
 
-    private boolean skipWhistlerAttachmentFiled(FormEntryPrompt[] prompts, int direction) {
+    private boolean skipWhistlerAttachmentField(FormEntryPrompt[] prompts, Direction direction) {
         if (shouldSkipAttachmentField(prompts)) {
-            if (direction == -1) {
+            if (direction == Direction.PREVIOUS) {
                 stepToPrevScreen();
             } else {
                 stepToNextScreen();

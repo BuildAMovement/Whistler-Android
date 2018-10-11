@@ -2,9 +2,10 @@ package rs.readahead.washington.mobile.data.rest;
 
 import java.io.IOException;
 
-import okhttp3.*;
+import okhttp3.Interceptor;
+import okhttp3.Request;
 import okhttp3.Response;
-import rs.readahead.washington.mobile.MyApplication;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.util.C;
 
 
@@ -14,7 +15,7 @@ public class DFInterceptor implements Interceptor {
         Request originalRequest = chain.request();
         Request request;
 
-        if (MyApplication.isDomainFronting()) {
+        if (Preferences.isDomainFronting()) {
             request = originalRequest.newBuilder()
                     .url("https://www.google.com" + originalRequest.url().encodedPath()) // todo: maybe choose host on google..
                     .header("Host", C.APPSPOT_REFLECTOR)

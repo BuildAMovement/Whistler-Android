@@ -26,6 +26,7 @@ import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.data.database.CacheWordDataSource;
 import rs.readahead.washington.mobile.data.database.DataSource;
 import rs.readahead.washington.mobile.data.repository.ReportRepository;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.domain.entity.ContactSetting;
 import rs.readahead.washington.mobile.domain.entity.MediaFile;
 import rs.readahead.washington.mobile.domain.entity.MediaRecipient;
@@ -72,38 +73,38 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
     @Override
     public void loadReport(final long id) {
         disposable.add(cacheWordDataSource.getDataSource()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .flatMapSingle(new Function<DataSource, SingleSource<Report>>() {
-                            @Override
-                            public SingleSource<Report> apply(DataSource dataSource) throws Exception {
-                                return dataSource.loadReport(id);
-                            }
-                        })
-                        // todo: loading indicators..
-                        .subscribe(new Consumer<Report>() {
-                            @Override
-                            public void accept(final Report report) throws Exception {
-                                if (Report.NONE.equals(report)) {
-                                    view.onReportLoadError(new NotFountException());
-                                    return;
-                                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMapSingle(new Function<DataSource, SingleSource<Report>>() {
+                    @Override
+                    public SingleSource<Report> apply(DataSource dataSource) throws Exception {
+                        return dataSource.loadReport(id);
+                    }
+                })
+                // todo: loading indicators..
+                .subscribe(new Consumer<Report>() {
+                    @Override
+                    public void accept(final Report report) throws Exception {
+                        if (Report.NONE.equals(report)) {
+                            view.onReportLoadError(new NotFountException());
+                            return;
+                        }
 
-                                if (report.getSaved() == Report.Saved.ARCHIVE) { // if loading from archive, make if fresh to resend..
-                                    report.setId(Report.UNSAVED_REPORT_ID);
-                                    report.setUid(null);
-                                }
-                                report.startTouchTracking();
+                        if (report.getSaved() == Report.Saved.ARCHIVE) { // if loading from archive, make if fresh to resend..
+                            report.setId(Report.UNSAVED_REPORT_ID);
+                            report.setUid(null);
+                        }
+                        report.startTouchTracking();
 
-                                setCurrentReport(report);
-                                updateView();
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                view.onReportLoadError(throwable);
-                            }
-                        })
+                        setCurrentReport(report);
+                        updateView();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        view.onReportLoadError(throwable);
+                    }
+                })
         );
     }
 
@@ -149,7 +150,7 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
 
     @Override
     public void sendReport() {
-        if (! validateReport()) {
+        if (!validateReport()) {
             view.onSendValidationFailed();
             return;
         }
@@ -232,7 +233,7 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
     @Override
     public void checkAnonymousState() {
         if (view == null) return;
-        view.showNoMetadataInfo(MyApplication.isAnonymousMode());
+        view.showNoMetadataInfo(Preferences.isAnonymousMode());
     }
 
     @Override
@@ -311,13 +312,11 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
         }
 
         for (MediaFile mediaFile : report.getEvidences()) {
-            String type = mediaFile.getPrimaryMimeType();
-
-            if ("image".equals(type)) {
+            if (mediaFile.getType() == MediaFile.Type.IMAGE) {
                 imageCount++;
-            } else if ("audio".equals(type)) {
+            } else if (mediaFile.getType() == MediaFile.Type.AUDIO) {
                 audioCount++;
-            } else if ("video".equals(type)) {
+            } else if (mediaFile.getType() == MediaFile.Type.VIDEO) {
                 videoCount++;
             }
         }
@@ -354,7 +353,13 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
 
     @Override
     public void getRecipientsCount() {
-        disposable.add(cacheWordDataSource.getDataSource()
+        combinedRecipients.clear();
+        for (MediaRecipient recipient : report.getRecipients()) {
+            combinedRecipients.put(recipient.getId(), recipient);
+        }
+        view.onGetRecipientsCount(combinedRecipients.size());
+
+        /*disposable.add(cacheWordDataSource.getDataSource()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapSingle(new Function<DataSource, SingleSource<Map<Long, MediaRecipient>>>() {
@@ -376,7 +381,7 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
                         view.onGetRecipientsCountError(throwable);
                     }
                 })
-        );
+        );*/
     }
 
     @Override
@@ -445,8 +450,8 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
     }
 
     private void maybeRemoveMetadata() {
-        if (MyApplication.isAnonymousMode()) {
-            for (MediaFile mediaFile: report.getEvidences()) {
+        if (Preferences.isAnonymousMode()) {
+            for (MediaFile mediaFile : report.getEvidences()) {
                 if (mediaFile.getMetadata() != null) {
                     mediaFile.getMetadata().clear();
                 }
@@ -492,7 +497,7 @@ public class NewReportPresenter implements INewReportPresenterContract.IPresente
             return;
         }
 
-        for (MediaFile mediaFile: evidences) {
+        for (MediaFile mediaFile : evidences) {
             queue.add(mediaFile);
         }
 

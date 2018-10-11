@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import rs.readahead.washington.mobile.util.CommonUtils;
+import rs.readahead.washington.mobile.util.Util;
 import rs.readahead.washington.mobile.util.ThreadUtil;
 
 
@@ -38,17 +38,17 @@ public class CameraDurationTextView extends AppCompatTextView {
     public void start() {
         setVisibility(VISIBLE);
 
-        start = CommonUtils.currentTimestamp();
+        start = Util.currentTimestamp();
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                final int duration = (int) ((CommonUtils.currentTimestamp() - start) / 1000);
+                final int duration = (int) ((Util.currentTimestamp() - start) / 1000);
                 ThreadUtil.runOnMain(new Runnable() {
                     @Override
                     public void run() {
-                        setText(CommonUtils.getVideoDuration(duration));
+                        setText(Util.getVideoDuration(duration));
                     }
                 });
 

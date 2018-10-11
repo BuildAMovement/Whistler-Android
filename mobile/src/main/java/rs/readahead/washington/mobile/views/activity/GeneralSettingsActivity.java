@@ -26,6 +26,7 @@ import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.bus.EventCompositeDisposable;
 import rs.readahead.washington.mobile.bus.EventObserver;
 import rs.readahead.washington.mobile.bus.event.LocaleChangedEvent;
+import rs.readahead.washington.mobile.data.sharedpref.Preferences;
 import rs.readahead.washington.mobile.data.sharedpref.SharedPrefs;
 import rs.readahead.washington.mobile.util.jobs.UploadJob;
 
@@ -35,6 +36,8 @@ public class GeneralSettingsActivity extends CacheWordSubscriberBaseActivity {
     Toolbar toolbar;
     @BindView(R.id.anonymous_switch)
     SwitchCompat anonymousSwitch;
+    @BindView(R.id.crash_report_switch)
+    SwitchCompat crashReportSwitch;
     @BindView(R.id.only_wifi_switch)
     SwitchCompat onlyWiFiSwitch;
 
@@ -59,6 +62,7 @@ public class GeneralSettingsActivity extends CacheWordSubscriberBaseActivity {
 
         setupWifiSwitch();
         setupAnonymousSwitch();
+        setupCrashReportsSwitch();
 
         disposables = MyApplication.bus().createCompositeDisposable();
         disposables.wire(LocaleChangedEvent.class, new EventObserver<LocaleChangedEvent>() {
@@ -101,11 +105,22 @@ public class GeneralSettingsActivity extends CacheWordSubscriberBaseActivity {
         anonymousSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                MyApplication.setAnonymousMode(isChecked);
+                Preferences.setAnonymousMode(!isChecked);
             }
         });
 
-        anonymousSwitch.setChecked(MyApplication.isAnonymousMode());
+        anonymousSwitch.setChecked(!Preferences.isAnonymousMode());
+    }
+
+    private void setupCrashReportsSwitch() {
+        crashReportSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                Preferences.setSubmitingCrashReports(isChecked);
+            }
+        });
+
+        crashReportSwitch.setChecked(Preferences.isSubmitingCrashReports());
     }
 
     private void setupWifiSwitch() {

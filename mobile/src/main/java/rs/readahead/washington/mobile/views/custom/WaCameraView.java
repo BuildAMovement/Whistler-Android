@@ -10,12 +10,14 @@ import android.view.MotionEvent;
 import com.otaliastudios.cameraview.CameraView;
 
 import rs.readahead.washington.mobile.MyApplication;
+import rs.readahead.washington.mobile.R;
 import rs.readahead.washington.mobile.bus.event.CameraFlingUpEvent;
 
 
 public class WaCameraView extends CameraView implements
         GestureDetector.OnGestureListener {
     private GestureDetectorCompat detectorCompat;
+    private float shortFling;
 
     public WaCameraView(Context context) {
         super(context);
@@ -24,6 +26,7 @@ public class WaCameraView extends CameraView implements
     public WaCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
         detectorCompat = new GestureDetectorCompat(context.getApplicationContext(), this);
+        shortFling = (float) context.getResources().getInteger(R.integer.ra_config_short_fling);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -57,7 +60,7 @@ public class WaCameraView extends CameraView implements
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if (e1.getY() > e2.getY()) {
+        if (e1.getY() - e2.getY() > shortFling) { // not too short fling..
             MyApplication.bus().post(new CameraFlingUpEvent());
         }
         return true;

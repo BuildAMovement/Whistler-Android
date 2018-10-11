@@ -11,7 +11,8 @@
         android:id="@+id/recipient_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:background="@drawable/button_pressed_transparent"
         android:orientation="horizontal">
 
@@ -19,32 +20,34 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_weight="4"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/recipient_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textColor="@color/wa_black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                style="@style/LineTextViewBlack"
+                android:maxLines="1" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/edit"
             style="@style/ImageViewSelector"
-            android:layout_marginBottom="7dp"
-            android:layout_marginTop="7dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:src="@drawable/edit_icon_selector"
-            tools:ignore="ContentDescription" />
+            android:contentDescription="@null"/>
 
         <ImageView
             android:id="@+id/delete"
             style="@style/ImageViewSelector"
-            android:src="@drawable/delete_icon_selector" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:src="@drawable/delete_icon_selector"
+            android:contentDescription="@null"/>
+
 
     </LinearLayout>
 
@@ -104,6 +107,6 @@
 
     </LinearLayout>
 
-    <View style="@style/SettingsMainLine" />
+    <View style="@style/TrustedPersonListLine" />
 
 </LinearLayout>
